@@ -302,7 +302,7 @@ func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CancelFunction, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -317,7 +317,7 @@ func C_CloseAllSessions(slotID C.CK_SLOT_ID) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseAllSessions, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -332,7 +332,7 @@ func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseSession, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -347,7 +347,7 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CopyObject, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -362,7 +362,7 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CreateObject, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -377,7 +377,7 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Decrypt, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -392,7 +392,7 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptDigestUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -407,7 +407,7 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -422,7 +422,7 @@ func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -437,7 +437,7 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessage, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -452,7 +452,7 @@ func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageBegin, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -467,7 +467,7 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageNext, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -482,7 +482,7 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -497,7 +497,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptVerifyUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -512,7 +512,7 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DeriveKey, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -527,7 +527,7 @@ func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DestroyObject, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -542,7 +542,7 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Digest, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -557,7 +557,7 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestEncryptUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -572,7 +572,7 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -587,7 +587,7 @@ func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -602,7 +602,7 @@ func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestKey, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -617,7 +617,7 @@ func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -632,7 +632,7 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Encrypt, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -647,7 +647,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -662,7 +662,7 @@ func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -677,7 +677,7 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessage, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -692,7 +692,7 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageBegin, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -707,7 +707,7 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageNext, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -722,7 +722,7 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -746,7 +746,7 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjects, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -761,7 +761,7 @@ func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -776,7 +776,7 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -791,7 +791,7 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKey, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -806,7 +806,7 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKeyPair, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -821,7 +821,7 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateRandom, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -836,7 +836,7 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetAttributeValue, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -865,7 +865,7 @@ func C_GetFunctionStatus(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetFunctionStatus, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -878,7 +878,7 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInfo, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -888,9 +888,9 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 func C_GetInterface(pInterfaceName C.CK_UTF8CHAR_PTR, pVersion C.CK_VERSION_PTR, ppInterface C.CK_INTERFACE_PTR_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_GetInterface(pInterfaceName=%+v, pVersion=%+v, flags=%+v)\n", pInterfaceName, pVersion, flags)
 
-	//TODO Handle stub
+	// TODO Handle stub
 
-	return (C.CK_RV)(returnCode)
+	return C.CKR_OK
 }
 
 //export C_GetInterfaceList
@@ -902,7 +902,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInterfaceList, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -917,7 +917,7 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismInfo, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -932,7 +932,7 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismList, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -947,7 +947,7 @@ func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, p
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetObjectSize, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -962,7 +962,7 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetOperationState, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -977,7 +977,7 @@ func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR)
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSessionInfo, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -992,7 +992,7 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotInfo, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1007,7 +1007,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1022,7 +1022,7 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetTokenInfo, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1046,7 +1046,7 @@ func C_InitPIN(hSession C.CK_SESSION_HANDLE, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_InitPIN, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1061,7 +1061,7 @@ func C_InitToken(slotID C.CK_SLOT_ID, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_InitToken, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1076,7 +1076,7 @@ func C_Login(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.CK_UT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Login, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1091,7 +1091,7 @@ func C_LoginUser(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.C
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_LoginUser, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1106,7 +1106,7 @@ func C_Logout(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Logout, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1121,7 +1121,7 @@ func C_MessageDecryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageDecryptFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1136,7 +1136,7 @@ func C_MessageDecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageDecryptInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1151,7 +1151,7 @@ func C_MessageEncryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageEncryptFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1166,7 +1166,7 @@ func C_MessageEncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageEncryptInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1181,7 +1181,7 @@ func C_MessageSignFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageSignFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1196,7 +1196,7 @@ func C_MessageSignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageSignInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1211,7 +1211,7 @@ func C_MessageVerifyFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageVerifyFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1226,7 +1226,7 @@ func C_MessageVerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageVerifyInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1241,7 +1241,7 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_OpenSession, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1256,7 +1256,7 @@ func C_SeedRandom(hSession C.CK_SESSION_HANDLE, pSeed C.CK_BYTE_PTR, ulSeedLen C
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SeedRandom, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1271,7 +1271,7 @@ func C_SessionCancel(hSession C.CK_SESSION_HANDLE, flags C.CK_FLAGS) C.CK_RV { /
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SessionCancel, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1286,7 +1286,7 @@ func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SetAttributeValue, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1301,7 +1301,7 @@ func C_SetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SetOperationState, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1316,7 +1316,7 @@ func C_SetPIN(hSession C.CK_SESSION_HANDLE, pOldPin C.CK_UTF8CHAR_PTR /*pOldPin 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SetPIN, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1331,7 +1331,7 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Sign, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1346,7 +1346,7 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignEncryptUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1361,7 +1361,7 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1376,7 +1376,7 @@ func C_SignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKe
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1391,7 +1391,7 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessage, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1406,7 +1406,7 @@ func C_SignMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessageBegin, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1421,7 +1421,7 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessageNext, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1436,7 +1436,7 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignRecover, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1451,7 +1451,7 @@ func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignRecoverInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1466,7 +1466,7 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1481,7 +1481,7 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_UnwrapKey, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1496,7 +1496,7 @@ func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Verify, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1511,7 +1511,7 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyFinal, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1526,7 +1526,7 @@ func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, h
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1541,7 +1541,7 @@ func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulP
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessage, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1556,7 +1556,7 @@ func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageBegin, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1571,7 +1571,7 @@ func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR,
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageNext, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1586,7 +1586,7 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecover, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1601,7 +1601,7 @@ func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecoverInit, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1616,7 +1616,7 @@ func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyUpdate, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
@@ -1638,7 +1638,7 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_WrapKey, nil)
 
 	if outputParameters != nil {
-		//TODO Handle output parameters
+		// TODO Handle output parameters
 	}
 
 	return (C.CK_RV)(returnCode)
