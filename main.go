@@ -7,6 +7,7 @@ import "crypto/tls"
 import "fmt"
 import "os"
 import "time"
+import "unsafe"
 import "github.com/google/uuid"
 import "github.com/ovh/kmip-go"
 import "github.com/ovh/kmip-go/kmipclient"
@@ -18,6 +19,16 @@ var cryptokiVersion = C.CK_VERSION{
 }
 
 const profileVersion byte = 0x01
+
+var defaultInterface string = "PKCS 11"
+
+var interfaces = []C.CK_INTERFACE{
+	C.CK_INTERFACE{
+		pInterfaceName: interface{}(&defaultInterface).(*C.CK_CHAR),
+		pFunctionList:  (C.CK_VOID_PTR)(&functionList30),
+		flags:          0x0,
+	},
+}
 
 var functionList = C.CK_FUNCTION_LIST{
 	version: cryptokiVersion,
@@ -888,24 +899,70 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 func C_GetInterface(pInterfaceName C.CK_UTF8CHAR_PTR, pVersion C.CK_VERSION_PTR, ppInterface C.CK_INTERFACE_PTR_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_GetInterface(pInterfaceName=%+v, pVersion=%+v, flags=%+v)\n", pInterfaceName, pVersion, flags)
 
-	// TODO Handle stub
+	var matchingInterface C.CK_INTERFACE_PTR
 
-	return C.CKR_OK
+	for _, interfaceItem := range interfaces {
+		var interfaceNameMatches bool = false
+		var versionMatches bool = false
+		var flagMatches bool = false
+
+		if pInterfaceName == nil {
+			interfaceNameMatches = true
+		} else {
+			interfaceName := (C.CK_UTF8CHAR_PTR)(interfaceItem.pInterfaceName)
+			interfaceNameMatches = *pInterfaceName == *interfaceName
+		}
+		if pVersion == nil {
+			versionMatches = true
+		} else {
+			version := (C.CK_VERSION_PTR)(interfaceItem.pFunctionList)
+			interfaceNameMatches = (*pVersion).major == version.major && (*pVersion).minor == version.minor
+		}
+		if flags == 0x0 {
+			flagMatches = true
+		} else {
+			flagMatches = flags == interfaceItem.flags
+		}
+
+		if interfaceNameMatches && versionMatches && flagMatches {
+			matchingInterface = &interfaceItem
+			break
+		}
+	}
+
+	if matchingInterface != nil {
+		*ppInterface = matchingInterface
+		return C.CKR_OK
+	}
+	return C.CKR_ARGUMENTS_BAD
 }
 
 //export C_GetInterfaceList
 func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_GetInterfaceList(pulCount=%+v)\n", pulCount)
 
-	// TODO Handle input parameters
-
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInterfaceList, nil)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
+	if pulCount == nil {
+		return C.CKR_ARGUMENTS_BAD
 	}
 
-	return (C.CK_RV)(returnCode)
+	var INTERFACE_COUNT = len(interfaces)
+
+	if pInterfaceList == nil {
+		*pulCount = (C.CK_ULONG)(INTERFACE_COUNT)
+		return C.CKR_OK
+	}
+
+	const CK_INTERFACE_SIZE = unsafe.Sizeof(new(C.CK_INTERFACE))
+
+	*pulCount = (C.CK_ULONG)(INTERFACE_COUNT)
+	if int(unsafe.Sizeof(*pInterfaceList)) < INTERFACE_COUNT*int(CK_INTERFACE_SIZE) {
+		return C.CKR_BUFFER_TOO_SMALL
+	}
+
+	pointerAsSliceDestination := unsafe.Slice(pInterfaceList, INTERFACE_COUNT)
+	copy(pointerAsSliceDestination, interfaces)
+
+	return C.CKR_OK
 }
 
 //export C_GetMechanismInfo
