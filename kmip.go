@@ -15,102 +15,104 @@ const (
 	TagPKCS_11ReturnCode       = 0x42015D
 )
 
+type PKCS_11Function uint32
+
 const (
 	// Version 2.0 and later
-	PKCS_11FunctionC_Initialize          = 0x00000001
-	PKCS_11FunctionC_Finalize            = 0x00000002
-	PKCS_11FunctionC_GetInfo             = 0x00000003
-	PKCS_11FunctionC_GetFunctionList     = 0x00000004
-	PKCS_11FunctionC_GetSlotList         = 0x00000005
-	PKCS_11FunctionC_GetSlotInfo         = 0x00000006
-	PKCS_11FunctionC_GetTokenInfo        = 0x00000007
-	PKCS_11FunctionC_GetMechanismList    = 0x00000008
-	PKCS_11FunctionC_GetMechanismInfo    = 0x00000009
-	PKCS_11FunctionC_InitToken           = 0x0000000A
-	PKCS_11FunctionC_InitPIN             = 0x0000000B
-	PKCS_11FunctionC_SetPIN              = 0x0000000C
-	PKCS_11FunctionC_OpenSession         = 0x0000000D
-	PKCS_11FunctionC_CloseSession        = 0x0000000E
-	PKCS_11FunctionC_CloseAllSessions    = 0x0000000F
-	PKCS_11FunctionC_GetSessionInfo      = 0x00000010
-	PKCS_11FunctionC_GetOperationState   = 0x00000011
-	PKCS_11FunctionC_SetOperationState   = 0x00000012
-	PKCS_11FunctionC_Login               = 0x00000013
-	PKCS_11FunctionC_Logout              = 0x00000014
-	PKCS_11FunctionC_CreateObject        = 0x00000015
-	PKCS_11FunctionC_CopyObject          = 0x00000016
-	PKCS_11FunctionC_DestroyObject       = 0x00000017
-	PKCS_11FunctionC_GetObjectSize       = 0x00000018
-	PKCS_11FunctionC_GetAttributeValue   = 0x00000019
-	PKCS_11FunctionC_SetAttributeValue   = 0x0000001A
-	PKCS_11FunctionC_FindObjectsInit     = 0x0000001B
-	PKCS_11FunctionC_FindObjects         = 0x0000001C
-	PKCS_11FunctionC_FindObjectsFinal    = 0x0000001D
-	PKCS_11FunctionC_EncryptInit         = 0x0000001E
-	PKCS_11FunctionC_Encrypt             = 0x0000001F
-	PKCS_11FunctionC_EncryptUpdate       = 0x00000020
-	PKCS_11FunctionC_EncryptFinal        = 0x00000021
-	PKCS_11FunctionC_DecryptInit         = 0x00000022
-	PKCS_11FunctionC_Decrypt             = 0x00000023
-	PKCS_11FunctionC_DecryptUpdate       = 0x00000024
-	PKCS_11FunctionC_DecryptFinal        = 0x00000025
-	PKCS_11FunctionC_DigestInit          = 0x00000026
-	PKCS_11FunctionC_Digest              = 0x00000027
-	PKCS_11FunctionC_DigestUpdate        = 0x00000028
-	PKCS_11FunctionC_DigestKey           = 0x00000029
-	PKCS_11FunctionC_DigestFinal         = 0x0000002A
-	PKCS_11FunctionC_SignInit            = 0x0000002B
-	PKCS_11FunctionC_Sign                = 0x0000002C
-	PKCS_11FunctionC_SignUpdate          = 0x0000002D
-	PKCS_11FunctionC_SignFinal           = 0x0000002E
-	PKCS_11FunctionC_SignRecoverInit     = 0x0000002F
-	PKCS_11FunctionC_SignRecover         = 0x00000030
-	PKCS_11FunctionC_VerifyInit          = 0x00000031
-	PKCS_11FunctionC_Verify              = 0x00000032
-	PKCS_11FunctionC_VerifyUpdate        = 0x00000033
-	PKCS_11FunctionC_VerifyFinal         = 0x00000034
-	PKCS_11FunctionC_VerifyRecoverInit   = 0x00000035
-	PKCS_11FunctionC_VerifyRecover       = 0x00000036
-	PKCS_11FunctionC_DigestEncryptUpdate = 0x00000037
-	PKCS_11FunctionC_DecryptDigestUpdate = 0x00000038
-	PKCS_11FunctionC_SignEncryptUpdate   = 0x00000039
-	PKCS_11FunctionC_DecryptVerifyUpdate = 0x0000003A
-	PKCS_11FunctionC_GenerateKey         = 0x0000003B
-	PKCS_11FunctionC_GenerateKeyPair     = 0x0000003C
-	PKCS_11FunctionC_WrapKey             = 0x0000003D
-	PKCS_11FunctionC_UnwrapKey           = 0x0000003E
-	PKCS_11FunctionC_DeriveKey           = 0x0000003F
-	PKCS_11FunctionC_SeedRandom          = 0x00000040
-	PKCS_11FunctionC_GenerateRandom      = 0x00000041
-	PKCS_11FunctionC_GetFunctionStatus   = 0x00000042
-	PKCS_11FunctionC_CancelFunction      = 0x00000043
+	PKCS_11FunctionC_Initialize          PKCS_11Function = 0x00000001
+	PKCS_11FunctionC_Finalize            PKCS_11Function = 0x00000002
+	PKCS_11FunctionC_GetInfo             PKCS_11Function = 0x00000003
+	PKCS_11FunctionC_GetFunctionList     PKCS_11Function = 0x00000004
+	PKCS_11FunctionC_GetSlotList         PKCS_11Function = 0x00000005
+	PKCS_11FunctionC_GetSlotInfo         PKCS_11Function = 0x00000006
+	PKCS_11FunctionC_GetTokenInfo        PKCS_11Function = 0x00000007
+	PKCS_11FunctionC_GetMechanismList    PKCS_11Function = 0x00000008
+	PKCS_11FunctionC_GetMechanismInfo    PKCS_11Function = 0x00000009
+	PKCS_11FunctionC_InitToken           PKCS_11Function = 0x0000000A
+	PKCS_11FunctionC_InitPIN             PKCS_11Function = 0x0000000B
+	PKCS_11FunctionC_SetPIN              PKCS_11Function = 0x0000000C
+	PKCS_11FunctionC_OpenSession         PKCS_11Function = 0x0000000D
+	PKCS_11FunctionC_CloseSession        PKCS_11Function = 0x0000000E
+	PKCS_11FunctionC_CloseAllSessions    PKCS_11Function = 0x0000000F
+	PKCS_11FunctionC_GetSessionInfo      PKCS_11Function = 0x00000010
+	PKCS_11FunctionC_GetOperationState   PKCS_11Function = 0x00000011
+	PKCS_11FunctionC_SetOperationState   PKCS_11Function = 0x00000012
+	PKCS_11FunctionC_Login               PKCS_11Function = 0x00000013
+	PKCS_11FunctionC_Logout              PKCS_11Function = 0x00000014
+	PKCS_11FunctionC_CreateObject        PKCS_11Function = 0x00000015
+	PKCS_11FunctionC_CopyObject          PKCS_11Function = 0x00000016
+	PKCS_11FunctionC_DestroyObject       PKCS_11Function = 0x00000017
+	PKCS_11FunctionC_GetObjectSize       PKCS_11Function = 0x00000018
+	PKCS_11FunctionC_GetAttributeValue   PKCS_11Function = 0x00000019
+	PKCS_11FunctionC_SetAttributeValue   PKCS_11Function = 0x0000001A
+	PKCS_11FunctionC_FindObjectsInit     PKCS_11Function = 0x0000001B
+	PKCS_11FunctionC_FindObjects         PKCS_11Function = 0x0000001C
+	PKCS_11FunctionC_FindObjectsFinal    PKCS_11Function = 0x0000001D
+	PKCS_11FunctionC_EncryptInit         PKCS_11Function = 0x0000001E
+	PKCS_11FunctionC_Encrypt             PKCS_11Function = 0x0000001F
+	PKCS_11FunctionC_EncryptUpdate       PKCS_11Function = 0x00000020
+	PKCS_11FunctionC_EncryptFinal        PKCS_11Function = 0x00000021
+	PKCS_11FunctionC_DecryptInit         PKCS_11Function = 0x00000022
+	PKCS_11FunctionC_Decrypt             PKCS_11Function = 0x00000023
+	PKCS_11FunctionC_DecryptUpdate       PKCS_11Function = 0x00000024
+	PKCS_11FunctionC_DecryptFinal        PKCS_11Function = 0x00000025
+	PKCS_11FunctionC_DigestInit          PKCS_11Function = 0x00000026
+	PKCS_11FunctionC_Digest              PKCS_11Function = 0x00000027
+	PKCS_11FunctionC_DigestUpdate        PKCS_11Function = 0x00000028
+	PKCS_11FunctionC_DigestKey           PKCS_11Function = 0x00000029
+	PKCS_11FunctionC_DigestFinal         PKCS_11Function = 0x0000002A
+	PKCS_11FunctionC_SignInit            PKCS_11Function = 0x0000002B
+	PKCS_11FunctionC_Sign                PKCS_11Function = 0x0000002C
+	PKCS_11FunctionC_SignUpdate          PKCS_11Function = 0x0000002D
+	PKCS_11FunctionC_SignFinal           PKCS_11Function = 0x0000002E
+	PKCS_11FunctionC_SignRecoverInit     PKCS_11Function = 0x0000002F
+	PKCS_11FunctionC_SignRecover         PKCS_11Function = 0x00000030
+	PKCS_11FunctionC_VerifyInit          PKCS_11Function = 0x00000031
+	PKCS_11FunctionC_Verify              PKCS_11Function = 0x00000032
+	PKCS_11FunctionC_VerifyUpdate        PKCS_11Function = 0x00000033
+	PKCS_11FunctionC_VerifyFinal         PKCS_11Function = 0x00000034
+	PKCS_11FunctionC_VerifyRecoverInit   PKCS_11Function = 0x00000035
+	PKCS_11FunctionC_VerifyRecover       PKCS_11Function = 0x00000036
+	PKCS_11FunctionC_DigestEncryptUpdate PKCS_11Function = 0x00000037
+	PKCS_11FunctionC_DecryptDigestUpdate PKCS_11Function = 0x00000038
+	PKCS_11FunctionC_SignEncryptUpdate   PKCS_11Function = 0x00000039
+	PKCS_11FunctionC_DecryptVerifyUpdate PKCS_11Function = 0x0000003A
+	PKCS_11FunctionC_GenerateKey         PKCS_11Function = 0x0000003B
+	PKCS_11FunctionC_GenerateKeyPair     PKCS_11Function = 0x0000003C
+	PKCS_11FunctionC_WrapKey             PKCS_11Function = 0x0000003D
+	PKCS_11FunctionC_UnwrapKey           PKCS_11Function = 0x0000003E
+	PKCS_11FunctionC_DeriveKey           PKCS_11Function = 0x0000003F
+	PKCS_11FunctionC_SeedRandom          PKCS_11Function = 0x00000040
+	PKCS_11FunctionC_GenerateRandom      PKCS_11Function = 0x00000041
+	PKCS_11FunctionC_GetFunctionStatus   PKCS_11Function = 0x00000042
+	PKCS_11FunctionC_CancelFunction      PKCS_11Function = 0x00000043
 	// Version 2.1 and later
-	PKCS_11FunctionC_WaitForSlotEvent = 0x00000044
+	PKCS_11FunctionC_WaitForSlotEvent PKCS_11Function = 0x00000044
 	// Version 3.0 and later
-	PKCS_11FunctionC_GetInterfaceList    = 0x00000045
-	PKCS_11FunctionC_GetInterface        = 0x00000046
-	PKCS_11FunctionC_LoginUser           = 0x00000047
-	PKCS_11FunctionC_SessionCancel       = 0x00000048
-	PKCS_11FunctionC_MessageEncryptInit  = 0x00000049
-	PKCS_11FunctionC_EncryptMessage      = 0x0000004A
-	PKCS_11FunctionC_EncryptMessageBegin = 0x0000004B
-	PKCS_11FunctionC_EncryptMessageNext  = 0x0000004C
-	PKCS_11FunctionC_MessageEncryptFinal = 0x0000004D
-	PKCS_11FunctionC_MessageDecryptInit  = 0x0000004E
-	PKCS_11FunctionC_DecryptMessage      = 0x0000004F
-	PKCS_11FunctionC_DecryptMessageBegin = 0x00000050
-	PKCS_11FunctionC_DecryptMessageNext  = 0x00000051
-	PKCS_11FunctionC_MessageDecryptFinal = 0x00000052
-	PKCS_11FunctionC_MessageSignInit     = 0x00000053
-	PKCS_11FunctionC_SignMessage         = 0x00000054
-	PKCS_11FunctionC_SignMessageBegin    = 0x00000055
-	PKCS_11FunctionC_SignMessageNext     = 0x00000056
-	PKCS_11FunctionC_MessageSignFinal    = 0x00000057
-	PKCS_11FunctionC_MessageVerifyInit   = 0x00000058
-	PKCS_11FunctionC_VerifyMessage       = 0x00000059
-	PKCS_11FunctionC_VerifyMessageBegin  = 0x0000005A
-	PKCS_11FunctionC_VerifyMessageNext   = 0x0000005B
-	PKCS_11FunctionC_MessageVerifyFinal  = 0x0000005C
+	PKCS_11FunctionC_GetInterfaceList    PKCS_11Function = 0x00000045
+	PKCS_11FunctionC_GetInterface        PKCS_11Function = 0x00000046
+	PKCS_11FunctionC_LoginUser           PKCS_11Function = 0x00000047
+	PKCS_11FunctionC_SessionCancel       PKCS_11Function = 0x00000048
+	PKCS_11FunctionC_MessageEncryptInit  PKCS_11Function = 0x00000049
+	PKCS_11FunctionC_EncryptMessage      PKCS_11Function = 0x0000004A
+	PKCS_11FunctionC_EncryptMessageBegin PKCS_11Function = 0x0000004B
+	PKCS_11FunctionC_EncryptMessageNext  PKCS_11Function = 0x0000004C
+	PKCS_11FunctionC_MessageEncryptFinal PKCS_11Function = 0x0000004D
+	PKCS_11FunctionC_MessageDecryptInit  PKCS_11Function = 0x0000004E
+	PKCS_11FunctionC_DecryptMessage      PKCS_11Function = 0x0000004F
+	PKCS_11FunctionC_DecryptMessageBegin PKCS_11Function = 0x00000050
+	PKCS_11FunctionC_DecryptMessageNext  PKCS_11Function = 0x00000051
+	PKCS_11FunctionC_MessageDecryptFinal PKCS_11Function = 0x00000052
+	PKCS_11FunctionC_MessageSignInit     PKCS_11Function = 0x00000053
+	PKCS_11FunctionC_SignMessage         PKCS_11Function = 0x00000054
+	PKCS_11FunctionC_SignMessageBegin    PKCS_11Function = 0x00000055
+	PKCS_11FunctionC_SignMessageNext     PKCS_11Function = 0x00000056
+	PKCS_11FunctionC_MessageSignFinal    PKCS_11Function = 0x00000057
+	PKCS_11FunctionC_MessageVerifyInit   PKCS_11Function = 0x00000058
+	PKCS_11FunctionC_VerifyMessage       PKCS_11Function = 0x00000059
+	PKCS_11FunctionC_VerifyMessageBegin  PKCS_11Function = 0x0000005A
+	PKCS_11FunctionC_VerifyMessageNext   PKCS_11Function = 0x0000005B
+	PKCS_11FunctionC_MessageVerifyFinal  PKCS_11Function = 0x0000005C
 )
 
 type PKCS_11ReturnCode uint32
@@ -252,7 +254,7 @@ func init() {
 	ttlv.RegisterTag("PKCS_11OutputParameters", TagPKCS_11OutputParameters)
 	ttlv.RegisterTag("PKCS_11ReturnCode", TagPKCS_11ReturnCode)
 
-	ttlv.RegisterEnum(TagPKCS_11Function, map[PKCS_11ReturnCode]string{
+	ttlv.RegisterEnum(TagPKCS_11Function, map[PKCS_11Function]string{
 		// Version 2.0 and later
 		PKCS_11FunctionC_Initialize:          "C_Initialize",
 		PKCS_11FunctionC_Finalize:            "C_Finalize",

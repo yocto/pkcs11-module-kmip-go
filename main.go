@@ -2,12 +2,22 @@ package main
 
 // #include "cgo.h"
 import "C"
+import "context"
+import "crypto/tls"
 import "fmt"
+import "os"
+import "time"
+import "github.com/google/uuid"
+import "github.com/ovh/kmip-go"
+import "github.com/ovh/kmip-go/kmipclient"
+import "github.com/ovh/kmip-go/ttlv"
 
 var cryptokiVersion = C.CK_VERSION{
 	major: 3,
 	minor: 1,
 }
+
+const profileVersion byte = 0x01
 
 var functionList = C.CK_FUNCTION_LIST{
 	version: cryptokiVersion,
@@ -182,7 +192,44 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 	C_MessageVerifyFinal:  (C.CK_C_MessageVerifyFinal)(C.C_MessageVerifyFinal),
 }
 
-func main() {}
+var client *kmipclient.Client
+
+func main() { }
+
+func getKMIPClient() (*kmipclient.Client, error) {
+	client, err := kmipclient.Dial(
+		"yocto.com:5696",
+		kmipclient.WithTlsConfig(&tls.Config{
+			InsecureSkipVerify: true,
+		}),
+		kmipclient.WithMiddlewares(
+			kmipclient.CorrelationValueMiddleware(uuid.NewString),
+			kmipclient.DebugMiddleware(os.Stdout, nil),
+			kmipclient.TimeoutMiddleware(500*time.Millisecond),
+		),
+	)
+
+	//Disabled for now
+	kmipclient.DebugMiddleware(os.Stdout, nil)
+
+	return client, err
+}
+
+func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) *kmip.UnknownPayload {
+	var args []ttlv.Value
+
+	if pkcs1Interface != nil {
+		args = append(args, ttlv.Value{Tag: TagPKCS_11Interface, Value: pkcs1Interface.(string)})
+	}
+	if pkcs11Function != nil {
+		args = append(args, ttlv.Value{Tag: TagPKCS_11Function, Value: ttlv.Enum(pkcs11Function.(PKCS_11Function))})
+	}
+	if pkcs11InputParameters != nil {
+		args = append(args, ttlv.Value{Tag: TagPKCS_11InputParameters, Value: pkcs11InputParameters})
+	}
+
+	return kmip.NewUnknownPayload(OperationPKCS_11, args...)
+}
 
 //export C_CancelFunction
 func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
@@ -544,6 +591,26 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 //export C_Initialize
 func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
+
+	client, err := getKMIPClient()
+	if err != nil {
+		fmt.Println("Failed getting KMIP client:", err)
+		return C.CKR_FUNCTION_FAILED
+	}
+
+	request := createKMIPRequest(nil, PKCS_11FunctionC_Initialize, []byte{profileVersion})
+
+	response, err := client.Request(context.Background(), request)
+	if err != nil {
+		fmt.Println("Failed processing KMIP payload:", err)
+		return C.CKR_FUNCTION_FAILED
+	}
+
+	//TODO Process response
+	fmt.Println(response)
+
+	//return -1
+
 	// TODO
 	return C.CKR_FUNCTION_NOT_SUPPORTED
 }
