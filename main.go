@@ -194,7 +194,7 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 
 var client *kmipclient.Client
 
-func main() { }
+func main() {}
 
 func getKMIPClient() (*kmipclient.Client, error) {
 	client, err := kmipclient.Dial(
@@ -216,7 +216,7 @@ func getKMIPClient() (*kmipclient.Client, error) {
 }
 
 func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) *kmip.UnknownPayload {
-	var args []ttlv.Value
+	var args ttlv.Struct
 
 	if pkcs1Interface != nil {
 		args = append(args, ttlv.Value{Tag: TagPKCS_11Interface, Value: pkcs1Interface.(string)})
@@ -229,6 +229,66 @@ func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParame
 	}
 
 	return kmip.NewUnknownPayload(OperationPKCS_11, args...)
+}
+
+func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) (any, any, uint64) {
+	if pkcs11Function == nil {
+		fmt.Println("Function cannot be null.")
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+
+	client, err := getKMIPClient()
+	if err != nil {
+		fmt.Println("Failed getting KMIP client:", err)
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+
+	request := createKMIPRequest(pkcs1Interface, pkcs11Function, []byte{profileVersion})
+
+	response, err := client.Request(context.Background(), request)
+	if err != nil {
+		fmt.Println("Failed processing KMIP payload:", err)
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+
+	fields := interface{}(response).(kmip.UnknownPayload).Fields
+
+	var fieldFunction *ttlv.Value
+	var fieldOutputParameters *ttlv.Value
+	var fieldReturnCode *ttlv.Value
+
+	for _, field := range fields {
+		if field.Tag == TagPKCS_11Function {
+			fieldFunction = &field
+			continue
+		}
+		if field.Tag == TagPKCS_11OutputParameters {
+			fieldOutputParameters = &field
+			continue
+		}
+		if field.Tag == TagPKCS_11ReturnCode {
+			fieldReturnCode = &field
+			continue
+		}
+	}
+
+	if fieldFunction == nil {
+		fmt.Println("Response does bot contain a function.")
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+	if fieldReturnCode == nil {
+		fmt.Println("Response does bot contain a return value.")
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+	if *fieldFunction != pkcs11Function {
+		fmt.Println("Request function and response function are not the same.")
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+
+	if fieldOutputParameters == nil {
+		return (*fieldFunction).Value, nil, (*fieldReturnCode).Value.(uint64)
+	}
+	return (*fieldFunction).Value, (*fieldOutputParameters).Value, (*fieldReturnCode).Value.(uint64)
 }
 
 //export C_CancelFunction
@@ -592,27 +652,11 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
 
-	client, err := getKMIPClient()
-	if err != nil {
-		fmt.Println("Failed getting KMIP client:", err)
-		return C.CKR_FUNCTION_FAILED
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, []byte{profileVersion})
 
-	request := createKMIPRequest(nil, PKCS_11FunctionC_Initialize, []byte{profileVersion})
+	//TODO Handle output parameters
 
-	response, err := client.Request(context.Background(), request)
-	if err != nil {
-		fmt.Println("Failed processing KMIP payload:", err)
-		return C.CKR_FUNCTION_FAILED
-	}
-
-	//TODO Process response
-	fmt.Println(response)
-
-	//return -1
-
-	// TODO
-	return C.CKR_FUNCTION_NOT_SUPPORTED
+	return (C.CK_RV)(returnCode)
 }
 
 //export C_InitPIN
