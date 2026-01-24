@@ -197,7 +197,11 @@ var client *kmipclient.Client
 func main() {}
 
 func getKMIPClient() (*kmipclient.Client, error) {
-	client, err := kmipclient.Dial(
+	if client != nil {
+		return client, nil
+	}
+
+	createdClient, err := kmipclient.Dial(
 		"yocto.com:5696",
 		kmipclient.WithTlsConfig(&tls.Config{
 			InsecureSkipVerify: true,
@@ -208,11 +212,9 @@ func getKMIPClient() (*kmipclient.Client, error) {
 			kmipclient.TimeoutMiddleware(500*time.Millisecond),
 		),
 	)
+	client = createdClient
 
-	//Disabled for now
-	kmipclient.DebugMiddleware(os.Stdout, nil)
-
-	return client, err
+	return createdClient, err
 }
 
 func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) *kmip.UnknownPayload {
