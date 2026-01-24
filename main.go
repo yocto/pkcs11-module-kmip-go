@@ -24,7 +24,7 @@ var defaultInterface string = "PKCS 11"
 
 var interfaces = []C.CK_INTERFACE{
 	C.CK_INTERFACE{
-		pInterfaceName: interface{}(&defaultInterface).(*C.CK_CHAR),
+		pInterfaceName:  (*C.CK_CHAR)(unsafe.SliceData([]byte("PKCS 11"))),
 		pFunctionList:  (C.CK_VOID_PTR)(&functionList30),
 		flags:          0x0,
 	},
