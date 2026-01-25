@@ -1062,18 +1062,50 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount C.CK_ULONG_PTR /*pusCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pulCount=%+v)\n", tokenPresent, pulCount)
 
-	inputParameters := new(bytes.Buffer)
-	binary.Write(inputParameters, binary.BigEndian, tokenPresent)
-	binary.Write(inputParameters, binary.BigEndian, pSlotList != nil)
-	binary.Write(inputParameters, binary.BigEndian, *pulCount)
+	inBuffer := new(bytes.Buffer)
+	binary.Write(inBuffer, binary.BigEndian, tokenPresent)
+	binary.Write(inBuffer, binary.BigEndian, pSlotList != nil)
+	binary.Write(inBuffer, binary.BigEndian, uint32(*pulCount))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, inputParameters.Bytes())
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		var tokenPresentResponse C.CK_BBOOL
+		var slotCountResponse uint32
+
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+		binary.Read(outBuffer, binary.BigEndian, &tokenPresentResponse)
+		binary.Read(outBuffer, binary.BigEndian, &slotCountResponse)
+
+		if tokenPresent != tokenPresentResponse {
+			if tokenPresent != 0x00 {
+				fmt.Println("Slot tokens expected but not present in response.")
+			} else {
+				fmt.Println("Slot tokens not expected but present in response.")
+			}
+			return C.CKR_FUNCTION_FAILED
+		}
+
+		*pulCount = C.CK_ULONG(slotCountResponse)
+
+		if tokenPresentResponse!=0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pSlotList, slotCountResponse)
+
+			for i := uint32(0); i < slotCountResponse; i++ {
+				var slotInfo uint64
+
+				binary.Read(outBuffer, binary.BigEndian, &slotInfo)
+
+				pointerAsSliceDestination[i] = C.CK_SLOT_ID(slotInfo)
+			}
+		}
+
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_GetTokenInfo
@@ -1095,10 +1127,11 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
 
-	inputParameters := new(bytes.Buffer)
-	binary.Write(inputParameters, binary.BigEndian, profileVersion)
+	inBuffer := new(bytes.Buffer)
+	binary.Write(inBuffer, binary.BigEndian, profileVersion)
+	inputParameters := inBuffer.Bytes()
 
-	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters.Bytes())
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
