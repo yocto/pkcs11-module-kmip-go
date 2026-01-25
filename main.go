@@ -1075,8 +1075,16 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 		var slotCountResponse uint32
 
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
-		binary.Read(outBuffer, binary.BigEndian, &tokenPresentResponse)
-		binary.Read(outBuffer, binary.BigEndian, &slotCountResponse)
+		err := binary.Read(outBuffer, binary.BigEndian, &tokenPresentResponse)
+		if err != nil {
+			fmt.Println("Boolean byte expected.")
+			return C.CKR_FUNCTION_FAILED
+		}
+		err = binary.Read(outBuffer, binary.BigEndian, &slotCountResponse)
+		if err != nil {
+			fmt.Println("32-bit integer expected.")
+			return C.CKR_FUNCTION_FAILED
+		}
 
 		if tokenPresent != tokenPresentResponse {
 			if tokenPresent != 0x00 {
@@ -1089,13 +1097,17 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 
 		*pulCount = C.CK_ULONG(slotCountResponse)
 
-		if tokenPresentResponse!=0x00 {
+		if tokenPresentResponse != 0x00 {
 			pointerAsSliceDestination := unsafe.Slice(pSlotList, slotCountResponse)
 
 			for i := uint32(0); i < slotCountResponse; i++ {
 				var slotInfo uint64
 
-				binary.Read(outBuffer, binary.BigEndian, &slotInfo)
+				err := binary.Read(outBuffer, binary.BigEndian, &slotInfo)
+				if err != nil {
+					fmt.Println("64-bit slot id expected.")
+					return C.CKR_FUNCTION_FAILED
+				}
 
 				pointerAsSliceDestination[i] = C.CK_SLOT_ID(slotInfo)
 			}
