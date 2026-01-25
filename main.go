@@ -259,7 +259,7 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
 
-	request := createKMIPRequest(pkcs1Interface, pkcs11Function, []byte{profileVersion})
+	request := createKMIPRequest(pkcs1Interface, pkcs11Function, pkcs11InputParameters)
 
 	response, err := client.Request(context.Background(), request)
 	if err != nil {
