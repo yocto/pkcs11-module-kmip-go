@@ -1065,7 +1065,9 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 			//return C.CKR_FUNCTION_FAILED
 		}
 
-		*pInfo = C.CK_SLOT_INFO{}
+		*pInfo = C.CK_SLOT_INFO{
+			flags: C.CKF_TOKEN_PRESENT,
+		}
 
 		return (C.CK_RV)(returnCode)
 	}
