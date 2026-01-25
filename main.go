@@ -24,7 +24,7 @@ var defaultInterface string = "PKCS 11"
 
 var interfaces = []C.CK_INTERFACE{
 	C.CK_INTERFACE{
-		pInterfaceName:  (*C.CK_CHAR)(unsafe.SliceData([]byte("PKCS 11"))),
+		pInterfaceName: (*C.CK_CHAR)(unsafe.SliceData([]byte("PKCS 11"))),
 		pFunctionList:  (C.CK_VOID_PTR)(&functionList30),
 		flags:          0x0,
 	},
@@ -205,7 +205,7 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 
 var client *kmipclient.Client
 
-func main() {}
+func main() { C_Initialize(nil) }
 
 func getKMIPClient() (*kmipclient.Client, error) {
 	if client != nil {
@@ -235,7 +235,7 @@ func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParame
 		args = append(args, ttlv.Value{Tag: TagPKCS_11Interface, Value: pkcs1Interface.(string)})
 	}
 	if pkcs11Function != nil {
-		args = append(args, ttlv.Value{Tag: TagPKCS_11Function, Value: ttlv.Enum(pkcs11Function.(PKCS_11Function))})
+		args = append(args, ttlv.Value{Tag: TagPKCS_11Function, Value: pkcs11Function.(ttlv.Enum)})
 	}
 	if pkcs11InputParameters != nil {
 		args = append(args, ttlv.Value{Tag: TagPKCS_11InputParameters, Value: pkcs11InputParameters})
@@ -244,7 +244,7 @@ func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParame
 	return kmip.NewUnknownPayload(OperationPKCS_11, args...)
 }
 
-func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) (any, any, uint64) {
+func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) (any, any, ttlv.Enum) {
 	if pkcs11Function == nil {
 		fmt.Println("Function cannot be null.")
 		return nil, nil, C.CKR_FUNCTION_FAILED
@@ -264,7 +264,7 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
 
-	fields := interface{}(response).(kmip.UnknownPayload).Fields
+	fields := interface{}(response).(*kmip.UnknownPayload).Fields
 
 	var fieldFunction *ttlv.Value
 	var fieldOutputParameters *ttlv.Value
@@ -293,15 +293,15 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 		fmt.Println("Response does bot contain a return value.")
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
-	if *fieldFunction != pkcs11Function {
+	if (*fieldFunction).Value != pkcs11Function.(ttlv.Enum) {
 		fmt.Println("Request function and response function are not the same.")
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
 
 	if fieldOutputParameters == nil {
-		return (*fieldFunction).Value, nil, (*fieldReturnCode).Value.(uint64)
+		return (*fieldFunction).Value, nil, (*fieldReturnCode).Value.(ttlv.Enum)
 	}
-	return (*fieldFunction).Value, (*fieldOutputParameters).Value, (*fieldReturnCode).Value.(uint64)
+	return (*fieldFunction).Value, (*fieldOutputParameters).Value, (*fieldReturnCode).Value.(ttlv.Enum)
 }
 
 //export C_CancelFunction

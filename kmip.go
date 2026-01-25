@@ -15,232 +15,228 @@ const (
 	TagPKCS_11ReturnCode       = 0x42015D
 )
 
-type PKCS_11Function uint32
-
 const (
 	// Version 2.0 and later
-	PKCS_11FunctionC_Initialize          PKCS_11Function = 0x00000001
-	PKCS_11FunctionC_Finalize            PKCS_11Function = 0x00000002
-	PKCS_11FunctionC_GetInfo             PKCS_11Function = 0x00000003
-	PKCS_11FunctionC_GetFunctionList     PKCS_11Function = 0x00000004
-	PKCS_11FunctionC_GetSlotList         PKCS_11Function = 0x00000005
-	PKCS_11FunctionC_GetSlotInfo         PKCS_11Function = 0x00000006
-	PKCS_11FunctionC_GetTokenInfo        PKCS_11Function = 0x00000007
-	PKCS_11FunctionC_GetMechanismList    PKCS_11Function = 0x00000008
-	PKCS_11FunctionC_GetMechanismInfo    PKCS_11Function = 0x00000009
-	PKCS_11FunctionC_InitToken           PKCS_11Function = 0x0000000A
-	PKCS_11FunctionC_InitPIN             PKCS_11Function = 0x0000000B
-	PKCS_11FunctionC_SetPIN              PKCS_11Function = 0x0000000C
-	PKCS_11FunctionC_OpenSession         PKCS_11Function = 0x0000000D
-	PKCS_11FunctionC_CloseSession        PKCS_11Function = 0x0000000E
-	PKCS_11FunctionC_CloseAllSessions    PKCS_11Function = 0x0000000F
-	PKCS_11FunctionC_GetSessionInfo      PKCS_11Function = 0x00000010
-	PKCS_11FunctionC_GetOperationState   PKCS_11Function = 0x00000011
-	PKCS_11FunctionC_SetOperationState   PKCS_11Function = 0x00000012
-	PKCS_11FunctionC_Login               PKCS_11Function = 0x00000013
-	PKCS_11FunctionC_Logout              PKCS_11Function = 0x00000014
-	PKCS_11FunctionC_CreateObject        PKCS_11Function = 0x00000015
-	PKCS_11FunctionC_CopyObject          PKCS_11Function = 0x00000016
-	PKCS_11FunctionC_DestroyObject       PKCS_11Function = 0x00000017
-	PKCS_11FunctionC_GetObjectSize       PKCS_11Function = 0x00000018
-	PKCS_11FunctionC_GetAttributeValue   PKCS_11Function = 0x00000019
-	PKCS_11FunctionC_SetAttributeValue   PKCS_11Function = 0x0000001A
-	PKCS_11FunctionC_FindObjectsInit     PKCS_11Function = 0x0000001B
-	PKCS_11FunctionC_FindObjects         PKCS_11Function = 0x0000001C
-	PKCS_11FunctionC_FindObjectsFinal    PKCS_11Function = 0x0000001D
-	PKCS_11FunctionC_EncryptInit         PKCS_11Function = 0x0000001E
-	PKCS_11FunctionC_Encrypt             PKCS_11Function = 0x0000001F
-	PKCS_11FunctionC_EncryptUpdate       PKCS_11Function = 0x00000020
-	PKCS_11FunctionC_EncryptFinal        PKCS_11Function = 0x00000021
-	PKCS_11FunctionC_DecryptInit         PKCS_11Function = 0x00000022
-	PKCS_11FunctionC_Decrypt             PKCS_11Function = 0x00000023
-	PKCS_11FunctionC_DecryptUpdate       PKCS_11Function = 0x00000024
-	PKCS_11FunctionC_DecryptFinal        PKCS_11Function = 0x00000025
-	PKCS_11FunctionC_DigestInit          PKCS_11Function = 0x00000026
-	PKCS_11FunctionC_Digest              PKCS_11Function = 0x00000027
-	PKCS_11FunctionC_DigestUpdate        PKCS_11Function = 0x00000028
-	PKCS_11FunctionC_DigestKey           PKCS_11Function = 0x00000029
-	PKCS_11FunctionC_DigestFinal         PKCS_11Function = 0x0000002A
-	PKCS_11FunctionC_SignInit            PKCS_11Function = 0x0000002B
-	PKCS_11FunctionC_Sign                PKCS_11Function = 0x0000002C
-	PKCS_11FunctionC_SignUpdate          PKCS_11Function = 0x0000002D
-	PKCS_11FunctionC_SignFinal           PKCS_11Function = 0x0000002E
-	PKCS_11FunctionC_SignRecoverInit     PKCS_11Function = 0x0000002F
-	PKCS_11FunctionC_SignRecover         PKCS_11Function = 0x00000030
-	PKCS_11FunctionC_VerifyInit          PKCS_11Function = 0x00000031
-	PKCS_11FunctionC_Verify              PKCS_11Function = 0x00000032
-	PKCS_11FunctionC_VerifyUpdate        PKCS_11Function = 0x00000033
-	PKCS_11FunctionC_VerifyFinal         PKCS_11Function = 0x00000034
-	PKCS_11FunctionC_VerifyRecoverInit   PKCS_11Function = 0x00000035
-	PKCS_11FunctionC_VerifyRecover       PKCS_11Function = 0x00000036
-	PKCS_11FunctionC_DigestEncryptUpdate PKCS_11Function = 0x00000037
-	PKCS_11FunctionC_DecryptDigestUpdate PKCS_11Function = 0x00000038
-	PKCS_11FunctionC_SignEncryptUpdate   PKCS_11Function = 0x00000039
-	PKCS_11FunctionC_DecryptVerifyUpdate PKCS_11Function = 0x0000003A
-	PKCS_11FunctionC_GenerateKey         PKCS_11Function = 0x0000003B
-	PKCS_11FunctionC_GenerateKeyPair     PKCS_11Function = 0x0000003C
-	PKCS_11FunctionC_WrapKey             PKCS_11Function = 0x0000003D
-	PKCS_11FunctionC_UnwrapKey           PKCS_11Function = 0x0000003E
-	PKCS_11FunctionC_DeriveKey           PKCS_11Function = 0x0000003F
-	PKCS_11FunctionC_SeedRandom          PKCS_11Function = 0x00000040
-	PKCS_11FunctionC_GenerateRandom      PKCS_11Function = 0x00000041
-	PKCS_11FunctionC_GetFunctionStatus   PKCS_11Function = 0x00000042
-	PKCS_11FunctionC_CancelFunction      PKCS_11Function = 0x00000043
+	PKCS_11FunctionC_Initialize          ttlv.Enum = 0x00000001
+	PKCS_11FunctionC_Finalize            ttlv.Enum = 0x00000002
+	PKCS_11FunctionC_GetInfo             ttlv.Enum = 0x00000003
+	PKCS_11FunctionC_GetFunctionList     ttlv.Enum = 0x00000004
+	PKCS_11FunctionC_GetSlotList         ttlv.Enum = 0x00000005
+	PKCS_11FunctionC_GetSlotInfo         ttlv.Enum = 0x00000006
+	PKCS_11FunctionC_GetTokenInfo        ttlv.Enum = 0x00000007
+	PKCS_11FunctionC_GetMechanismList    ttlv.Enum = 0x00000008
+	PKCS_11FunctionC_GetMechanismInfo    ttlv.Enum = 0x00000009
+	PKCS_11FunctionC_InitToken           ttlv.Enum = 0x0000000A
+	PKCS_11FunctionC_InitPIN             ttlv.Enum = 0x0000000B
+	PKCS_11FunctionC_SetPIN              ttlv.Enum = 0x0000000C
+	PKCS_11FunctionC_OpenSession         ttlv.Enum = 0x0000000D
+	PKCS_11FunctionC_CloseSession        ttlv.Enum = 0x0000000E
+	PKCS_11FunctionC_CloseAllSessions    ttlv.Enum = 0x0000000F
+	PKCS_11FunctionC_GetSessionInfo      ttlv.Enum = 0x00000010
+	PKCS_11FunctionC_GetOperationState   ttlv.Enum = 0x00000011
+	PKCS_11FunctionC_SetOperationState   ttlv.Enum = 0x00000012
+	PKCS_11FunctionC_Login               ttlv.Enum = 0x00000013
+	PKCS_11FunctionC_Logout              ttlv.Enum = 0x00000014
+	PKCS_11FunctionC_CreateObject        ttlv.Enum = 0x00000015
+	PKCS_11FunctionC_CopyObject          ttlv.Enum = 0x00000016
+	PKCS_11FunctionC_DestroyObject       ttlv.Enum = 0x00000017
+	PKCS_11FunctionC_GetObjectSize       ttlv.Enum = 0x00000018
+	PKCS_11FunctionC_GetAttributeValue   ttlv.Enum = 0x00000019
+	PKCS_11FunctionC_SetAttributeValue   ttlv.Enum = 0x0000001A
+	PKCS_11FunctionC_FindObjectsInit     ttlv.Enum = 0x0000001B
+	PKCS_11FunctionC_FindObjects         ttlv.Enum = 0x0000001C
+	PKCS_11FunctionC_FindObjectsFinal    ttlv.Enum = 0x0000001D
+	PKCS_11FunctionC_EncryptInit         ttlv.Enum = 0x0000001E
+	PKCS_11FunctionC_Encrypt             ttlv.Enum = 0x0000001F
+	PKCS_11FunctionC_EncryptUpdate       ttlv.Enum = 0x00000020
+	PKCS_11FunctionC_EncryptFinal        ttlv.Enum = 0x00000021
+	PKCS_11FunctionC_DecryptInit         ttlv.Enum = 0x00000022
+	PKCS_11FunctionC_Decrypt             ttlv.Enum = 0x00000023
+	PKCS_11FunctionC_DecryptUpdate       ttlv.Enum = 0x00000024
+	PKCS_11FunctionC_DecryptFinal        ttlv.Enum = 0x00000025
+	PKCS_11FunctionC_DigestInit          ttlv.Enum = 0x00000026
+	PKCS_11FunctionC_Digest              ttlv.Enum = 0x00000027
+	PKCS_11FunctionC_DigestUpdate        ttlv.Enum = 0x00000028
+	PKCS_11FunctionC_DigestKey           ttlv.Enum = 0x00000029
+	PKCS_11FunctionC_DigestFinal         ttlv.Enum = 0x0000002A
+	PKCS_11FunctionC_SignInit            ttlv.Enum = 0x0000002B
+	PKCS_11FunctionC_Sign                ttlv.Enum = 0x0000002C
+	PKCS_11FunctionC_SignUpdate          ttlv.Enum = 0x0000002D
+	PKCS_11FunctionC_SignFinal           ttlv.Enum = 0x0000002E
+	PKCS_11FunctionC_SignRecoverInit     ttlv.Enum = 0x0000002F
+	PKCS_11FunctionC_SignRecover         ttlv.Enum = 0x00000030
+	PKCS_11FunctionC_VerifyInit          ttlv.Enum = 0x00000031
+	PKCS_11FunctionC_Verify              ttlv.Enum = 0x00000032
+	PKCS_11FunctionC_VerifyUpdate        ttlv.Enum = 0x00000033
+	PKCS_11FunctionC_VerifyFinal         ttlv.Enum = 0x00000034
+	PKCS_11FunctionC_VerifyRecoverInit   ttlv.Enum = 0x00000035
+	PKCS_11FunctionC_VerifyRecover       ttlv.Enum = 0x00000036
+	PKCS_11FunctionC_DigestEncryptUpdate ttlv.Enum = 0x00000037
+	PKCS_11FunctionC_DecryptDigestUpdate ttlv.Enum = 0x00000038
+	PKCS_11FunctionC_SignEncryptUpdate   ttlv.Enum = 0x00000039
+	PKCS_11FunctionC_DecryptVerifyUpdate ttlv.Enum = 0x0000003A
+	PKCS_11FunctionC_GenerateKey         ttlv.Enum = 0x0000003B
+	PKCS_11FunctionC_GenerateKeyPair     ttlv.Enum = 0x0000003C
+	PKCS_11FunctionC_WrapKey             ttlv.Enum = 0x0000003D
+	PKCS_11FunctionC_UnwrapKey           ttlv.Enum = 0x0000003E
+	PKCS_11FunctionC_DeriveKey           ttlv.Enum = 0x0000003F
+	PKCS_11FunctionC_SeedRandom          ttlv.Enum = 0x00000040
+	PKCS_11FunctionC_GenerateRandom      ttlv.Enum = 0x00000041
+	PKCS_11FunctionC_GetFunctionStatus   ttlv.Enum = 0x00000042
+	PKCS_11FunctionC_CancelFunction      ttlv.Enum = 0x00000043
 	// Version 2.1 and later
-	PKCS_11FunctionC_WaitForSlotEvent PKCS_11Function = 0x00000044
+	PKCS_11FunctionC_WaitForSlotEvent ttlv.Enum = 0x00000044
 	// Version 3.0 and later
-	PKCS_11FunctionC_GetInterfaceList    PKCS_11Function = 0x00000045
-	PKCS_11FunctionC_GetInterface        PKCS_11Function = 0x00000046
-	PKCS_11FunctionC_LoginUser           PKCS_11Function = 0x00000047
-	PKCS_11FunctionC_SessionCancel       PKCS_11Function = 0x00000048
-	PKCS_11FunctionC_MessageEncryptInit  PKCS_11Function = 0x00000049
-	PKCS_11FunctionC_EncryptMessage      PKCS_11Function = 0x0000004A
-	PKCS_11FunctionC_EncryptMessageBegin PKCS_11Function = 0x0000004B
-	PKCS_11FunctionC_EncryptMessageNext  PKCS_11Function = 0x0000004C
-	PKCS_11FunctionC_MessageEncryptFinal PKCS_11Function = 0x0000004D
-	PKCS_11FunctionC_MessageDecryptInit  PKCS_11Function = 0x0000004E
-	PKCS_11FunctionC_DecryptMessage      PKCS_11Function = 0x0000004F
-	PKCS_11FunctionC_DecryptMessageBegin PKCS_11Function = 0x00000050
-	PKCS_11FunctionC_DecryptMessageNext  PKCS_11Function = 0x00000051
-	PKCS_11FunctionC_MessageDecryptFinal PKCS_11Function = 0x00000052
-	PKCS_11FunctionC_MessageSignInit     PKCS_11Function = 0x00000053
-	PKCS_11FunctionC_SignMessage         PKCS_11Function = 0x00000054
-	PKCS_11FunctionC_SignMessageBegin    PKCS_11Function = 0x00000055
-	PKCS_11FunctionC_SignMessageNext     PKCS_11Function = 0x00000056
-	PKCS_11FunctionC_MessageSignFinal    PKCS_11Function = 0x00000057
-	PKCS_11FunctionC_MessageVerifyInit   PKCS_11Function = 0x00000058
-	PKCS_11FunctionC_VerifyMessage       PKCS_11Function = 0x00000059
-	PKCS_11FunctionC_VerifyMessageBegin  PKCS_11Function = 0x0000005A
-	PKCS_11FunctionC_VerifyMessageNext   PKCS_11Function = 0x0000005B
-	PKCS_11FunctionC_MessageVerifyFinal  PKCS_11Function = 0x0000005C
+	PKCS_11FunctionC_GetInterfaceList    ttlv.Enum = 0x00000045
+	PKCS_11FunctionC_GetInterface        ttlv.Enum = 0x00000046
+	PKCS_11FunctionC_LoginUser           ttlv.Enum = 0x00000047
+	PKCS_11FunctionC_SessionCancel       ttlv.Enum = 0x00000048
+	PKCS_11FunctionC_MessageEncryptInit  ttlv.Enum = 0x00000049
+	PKCS_11FunctionC_EncryptMessage      ttlv.Enum = 0x0000004A
+	PKCS_11FunctionC_EncryptMessageBegin ttlv.Enum = 0x0000004B
+	PKCS_11FunctionC_EncryptMessageNext  ttlv.Enum = 0x0000004C
+	PKCS_11FunctionC_MessageEncryptFinal ttlv.Enum = 0x0000004D
+	PKCS_11FunctionC_MessageDecryptInit  ttlv.Enum = 0x0000004E
+	PKCS_11FunctionC_DecryptMessage      ttlv.Enum = 0x0000004F
+	PKCS_11FunctionC_DecryptMessageBegin ttlv.Enum = 0x00000050
+	PKCS_11FunctionC_DecryptMessageNext  ttlv.Enum = 0x00000051
+	PKCS_11FunctionC_MessageDecryptFinal ttlv.Enum = 0x00000052
+	PKCS_11FunctionC_MessageSignInit     ttlv.Enum = 0x00000053
+	PKCS_11FunctionC_SignMessage         ttlv.Enum = 0x00000054
+	PKCS_11FunctionC_SignMessageBegin    ttlv.Enum = 0x00000055
+	PKCS_11FunctionC_SignMessageNext     ttlv.Enum = 0x00000056
+	PKCS_11FunctionC_MessageSignFinal    ttlv.Enum = 0x00000057
+	PKCS_11FunctionC_MessageVerifyInit   ttlv.Enum = 0x00000058
+	PKCS_11FunctionC_VerifyMessage       ttlv.Enum = 0x00000059
+	PKCS_11FunctionC_VerifyMessageBegin  ttlv.Enum = 0x0000005A
+	PKCS_11FunctionC_VerifyMessageNext   ttlv.Enum = 0x0000005B
+	PKCS_11FunctionC_MessageVerifyFinal  ttlv.Enum = 0x0000005C
 )
 
-type PKCS_11ReturnCode uint32
-
 const (
-	PKCS_11ReturnCodeOK              PKCS_11ReturnCode = 0x00000000
-	PKCS_11ReturnCodeCANCEL          PKCS_11ReturnCode = 0x00000001
-	PKCS_11ReturnCodeHOST_MEMORY     PKCS_11ReturnCode = 0x00000002
-	PKCS_11ReturnCodeSLOT_ID_INVALID PKCS_11ReturnCode = 0x00000003
+	PKCS_11ReturnCodeOK              ttlv.Enum = 0x00000000
+	PKCS_11ReturnCodeCANCEL          ttlv.Enum = 0x00000001
+	PKCS_11ReturnCodeHOST_MEMORY     ttlv.Enum = 0x00000002
+	PKCS_11ReturnCodeSLOT_ID_INVALID ttlv.Enum = 0x00000003
 
-	PKCS_11ReturnCodeGENERAL_ERROR   PKCS_11ReturnCode = 0x00000005
-	PKCS_11ReturnCodeFUNCTION_FAILED PKCS_11ReturnCode = 0x00000006
+	PKCS_11ReturnCodeGENERAL_ERROR   ttlv.Enum = 0x00000005
+	PKCS_11ReturnCodeFUNCTION_FAILED ttlv.Enum = 0x00000006
 
-	PKCS_11ReturnCodeARGUMENTS_BAD          PKCS_11ReturnCode = 0x00000007
-	PKCS_11ReturnCodeNO_EVENT               PKCS_11ReturnCode = 0x00000008
-	PKCS_11ReturnCodeNEED_TO_CREATE_THREADS PKCS_11ReturnCode = 0x00000009
-	PKCS_11ReturnCodeCANT_LOCK              PKCS_11ReturnCode = 0x0000000A
+	PKCS_11ReturnCodeARGUMENTS_BAD          ttlv.Enum = 0x00000007
+	PKCS_11ReturnCodeNO_EVENT               ttlv.Enum = 0x00000008
+	PKCS_11ReturnCodeNEED_TO_CREATE_THREADS ttlv.Enum = 0x00000009
+	PKCS_11ReturnCodeCANT_LOCK              ttlv.Enum = 0x0000000A
 
-	PKCS_11ReturnCodeATTRIBUTE_READ_ONLY     PKCS_11ReturnCode = 0x00000010
-	PKCS_11ReturnCodeATTRIBUTE_SENSITIVE     PKCS_11ReturnCode = 0x00000011
-	PKCS_11ReturnCodeATTRIBUTE_TYPE_INVALID  PKCS_11ReturnCode = 0x00000012
-	PKCS_11ReturnCodeATTRIBUTE_VALUE_INVALID PKCS_11ReturnCode = 0x00000013
+	PKCS_11ReturnCodeATTRIBUTE_READ_ONLY     ttlv.Enum = 0x00000010
+	PKCS_11ReturnCodeATTRIBUTE_SENSITIVE     ttlv.Enum = 0x00000011
+	PKCS_11ReturnCodeATTRIBUTE_TYPE_INVALID  ttlv.Enum = 0x00000012
+	PKCS_11ReturnCodeATTRIBUTE_VALUE_INVALID ttlv.Enum = 0x00000013
 
-	PKCS_11ReturnCodeACTION_PROHIBITED PKCS_11ReturnCode = 0x0000001B
+	PKCS_11ReturnCodeACTION_PROHIBITED ttlv.Enum = 0x0000001B
 
-	PKCS_11ReturnCodeDATA_INVALID             PKCS_11ReturnCode = 0x00000020
-	PKCS_11ReturnCodeDATA_LEN_RANGE           PKCS_11ReturnCode = 0x00000021
-	PKCS_11ReturnCodeDEVICE_ERROR             PKCS_11ReturnCode = 0x00000030
-	PKCS_11ReturnCodeDEVICE_MEMORY            PKCS_11ReturnCode = 0x00000031
-	PKCS_11ReturnCodeDEVICE_REMOVED           PKCS_11ReturnCode = 0x00000032
-	PKCS_11ReturnCodeENCRYPTED_DATA_INVALID   PKCS_11ReturnCode = 0x00000040
-	PKCS_11ReturnCodeENCRYPTED_DATA_LEN_RANGE PKCS_11ReturnCode = 0x00000041
-	PKCS_11ReturnCodeAEAD_DECRYPT_FAILED      PKCS_11ReturnCode = 0x00000042
-	PKCS_11ReturnCodeFUNCTION_CANCELED        PKCS_11ReturnCode = 0x00000050
-	PKCS_11ReturnCodeFUNCTION_NOT_PARALLEL    PKCS_11ReturnCode = 0x00000051
+	PKCS_11ReturnCodeDATA_INVALID             ttlv.Enum = 0x00000020
+	PKCS_11ReturnCodeDATA_LEN_RANGE           ttlv.Enum = 0x00000021
+	PKCS_11ReturnCodeDEVICE_ERROR             ttlv.Enum = 0x00000030
+	PKCS_11ReturnCodeDEVICE_MEMORY            ttlv.Enum = 0x00000031
+	PKCS_11ReturnCodeDEVICE_REMOVED           ttlv.Enum = 0x00000032
+	PKCS_11ReturnCodeENCRYPTED_DATA_INVALID   ttlv.Enum = 0x00000040
+	PKCS_11ReturnCodeENCRYPTED_DATA_LEN_RANGE ttlv.Enum = 0x00000041
+	PKCS_11ReturnCodeAEAD_DECRYPT_FAILED      ttlv.Enum = 0x00000042
+	PKCS_11ReturnCodeFUNCTION_CANCELED        ttlv.Enum = 0x00000050
+	PKCS_11ReturnCodeFUNCTION_NOT_PARALLEL    ttlv.Enum = 0x00000051
 
-	PKCS_11ReturnCodeFUNCTION_NOT_SUPPORTED PKCS_11ReturnCode = 0x00000054
+	PKCS_11ReturnCodeFUNCTION_NOT_SUPPORTED ttlv.Enum = 0x00000054
 
-	PKCS_11ReturnCodeKEY_HANDLE_INVALID PKCS_11ReturnCode = 0x00000060
+	PKCS_11ReturnCodeKEY_HANDLE_INVALID ttlv.Enum = 0x00000060
 
-	PKCS_11ReturnCodeKEY_SIZE_RANGE        PKCS_11ReturnCode = 0x00000062
-	PKCS_11ReturnCodeKEY_TYPE_INCONSISTENT PKCS_11ReturnCode = 0x00000063
+	PKCS_11ReturnCodeKEY_SIZE_RANGE        ttlv.Enum = 0x00000062
+	PKCS_11ReturnCodeKEY_TYPE_INCONSISTENT ttlv.Enum = 0x00000063
 
-	PKCS_11ReturnCodeKEY_NOT_NEEDED             PKCS_11ReturnCode = 0x00000064
-	PKCS_11ReturnCodeKEY_CHANGED                PKCS_11ReturnCode = 0x00000065
-	PKCS_11ReturnCodeKEY_NEEDED                 PKCS_11ReturnCode = 0x00000066
-	PKCS_11ReturnCodeKEY_INDIGESTIBLE           PKCS_11ReturnCode = 0x00000067
-	PKCS_11ReturnCodeKEY_FUNCTION_NOT_PERMITTED PKCS_11ReturnCode = 0x00000068
-	PKCS_11ReturnCodeKEY_NOT_WRAPPABLE          PKCS_11ReturnCode = 0x00000069
-	PKCS_11ReturnCodeKEY_UNEXTRACTABLE          PKCS_11ReturnCode = 0x0000006A
+	PKCS_11ReturnCodeKEY_NOT_NEEDED             ttlv.Enum = 0x00000064
+	PKCS_11ReturnCodeKEY_CHANGED                ttlv.Enum = 0x00000065
+	PKCS_11ReturnCodeKEY_NEEDED                 ttlv.Enum = 0x00000066
+	PKCS_11ReturnCodeKEY_INDIGESTIBLE           ttlv.Enum = 0x00000067
+	PKCS_11ReturnCodeKEY_FUNCTION_NOT_PERMITTED ttlv.Enum = 0x00000068
+	PKCS_11ReturnCodeKEY_NOT_WRAPPABLE          ttlv.Enum = 0x00000069
+	PKCS_11ReturnCodeKEY_UNEXTRACTABLE          ttlv.Enum = 0x0000006A
 
-	PKCS_11ReturnCodeMECHANISM_INVALID       PKCS_11ReturnCode = 0x00000070
-	PKCS_11ReturnCodeMECHANISM_PARAM_INVALID PKCS_11ReturnCode = 0x00000071
+	PKCS_11ReturnCodeMECHANISM_INVALID       ttlv.Enum = 0x00000070
+	PKCS_11ReturnCodeMECHANISM_PARAM_INVALID ttlv.Enum = 0x00000071
 
-	PKCS_11ReturnCodeOBJECT_HANDLE_INVALID     PKCS_11ReturnCode = 0x00000082
-	PKCS_11ReturnCodeOPERATION_ACTIVE          PKCS_11ReturnCode = 0x00000090
-	PKCS_11ReturnCodeOPERATION_NOT_INITIALIZED PKCS_11ReturnCode = 0x00000091
-	PKCS_11ReturnCodePIN_INCORRECT             PKCS_11ReturnCode = 0x000000A0
-	PKCS_11ReturnCodePIN_INVALID               PKCS_11ReturnCode = 0x000000A1
-	PKCS_11ReturnCodePIN_LEN_RANGE             PKCS_11ReturnCode = 0x000000A2
+	PKCS_11ReturnCodeOBJECT_HANDLE_INVALID     ttlv.Enum = 0x00000082
+	PKCS_11ReturnCodeOPERATION_ACTIVE          ttlv.Enum = 0x00000090
+	PKCS_11ReturnCodeOPERATION_NOT_INITIALIZED ttlv.Enum = 0x00000091
+	PKCS_11ReturnCodePIN_INCORRECT             ttlv.Enum = 0x000000A0
+	PKCS_11ReturnCodePIN_INVALID               ttlv.Enum = 0x000000A1
+	PKCS_11ReturnCodePIN_LEN_RANGE             ttlv.Enum = 0x000000A2
 
-	PKCS_11ReturnCodePIN_EXPIRED PKCS_11ReturnCode = 0x000000A3
-	PKCS_11ReturnCodePIN_LOCKED  PKCS_11ReturnCode = 0x000000A4
+	PKCS_11ReturnCodePIN_EXPIRED ttlv.Enum = 0x000000A3
+	PKCS_11ReturnCodePIN_LOCKED  ttlv.Enum = 0x000000A4
 
-	PKCS_11ReturnCodeSESSION_CLOSED                 PKCS_11ReturnCode = 0x000000B0
-	PKCS_11ReturnCodeSESSION_COUNT                  PKCS_11ReturnCode = 0x000000B1
-	PKCS_11ReturnCodeSESSION_HANDLE_INVALID         PKCS_11ReturnCode = 0x000000B3
-	PKCS_11ReturnCodeSESSION_PARALLEL_NOT_SUPPORTED PKCS_11ReturnCode = 0x000000B4
-	PKCS_11ReturnCodeSESSION_READ_ONLY              PKCS_11ReturnCode = 0x000000B5
-	PKCS_11ReturnCodeSESSION_EXISTS                 PKCS_11ReturnCode = 0x000000B6
+	PKCS_11ReturnCodeSESSION_CLOSED                 ttlv.Enum = 0x000000B0
+	PKCS_11ReturnCodeSESSION_COUNT                  ttlv.Enum = 0x000000B1
+	PKCS_11ReturnCodeSESSION_HANDLE_INVALID         ttlv.Enum = 0x000000B3
+	PKCS_11ReturnCodeSESSION_PARALLEL_NOT_SUPPORTED ttlv.Enum = 0x000000B4
+	PKCS_11ReturnCodeSESSION_READ_ONLY              ttlv.Enum = 0x000000B5
+	PKCS_11ReturnCodeSESSION_EXISTS                 ttlv.Enum = 0x000000B6
 
-	PKCS_11ReturnCodeSESSION_READ_ONLY_EXISTS     PKCS_11ReturnCode = 0x000000B7
-	PKCS_11ReturnCodeSESSION_READ_WRITE_SO_EXISTS PKCS_11ReturnCode = 0x000000B8
+	PKCS_11ReturnCodeSESSION_READ_ONLY_EXISTS     ttlv.Enum = 0x000000B7
+	PKCS_11ReturnCodeSESSION_READ_WRITE_SO_EXISTS ttlv.Enum = 0x000000B8
 
-	PKCS_11ReturnCodeSIGNATURE_INVALID                PKCS_11ReturnCode = 0x000000C0
-	PKCS_11ReturnCodeSIGNATURE_LEN_RANGE              PKCS_11ReturnCode = 0x000000C1
-	PKCS_11ReturnCodeTEMPLATE_INCOMPLETE              PKCS_11ReturnCode = 0x000000D0
-	PKCS_11ReturnCodeTEMPLATE_INCONSISTENT            PKCS_11ReturnCode = 0x000000D1
-	PKCS_11ReturnCodeTOKEN_NOT_PRESENT                PKCS_11ReturnCode = 0x000000E0
-	PKCS_11ReturnCodeTOKEN_NOT_RECOGNIZED             PKCS_11ReturnCode = 0x000000E1
-	PKCS_11ReturnCodeTOKEN_WRITE_PROTECTED            PKCS_11ReturnCode = 0x000000E2
-	PKCS_11ReturnCodeUNWRAPPING_KEY_HANDLE_INVALID    PKCS_11ReturnCode = 0x000000F0
-	PKCS_11ReturnCodeUNWRAPPING_KEY_SIZE_RANGE        PKCS_11ReturnCode = 0x000000F1
-	PKCS_11ReturnCodeUNWRAPPING_KEY_TYPE_INCONSISTENT PKCS_11ReturnCode = 0x000000F2
-	PKCS_11ReturnCodeUSER_ALREADY_LOGGED_IN           PKCS_11ReturnCode = 0x00000100
-	PKCS_11ReturnCodeUSER_NOT_LOGGED_IN               PKCS_11ReturnCode = 0x00000101
-	PKCS_11ReturnCodeUSER_PIN_NOT_INITIALIZED         PKCS_11ReturnCode = 0x00000102
-	PKCS_11ReturnCodeUSER_TYPE_INVALID                PKCS_11ReturnCode = 0x00000103
+	PKCS_11ReturnCodeSIGNATURE_INVALID                ttlv.Enum = 0x000000C0
+	PKCS_11ReturnCodeSIGNATURE_LEN_RANGE              ttlv.Enum = 0x000000C1
+	PKCS_11ReturnCodeTEMPLATE_INCOMPLETE              ttlv.Enum = 0x000000D0
+	PKCS_11ReturnCodeTEMPLATE_INCONSISTENT            ttlv.Enum = 0x000000D1
+	PKCS_11ReturnCodeTOKEN_NOT_PRESENT                ttlv.Enum = 0x000000E0
+	PKCS_11ReturnCodeTOKEN_NOT_RECOGNIZED             ttlv.Enum = 0x000000E1
+	PKCS_11ReturnCodeTOKEN_WRITE_PROTECTED            ttlv.Enum = 0x000000E2
+	PKCS_11ReturnCodeUNWRAPPING_KEY_HANDLE_INVALID    ttlv.Enum = 0x000000F0
+	PKCS_11ReturnCodeUNWRAPPING_KEY_SIZE_RANGE        ttlv.Enum = 0x000000F1
+	PKCS_11ReturnCodeUNWRAPPING_KEY_TYPE_INCONSISTENT ttlv.Enum = 0x000000F2
+	PKCS_11ReturnCodeUSER_ALREADY_LOGGED_IN           ttlv.Enum = 0x00000100
+	PKCS_11ReturnCodeUSER_NOT_LOGGED_IN               ttlv.Enum = 0x00000101
+	PKCS_11ReturnCodeUSER_PIN_NOT_INITIALIZED         ttlv.Enum = 0x00000102
+	PKCS_11ReturnCodeUSER_TYPE_INVALID                ttlv.Enum = 0x00000103
 
-	PKCS_11ReturnCodeUSER_ANOTHER_ALREADY_LOGGED_IN PKCS_11ReturnCode = 0x00000104
-	PKCS_11ReturnCodeUSER_TOO_MANY_TYPES            PKCS_11ReturnCode = 0x00000105
+	PKCS_11ReturnCodeUSER_ANOTHER_ALREADY_LOGGED_IN ttlv.Enum = 0x00000104
+	PKCS_11ReturnCodeUSER_TOO_MANY_TYPES            ttlv.Enum = 0x00000105
 
-	PKCS_11ReturnCodeWRAPPED_KEY_INVALID            PKCS_11ReturnCode = 0x00000110
-	PKCS_11ReturnCodeWRAPPED_KEY_LEN_RANGE          PKCS_11ReturnCode = 0x00000112
-	PKCS_11ReturnCodeWRAPPING_KEY_HANDLE_INVALID    PKCS_11ReturnCode = 0x00000113
-	PKCS_11ReturnCodeWRAPPING_KEY_SIZE_RANGE        PKCS_11ReturnCode = 0x00000114
-	PKCS_11ReturnCodeWRAPPING_KEY_TYPE_INCONSISTENT PKCS_11ReturnCode = 0x00000115
-	PKCS_11ReturnCodeRANDOM_SEED_NOT_SUPPORTED      PKCS_11ReturnCode = 0x00000120
+	PKCS_11ReturnCodeWRAPPED_KEY_INVALID            ttlv.Enum = 0x00000110
+	PKCS_11ReturnCodeWRAPPED_KEY_LEN_RANGE          ttlv.Enum = 0x00000112
+	PKCS_11ReturnCodeWRAPPING_KEY_HANDLE_INVALID    ttlv.Enum = 0x00000113
+	PKCS_11ReturnCodeWRAPPING_KEY_SIZE_RANGE        ttlv.Enum = 0x00000114
+	PKCS_11ReturnCodeWRAPPING_KEY_TYPE_INCONSISTENT ttlv.Enum = 0x00000115
+	PKCS_11ReturnCodeRANDOM_SEED_NOT_SUPPORTED      ttlv.Enum = 0x00000120
 
-	PKCS_11ReturnCodeRANDOM_NO_RNG PKCS_11ReturnCode = 0x00000121
+	PKCS_11ReturnCodeRANDOM_NO_RNG ttlv.Enum = 0x00000121
 
-	PKCS_11ReturnCodeDOMAIN_PARAMS_INVALID PKCS_11ReturnCode = 0x00000130
+	PKCS_11ReturnCodeDOMAIN_PARAMS_INVALID ttlv.Enum = 0x00000130
 
-	PKCS_11ReturnCodeCURVE_NOT_SUPPORTED PKCS_11ReturnCode = 0x00000140
+	PKCS_11ReturnCodeCURVE_NOT_SUPPORTED ttlv.Enum = 0x00000140
 
-	PKCS_11ReturnCodeBUFFER_TOO_SMALL      PKCS_11ReturnCode = 0x00000150
-	PKCS_11ReturnCodeSAVED_STATE_INVALID   PKCS_11ReturnCode = 0x00000160
-	PKCS_11ReturnCodeINFORMATION_SENSITIVE PKCS_11ReturnCode = 0x00000170
-	PKCS_11ReturnCodeSTATE_UNSAVEABLE      PKCS_11ReturnCode = 0x00000180
+	PKCS_11ReturnCodeBUFFER_TOO_SMALL      ttlv.Enum = 0x00000150
+	PKCS_11ReturnCodeSAVED_STATE_INVALID   ttlv.Enum = 0x00000160
+	PKCS_11ReturnCodeINFORMATION_SENSITIVE ttlv.Enum = 0x00000170
+	PKCS_11ReturnCodeSTATE_UNSAVEABLE      ttlv.Enum = 0x00000180
 
-	PKCS_11ReturnCodeCRYPTOKI_NOT_INITIALIZED     PKCS_11ReturnCode = 0x00000190
-	PKCS_11ReturnCodeCRYPTOKI_ALREADY_INITIALIZED PKCS_11ReturnCode = 0x00000191
-	PKCS_11ReturnCodeMUTEX_BAD                    PKCS_11ReturnCode = 0x000001A0
-	PKCS_11ReturnCodeMUTEX_NOT_LOCKED             PKCS_11ReturnCode = 0x000001A1
+	PKCS_11ReturnCodeCRYPTOKI_NOT_INITIALIZED     ttlv.Enum = 0x00000190
+	PKCS_11ReturnCodeCRYPTOKI_ALREADY_INITIALIZED ttlv.Enum = 0x00000191
+	PKCS_11ReturnCodeMUTEX_BAD                    ttlv.Enum = 0x000001A0
+	PKCS_11ReturnCodeMUTEX_NOT_LOCKED             ttlv.Enum = 0x000001A1
 
-	PKCS_11ReturnCodeNEW_PIN_MODE PKCS_11ReturnCode = 0x000001B0
-	PKCS_11ReturnCodeNEXT_OTP     PKCS_11ReturnCode = 0x000001B1
+	PKCS_11ReturnCodeNEW_PIN_MODE ttlv.Enum = 0x000001B0
+	PKCS_11ReturnCodeNEXT_OTP     ttlv.Enum = 0x000001B1
 
-	PKCS_11ReturnCodeEXCEEDED_MAX_ITERATIONS PKCS_11ReturnCode = 0x000001B5
-	PKCS_11ReturnCodeFIPS_SELF_TEST_FAILED   PKCS_11ReturnCode = 0x000001B6
-	PKCS_11ReturnCodeLIBRARY_LOAD_FAILED     PKCS_11ReturnCode = 0x000001B7
-	PKCS_11ReturnCodePIN_TOO_WEAK            PKCS_11ReturnCode = 0x000001B8
-	PKCS_11ReturnCodePUBLIC_KEY_INVALID      PKCS_11ReturnCode = 0x000001B9
+	PKCS_11ReturnCodeEXCEEDED_MAX_ITERATIONS ttlv.Enum = 0x000001B5
+	PKCS_11ReturnCodeFIPS_SELF_TEST_FAILED   ttlv.Enum = 0x000001B6
+	PKCS_11ReturnCodeLIBRARY_LOAD_FAILED     ttlv.Enum = 0x000001B7
+	PKCS_11ReturnCodePIN_TOO_WEAK            ttlv.Enum = 0x000001B8
+	PKCS_11ReturnCodePUBLIC_KEY_INVALID      ttlv.Enum = 0x000001B9
 
-	PKCS_11ReturnCodeFUNCTION_REJECTED       PKCS_11ReturnCode = 0x00000200
-	PKCS_11ReturnCodeTOKEN_RESOURCE_EXCEEDED PKCS_11ReturnCode = 0x00000201
-	PKCS_11ReturnCodeOPERATION_CANCEL_FAILED PKCS_11ReturnCode = 0x00000202
-	PKCS_11ReturnCodeKEY_EXHAUSTED           PKCS_11ReturnCode = 0x00000203
+	PKCS_11ReturnCodeFUNCTION_REJECTED       ttlv.Enum = 0x00000200
+	PKCS_11ReturnCodeTOKEN_RESOURCE_EXCEEDED ttlv.Enum = 0x00000201
+	PKCS_11ReturnCodeOPERATION_CANCEL_FAILED ttlv.Enum = 0x00000202
+	PKCS_11ReturnCodeKEY_EXHAUSTED           ttlv.Enum = 0x00000203
 )
 
 func init() {
@@ -254,7 +250,7 @@ func init() {
 	ttlv.RegisterTag("PKCS_11OutputParameters", TagPKCS_11OutputParameters)
 	ttlv.RegisterTag("PKCS_11ReturnCode", TagPKCS_11ReturnCode)
 
-	ttlv.RegisterEnum(TagPKCS_11Function, map[PKCS_11Function]string{
+	ttlv.RegisterEnum(TagPKCS_11Function, map[ttlv.Enum]string{
 		// Version 2.0 and later
 		PKCS_11FunctionC_Initialize:          "C_Initialize",
 		PKCS_11FunctionC_Finalize:            "C_Finalize",
@@ -352,7 +348,7 @@ func init() {
 		PKCS_11FunctionC_MessageVerifyFinal:  "C_MessageVerifyFinal",
 	})
 
-	ttlv.RegisterEnum(TagPKCS_11ReturnCode, map[PKCS_11ReturnCode]string{
+	ttlv.RegisterEnum(TagPKCS_11ReturnCode, map[ttlv.Enum]string{
 		PKCS_11ReturnCodeOK:              "OK",
 		PKCS_11ReturnCodeCANCEL:          "CANCEL",
 		PKCS_11ReturnCodeHOST_MEMORY:     "HOST_MEMORY",
