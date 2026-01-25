@@ -1,9 +1,12 @@
 package main
 
+import "bytes"
+
 // #include "cgo.h"
 import "C"
 import "context"
 import "crypto/tls"
+import "encoding/binary"
 import "fmt"
 import "os"
 import "time"
@@ -1059,9 +1062,12 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount C.CK_ULONG_PTR /*pusCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pulCount=%+v)\n", tokenPresent, pulCount)
 
-	// TODO Handle input parameters
+	inputParameters := new(bytes.Buffer)
+	binary.Write(inputParameters, binary.BigEndian, tokenPresent)
+	binary.Write(inputParameters, binary.BigEndian, pSlotList != nil)
+	binary.Write(inputParameters, binary.BigEndian, *pulCount)
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, inputParameters.Bytes())
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1089,7 +1095,10 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
 
-	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, []byte{profileVersion})
+	inputParameters := new(bytes.Buffer)
+	binary.Write(inputParameters, binary.BigEndian, profileVersion)
+
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters.Bytes())
 
 	return (C.CK_RV)(returnCode)
 }
