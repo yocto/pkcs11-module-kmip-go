@@ -1047,15 +1047,30 @@ func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR)
 func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_GetSlotInfo(slotID=%+v)\n", slotID)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	binary.Write(inBuffer, binary.BigEndian, uint64(slotID))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotInfo, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotInfo, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		var slotInfoResponse C.CK_SLOT_INFO
+
+		err := binary.Read(outBuffer, binary.BigEndian, &slotInfoResponse)
+		if err != nil {
+			fmt.Println("Slot info structure expected.")
+			return C.CKR_FUNCTION_FAILED
+		}
+
+		*pInfo = slotInfoResponse
+
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_GetSlotList
@@ -1071,10 +1086,13 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, inputParameters)
 
 	if outputParameters != nil {
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		//TODO Improve
+
 		var tokenPresentResponse C.CK_BBOOL
 		var slotCountResponse uint32
 
-		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 		err := binary.Read(outBuffer, binary.BigEndian, &tokenPresentResponse)
 		if err != nil {
 			fmt.Println("Boolean byte expected.")
