@@ -407,9 +407,16 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	fmt.Printf("Function called: C_DecryptDigestUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pEncryptedPart)
+	// (See: Moved up)
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPartLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptDigestUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptDigestUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -505,9 +512,16 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG /*usEncryptedPartLen C.CK_USHORT (v1.0)*/, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR /*pusPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_DecryptUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pEncryptedPart)
+	// (See: Moved up)
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPartLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -520,9 +534,16 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	fmt.Printf("Function called: C_DecryptVerifyUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pEncryptedPart)
+	// (See: Moved up)
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPartLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptVerifyUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptVerifyUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -583,9 +604,16 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	fmt.Printf("Function called: C_DigestEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pPart)
+	// (See: Moved up)
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestEncryptUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestEncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -653,9 +681,14 @@ func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV 
 func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_DigestUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pPart, ulPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pPart)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1553,9 +1586,16 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	fmt.Printf("Function called: C_SignEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pulEncryptedPartLen=%+v)\n", hSession, pPart, ulPartLen, pulEncryptedPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pPart)
+	// (See: Moved up)
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignEncryptUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignEncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1685,9 +1725,14 @@ func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_SignUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pPart, ulPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pPart)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1730,13 +1775,13 @@ func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_VerifyFinal(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pSignature, ulSignatureLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	binary.Write(inBuffer, binary.BigEndian, pSignature)
+	inBuffer.Write(EncodeUnsignedLong(ulSignatureLen))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyFinal, nil)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyFinal, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -1843,9 +1888,14 @@ func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_VerifyUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pPart, ulPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pPart)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
