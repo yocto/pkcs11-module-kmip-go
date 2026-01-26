@@ -311,9 +311,11 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_CancelFunction(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CancelFunction, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CancelFunction, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -341,9 +343,11 @@ func C_CloseAllSessions(slotID C.CK_SLOT_ID) C.CK_RV { // Since v1.0
 func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_CloseSession(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseSession, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseSession, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -536,9 +540,12 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_DestroyObject(hSession=%+v, hObject=%+v)\n", hSession, hObject)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLong(hObject))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DestroyObject, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DestroyObject, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -611,9 +618,12 @@ func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C
 func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v2.0
 	fmt.Printf("Function called: C_DigestKey(hSession=%+v, hKey=%+v)\n", hSession, hKey)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLong(hKey))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestKey, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestKey, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -658,8 +668,8 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pLastEncryptedPart != nil)))   // Output pointer
-	inBuffer.Write(EncodeUnsignedLongAsLength(*pulLastEncryptedPartLen)) // Output pointer length
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pLastEncryptedPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulLastEncryptedPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, inputParameters)
@@ -743,8 +753,8 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
 	binary.Write(inBuffer, binary.BigEndian, pPart)
 	// (See: Moved up)
-	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil)))   // Output pointer
-	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen)) // Output pointer length
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, inputParameters)
@@ -784,9 +794,11 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 	fmt.Printf("Function called: C_FindObjectsFinal(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsFinal, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsFinal, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -888,9 +900,11 @@ func C_GetFunctionList(ppFunctionList C.CK_FUNCTION_LIST_PTR_PTR) C.CK_RV { // S
 func C_GetFunctionStatus(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_GetFunctionStatus(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetFunctionStatus, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetFunctionStatus, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1253,9 +1267,11 @@ func C_LoginUser(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.C
 func C_Logout(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Logout(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Logout, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Logout, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1268,9 +1284,11 @@ func C_Logout(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 func C_MessageDecryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_MessageDecryptFinal(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageDecryptFinal, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageDecryptFinal, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1298,9 +1316,11 @@ func C_MessageDecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 func C_MessageEncryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_MessageEncryptFinal(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageEncryptFinal, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageEncryptFinal, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1328,9 +1348,11 @@ func C_MessageEncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 func C_MessageSignFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_MessageSignFinal(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageSignFinal, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageSignFinal, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1358,9 +1380,11 @@ func C_MessageSignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 func C_MessageVerifyFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_MessageVerifyFinal(hSession=%+v)\n", hSession)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageVerifyFinal, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageVerifyFinal, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters

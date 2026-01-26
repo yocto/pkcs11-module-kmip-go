@@ -8,10 +8,10 @@ import "encoding/binary"
 import "unsafe"
 
 func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
-    if boolean{
-        return 0x01;
-       }
-    return 0x00;
+	if boolean {
+		return 0x01
+	}
+	return 0x00
 }
 
 func EncodeByte(_byte C.CK_BYTE) []byte {
