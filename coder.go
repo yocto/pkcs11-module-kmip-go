@@ -38,6 +38,15 @@ func EncodeLong(long C.CK_LONG) []byte {
 	return buffer.Bytes()
 }
 
+func EncodeAttribute(attribute C.CK_ATTRIBUTE, isRequest bool) []byte {
+	buffer := new(bytes.Buffer)
+	binary.Write(buffer, binary.BigEndian, uint64(attribute._type))
+	binary.Write(buffer, binary.BigEndian, bool(attribute.pValue != nil && !isRequest))
+	binary.Write(buffer, binary.BigEndian, bool(attribute.ulValueLen != 0))
+	//TODO Something with values and requests/responses
+	return buffer.Bytes()
+}
+
 func EncodeMechanism(mechanism C.CK_MECHANISM) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, uint64(mechanism.mechanism))
@@ -63,6 +72,36 @@ func getUnsignedLongForTest() C.CK_ULONG {
 
 func getLongForTest() C.CK_LONG {
 	return C.CK_LONG(-0x7E7F8081)
+}
+
+func getAttributeForTest1() C.CK_ATTRIBUTE {
+	var sensitive C.CK_BYTE
+
+	return C.CK_ATTRIBUTE{
+		_type:      C.CKA_SENSITIVE,
+		pValue:     C.CK_VOID_PTR(&sensitive),
+		ulValueLen: C.CK_ULONG(unsafe.Sizeof(sensitive)),
+	}
+}
+
+func getAttributeForTest2() C.CK_ATTRIBUTE {
+	var checkValue [16]C.CK_BYTE_PTR
+
+	return C.CK_ATTRIBUTE{
+		_type:      C.CKA_CHECK_VALUE,
+		pValue:     C.CK_VOID_PTR(&checkValue),
+		ulValueLen: C.CK_ULONG(unsafe.Sizeof(checkValue)),
+	}
+}
+
+func getAttributeForTest3() C.CK_ATTRIBUTE {
+	var mechanisms [64]C.CK_MECHANISM_TYPE
+
+	return C.CK_ATTRIBUTE{
+		_type:      C.CKA_ALLOWED_MECHANISMS,
+		pValue:     C.CK_VOID_PTR(&mechanisms),
+		ulValueLen: C.CK_ULONG(unsafe.Sizeof(mechanisms)),
+	}
 }
 
 func getMechanismForTest() C.CK_MECHANISM {

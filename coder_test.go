@@ -55,6 +55,56 @@ func TestEncodeLong(t *testing.T) {
 	}
 }
 
+func TestEncodeAttribute1(t *testing.T) {
+	attribute := getAttributeForTest1()
+
+	encoded := EncodeAttribute(attribute, true)
+	expected := []byte{
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, // CKA_SENSITIVE
+		0x00, // Value not defined
+		0x01, // Length defined
+	}
+
+	if !bytes.Equal(encoded, expected) {
+		t.Errorf("Test for %q failed:\nExpected:\n%v\nGot:\n%v", "EncodeAttribute", expected, encoded)
+	}
+}
+
+func TestEncodeAttribute2(t *testing.T) {
+	attribute := getAttributeForTest2()
+
+	encoded := EncodeAttribute(attribute, true)
+	expected := []byte{
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, // CKA_CHECK_VALUE
+		0x00, // Value not defined
+		0x01, // Length defined
+	}
+
+	if !bytes.Equal(encoded, expected) {
+		t.Errorf("Test for %q failed:\nExpected:\n%v\nGot:\n%v", "EncodeAttribute", expected, encoded)
+	}
+}
+
+/*
+func TestEncodeAttribute3(t *testing.T) {
+	attribute := getAttributeForTest3()
+
+	encoded := EncodeAttribute(attribute, true)
+	expected := []byte{
+		0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x06, 0x00, // CKA_ALLOWED_MECHANISMS
+		0x00,                   // Value not defined
+		0x01,                   // Length defined
+		0x00, 0x00, 0x00, 0x40, // 64 mechanisms available
+		0x00, // Value not defined
+		0x00, // Length not defined (is output only)
+	}
+
+	if !bytes.Equal(encoded, expected) {
+		t.Errorf("Test for %q failed:\nExpected:\n%v\nGot:\n%v", "EncodeAttribute", expected, encoded)
+	}
+}
+*/
+
 func TestEncodeMechanism(t *testing.T) {
 	mechanism := getMechanismForTest()
 
