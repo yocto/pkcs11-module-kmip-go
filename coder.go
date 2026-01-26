@@ -7,25 +7,32 @@ import "C"
 import "encoding/binary"
 import "unsafe"
 
-func EncodeByte(_byte C.CK_BYTE) []byte{
+func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
+    if boolean{
+        return 0x01;
+       }
+    return 0x00;
+}
+
+func EncodeByte(_byte C.CK_BYTE) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, byte(_byte))
 	return buffer.Bytes()
 }
 
-func EncodeUnsignedLong(ulong C.CK_ULONG) []byte{
+func EncodeUnsignedLong(ulong C.CK_ULONG) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, uint64(ulong))
 	return buffer.Bytes()
 }
 
-func EncodeUnsignedLongAsLength(ulong C.CK_ULONG) []byte{
+func EncodeUnsignedLongAsLength(ulong C.CK_ULONG) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, uint32(ulong))
 	return buffer.Bytes()
 }
 
-func EncodeLong(long C.CK_LONG) []byte{
+func EncodeLong(long C.CK_LONG) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, int64(long))
 	return buffer.Bytes()
@@ -44,16 +51,18 @@ func EncodeMechanism(mechanism C.CK_MECHANISM) []byte {
 	return buffer.Bytes()
 }
 
-func getByteForTest() C.CK_BYTE{
-    return C.CK_BYTE(0x01);
+// Test helper functions (because CGO cannot be directly used in tests)
+
+func getByteForTest() C.CK_BYTE {
+	return C.CK_BYTE(0x01)
 }
 
-func getUnsignedLongForTest() C.CK_ULONG{
-    return C.CK_ULONG(0x7E7F8081);
+func getUnsignedLongForTest() C.CK_ULONG {
+	return C.CK_ULONG(0x7E7F8081)
 }
 
-func getLongForTest() C.CK_LONG{
-    return C.CK_LONG(-0x7E7F8081);
+func getLongForTest() C.CK_LONG {
+	return C.CK_LONG(-0x7E7F8081)
 }
 
 func getMechanismForTest() C.CK_MECHANISM {

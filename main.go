@@ -21,7 +21,7 @@ var cryptokiVersion = C.CK_VERSION{
 	minor: 1,
 }
 
-const profileVersion byte = 0x01
+const profileVersion C.CK_BYTE = 0x01
 
 var defaultInterface string = "PKCS 11"
 
@@ -658,7 +658,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	binary.Write(inBuffer, binary.BigEndian, bool(pLastEncryptedPart != nil))  // Output pointer
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pLastEncryptedPart != nil)))   // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulLastEncryptedPartLen)) // Output pointer length
 	inputParameters := inBuffer.Bytes()
 
@@ -678,13 +678,13 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_EncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeMechanism(*pMechanism))
+	inBuffer.Write(EncodeUnsignedLong(hKey))
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptInit, nil)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptInit, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -743,7 +743,7 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
 	binary.Write(inBuffer, binary.BigEndian, pPart)
 	// (See: Moved up)
-	binary.Write(inBuffer, binary.BigEndian, bool(pEncryptedPart != nil))  // Output pointer
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil)))   // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen)) // Output pointer length
 	inputParameters := inBuffer.Bytes()
 
@@ -1003,7 +1003,7 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(slotID))
-	binary.Write(inBuffer, binary.BigEndian, bool(pMechanismList != nil))
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pMechanismList != nil)))
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCount))
 	inputParameters := inBuffer.Bytes()
 
@@ -1068,7 +1068,7 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 	fmt.Printf("Function called: C_GetSlotInfo(slotID=%+v)\n", slotID)
 
 	inBuffer := new(bytes.Buffer)
-	binary.Write(inBuffer, binary.BigEndian, uint64(slotID))
+	inBuffer.Write(EncodeUnsignedLong(slotID))
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotInfo, inputParameters)
@@ -1101,8 +1101,8 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pulCount=%+v)\n", tokenPresent, pulCount)
 
 	inBuffer := new(bytes.Buffer)
-	binary.Write(inBuffer, binary.BigEndian, bool(tokenPresent != 0))
-	binary.Write(inBuffer, binary.BigEndian, bool(pSlotList != nil))
+	inBuffer.Write(EncodeByte(tokenPresent))
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pSlotList != nil)))
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCount))
 	inputParameters := inBuffer.Bytes()
 
@@ -1181,7 +1181,7 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 	fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
 
 	inBuffer := new(bytes.Buffer)
-	binary.Write(inBuffer, binary.BigEndian, profileVersion)
+	inBuffer.Write(EncodeByte(profileVersion))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters)
