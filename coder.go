@@ -43,7 +43,7 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, isRequest bool) []byte {
 	binary.Write(buffer, binary.BigEndian, uint64(attribute._type))
 	binary.Write(buffer, binary.BigEndian, bool(attribute.pValue != nil && !isRequest))
 	binary.Write(buffer, binary.BigEndian, bool(attribute.ulValueLen != 0))
-	//TODO Something with values and requests/responses
+	// TODO Something with values and requests/responses
 	return buffer.Bytes()
 }
 
@@ -53,7 +53,7 @@ func EncodeMechanism(mechanism C.CK_MECHANISM) []byte {
 	binary.Write(buffer, binary.BigEndian, bool(mechanism.pParameter != nil))
 	if bool(mechanism.pParameter != nil) {
 		binary.Write(buffer, binary.BigEndian, uint32(mechanism.ulParameterLen)+4)
-		//TODO: Detect if string. If yes: length prepend (and +4 in above), if not, just object.
+		// TODO: Detect if string. If yes: length prepend (and +4 in above), if not, just object.
 		binary.Write(buffer, binary.BigEndian, uint32(mechanism.ulParameterLen))
 		binary.Write(buffer, binary.BigEndian, unsafe.Slice((*byte)(mechanism.pParameter), mechanism.ulParameterLen))
 	}
