@@ -656,15 +656,22 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_PTR, pulLastEncryptedPartLen C.CK_ULONG_PTR /*pusEncryptedPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_EncryptFinal(hSession=%+v, pLastEncryptedPart=%+v, pulLastEncryptedPartLen=%+v)\n", hSession, pLastEncryptedPart, pulLastEncryptedPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	binary.Write(inBuffer, binary.BigEndian, bool(pLastEncryptedPart != nil))  // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulLastEncryptedPartLen)) // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
+
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_EncryptInit
@@ -731,9 +738,16 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR /*pusEncryptedPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_EncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pPart)
+	// (See: Moved up)
+	binary.Write(inBuffer, binary.BigEndian, bool(pEncryptedPart != nil))  // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen)) // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -987,9 +1001,15 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_PTR, pulCount C.CK_ULONG_PTR /*pusCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_GetMechanismList(slotID=%+v, pulCount=%+v)\n", slotID, pulCount)
 
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(slotID))
+	binary.Write(inBuffer, binary.BigEndian, bool(pMechanismList != nil))
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCount))
+	inputParameters := inBuffer.Bytes()
+
 	// TODO Handle input parameters
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismList, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismList, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1081,9 +1101,9 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pulCount=%+v)\n", tokenPresent, pulCount)
 
 	inBuffer := new(bytes.Buffer)
-	binary.Write(inBuffer, binary.BigEndian, tokenPresent)
-	binary.Write(inBuffer, binary.BigEndian, pSlotList != nil)
-	binary.Write(inBuffer, binary.BigEndian, uint32(*pulCount))
+	binary.Write(inBuffer, binary.BigEndian, bool(tokenPresent != 0))
+	binary.Write(inBuffer, binary.BigEndian, bool(pSlotList != nil))
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCount))
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, inputParameters)
