@@ -1071,8 +1071,6 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCount))
 	inputParameters := inBuffer.Bytes()
 
-	// TODO Handle input parameters
-
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismList, inputParameters)
 
 	if outputParameters != nil {
@@ -1175,7 +1173,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		//TODO Improve
+		// TODO Improve
 
 		var tokenPresentResponse C.CK_BBOOL
 		var slotCountResponse uint32
@@ -1745,9 +1743,17 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hUnwrappingKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, ulWrappedKeyLen C.CK_ULONG /*usWrappedKeyLen C.CK_USHORT (v1.0)*/, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, ulWrappedKeyLen=%+v, ulAttributeCount=%+v)\n", hSession, pMechanism, hUnwrappingKey, ulWrappedKeyLen, ulAttributeCount)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeMechanism(*pMechanism))
+	inBuffer.Write(EncodeUnsignedLong(hUnwrappingKey))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulWrappedKeyLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pWrappedKey)
+	// (See: Moved up)
+	// TODO FIELD: pTemplate & ulAttributeCount
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_UnwrapKey, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_UnwrapKey, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1760,9 +1766,17 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Verify(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pData, ulDataLen, pSignature, ulSignatureLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pData)
+	// (See: Moved up)
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pSignature)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Verify, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Verify, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1778,7 +1792,7 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	binary.Write(inBuffer, binary.BigEndian, pSignature)
-	inBuffer.Write(EncodeUnsignedLong(ulSignatureLen))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyFinal, inputParameters)
@@ -1809,9 +1823,20 @@ func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, h
 func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_VerifyMessage(hSession=%+v, ulParameterLen=%+v, ulDataLen=%+v, ulSignatureLen=%+v)\n", hSession, ulParameterLen, ulDataLen, ulSignatureLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	// (See: Moved up)
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pData)
+	// (See: Moved up)
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pSignature)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessage, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessage, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1824,9 +1849,14 @@ func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulP
 func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_VerifyMessageBegin(hSession=%+v, ulParameterLen=%+v)\n", hSession, ulParameterLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageBegin, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageBegin, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1839,9 +1869,20 @@ func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pDataPart C.CK_BYTE_PTR, ulDataPartLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	fmt.Printf("Function called: C_VerifyMessageNext(hSession=%+v, ulParameterLen=%+v, ulDataPartLen=%+v, ulSignatureLen=%+v)\n", hSession, ulParameterLen, ulDataPartLen, ulSignatureLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	// (See: Moved up)
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataPartLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pDataPart)
+	// (See: Moved up)
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pSignature)
+	// (See: Moved up)
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageNext, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageNext, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1854,9 +1895,16 @@ func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR,
 func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/, pData C.CK_BYTE_PTR, pulDataLen C.CK_ULONG_PTR /*pusDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_VerifyRecover(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pSignature, ulSignatureLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
+	binary.Write(inBuffer, binary.BigEndian, pSignature)
+	// (See: Moved up)
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pData != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulDataLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecover, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecover, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
@@ -1915,9 +1963,16 @@ func C_WaitForSlotEvent(flags C.CK_FLAGS, pSlot C.CK_SLOT_ID_PTR, pReserved C.CK
 func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWrappingKey C.CK_OBJECT_HANDLE, hKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, pulWrappedKeyLen C.CK_ULONG_PTR /*pusWrappedKeyLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_WrapKey(hSession=%+v, pMechanism=%+v, hWrappingKey=%+v, hKey=%+v, pulWrappedKeyLen=%+v)\n", hSession, pMechanism, hWrappingKey, hKey, pulWrappedKeyLen)
 
-	// TODO Handle input parameters
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLong(hSession))
+	inBuffer.Write(EncodeMechanism(*pMechanism))
+	inBuffer.Write(EncodeUnsignedLong(hWrappingKey))
+	inBuffer.Write(EncodeUnsignedLong(hKey))
+	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pWrappedKey != nil))) // Output pointer
+	inBuffer.Write(EncodeUnsignedLongAsLength(*pulWrappedKeyLen))        // Output pointer length
+	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_WrapKey, nil)
+	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_WrapKey, inputParameters)
 
 	if outputParameters != nil {
 		// TODO Handle output parameters
