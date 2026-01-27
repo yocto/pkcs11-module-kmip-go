@@ -66,7 +66,7 @@ func DecodeSlotInfo(data []byte) C.CK_SLOT_INFO {
 
 	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo.slotDescription)), 64)
 	copy(pointerAsSliceDestination, data[offset:(offset+64)])
-	offset += 2
+	offset += 64
 
 	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo.manufacturerID)), 32)
 	copy(pointerAsSliceDestination, data[offset:(offset+32)])
