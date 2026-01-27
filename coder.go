@@ -89,8 +89,68 @@ func DecodeSlotInfo(data []byte) C.CK_SLOT_INFO {
 func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
 	tokenInfo := C.CK_TOKEN_INFO{}
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo)), C.sizeof_CK_TOKEN_INFO)
-	copy(pointerAsSliceDestination, data)
+	var offset int
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.label)), 32)
+	copy(pointerAsSliceDestination, data[offset:(offset+32)])
+	offset += 32
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.manufacturerID)), 32)
+	copy(pointerAsSliceDestination, data[offset:(offset+32)])
+	offset += 32
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.model)), 16)
+	copy(pointerAsSliceDestination, data[offset:(offset+16)])
+	offset += 16
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.serialNumber)), 16)
+	copy(pointerAsSliceDestination, data[offset:(offset+16)])
+	offset += 16
+
+	tokenInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulMaxSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulMaxRwSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulRwSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulMaxPinLen = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulMinPinLen = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulTotalPublicMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulFreePublicMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulTotalPrivateMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	tokenInfo.ulFreePrivateMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.hardwareVersion)), 2)
+	copy(pointerAsSliceDestination, data[offset:(offset+2)])
+	offset += 2
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.firmwareVersion)), 2)
+	copy(pointerAsSliceDestination, data[offset:(offset+2)])
+	offset += 2
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.utcTime)), 16)
+	copy(pointerAsSliceDestination, data[offset:(offset+16)])
+	offset += 16
 
 	return tokenInfo
 }
