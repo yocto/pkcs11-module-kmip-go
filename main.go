@@ -365,7 +365,11 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
-	//TODO: FIELD pTemplate & ulCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CopyObject, inputParameters)
@@ -383,7 +387,11 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	//TODO: FIELD pTemplate & ulCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CreateObject, inputParameters)
@@ -606,7 +614,11 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLong(hBaseKey))
-	//TODO: FIELD pTemplate & ulAttributeCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DeriveKey, inputParameters)
@@ -963,7 +975,11 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	//TODO: FIELD pTemplate & ulCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsInit, inputParameters)
@@ -982,7 +998,11 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeMechanism(*pMechanism))
-	// TODO: FIELD pTemplate & ulCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKey, inputParameters)
@@ -1001,8 +1021,16 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeMechanism(*pMechanism))
-	// TODO: FIELD pPublicKeyTemplate & ulPublicKeyAttributeCount
-	// TODO: FIELD pPrivateKeyTemplate & ulPrivateKeyAttributeCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPublicKeyAttributeCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pPublicKeyTemplate, ulPublicKeyAttributeCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulPrivateKeyAttributeCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pPrivateKeyTemplate, ulPrivateKeyAttributeCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKeyPair, inputParameters)
@@ -1041,7 +1069,11 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
-	//TODO: FIELD pTemplate & ulCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetAttributeValue, inputParameters)
@@ -1640,7 +1672,9 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(slotID))
 	inBuffer.Write(EncodeUnsignedLong(flags))
-	//TODO FIELD: pApplication
+	if pApplication != nil {
+		binary.Write(inBuffer, binary.BigEndian, pApplication)
+	}
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_OpenSession, inputParameters)
@@ -1697,7 +1731,11 @@ func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
-	//TODO: FIELD pTemplate & ulCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SetAttributeValue, inputParameters)
@@ -1978,7 +2016,11 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulWrappedKeyLen)) // Moved up
 	binary.Write(inBuffer, binary.BigEndian, pWrappedKey)
 	// (See: Moved up)
-	// TODO FIELD: pTemplate & ulAttributeCount
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
+	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
+		inBuffer.Write(EncodeAttribute(attribute, true))
+	}
+	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_UnwrapKey, inputParameters)
