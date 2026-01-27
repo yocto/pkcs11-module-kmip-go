@@ -226,12 +226,17 @@ func EncodeBytePointer(bytePointer C.CK_BYTE_PTR, bytePointerLength C.CK_ULONG) 
 	return inBuffer.Bytes()
 }
 
-func EncodeAttribute(attribute C.CK_ATTRIBUTE, isRequest bool) []byte {
+func EncodeAttribute(attribute C.CK_ATTRIBUTE, withValue bool) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, uint64(attribute._type))
-	binary.Write(buffer, binary.BigEndian, bool(attribute.pValue != nil && !isRequest))
+	binary.Write(buffer, binary.BigEndian, bool(attribute.pValue != nil && withValue))
 	binary.Write(buffer, binary.BigEndian, bool(attribute.ulValueLen != 0))
-	// TODO Something with values and requests/responses
+	if withValue {
+		// If the void pointer points to a single thing, there is no length
+		buffer.Write(EncodeUnsignedLongAsLength(attribute.ulValueLen)) // Moved up
+		binary.Write(buffer, binary.BigEndian, attribute.pValue)       // TODO: Check void pointer
+		// (See: Moved up)
+	}
 	return buffer.Bytes()
 }
 

@@ -1036,7 +1036,7 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, true))
+		inBuffer.Write(EncodeAttribute(attribute, false))
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
