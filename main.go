@@ -208,7 +208,7 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 
 var client *kmipclient.Client
 
-func main() { fmt.Println(C_GetInfo(&C.CK_INFO{})) }
+func main() {}
 
 func getKMIPClient() (*kmipclient.Client, error) {
 	if client != nil {
@@ -1082,9 +1082,7 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		info := DecodeInfo(outBuffer.Next(C.sizeof_CK_INFO))
-
-		*pInfo = info
+		*pInfo = DecodeInfo(outBuffer.Next(C.sizeof_CK_INFO))
 
 		return (C.CK_RV)(returnCode)
 	}
@@ -1175,7 +1173,10 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismInfo, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_MECHANISM_INFO_PTR pInfo
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*pInfo = DecodeMechanismInfo(outBuffer.Next(C.sizeof_CK_MECHANISM_INFO))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1196,7 +1197,17 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismList, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_MECHANISM_TYPE_PTR pMechanismList & CK_ULONG_PTR pulCount
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if pMechanismList != nil {
+			pointerAsSliceDestination := unsafe.Slice(pMechanismList, *pulCount)
+			for i := 0; i < int(*pulCount); i++ {
+				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1256,7 +1267,10 @@ func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR)
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSessionInfo, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_SESSION_INFO_PTR pInfo
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*pInfo = DecodeSessionInfo(outBuffer.Next(C.sizeof_CK_SESSION_INFO))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1277,18 +1291,7 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		var slotInfoResponse [104]byte
-
-		err := binary.Read(outBuffer, binary.BigEndian, &slotInfoResponse)
-		if err != nil {
-			fmt.Println("Slot info structure expected.")
-			// TODO: Ignore error for now
-			// return C.CKR_FUNCTION_FAILED
-		}
-
-		*pInfo = C.CK_SLOT_INFO{
-			flags: C.CKF_TOKEN_PRESENT,
-		}
+		*pInfo = DecodeSlotInfo(outBuffer.Next(C.sizeof_CK_SLOT_INFO))
 
 		return (C.CK_RV)(returnCode)
 	}
@@ -1312,46 +1315,14 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		// TODO Improve
+		outBuffer.Next(1) // Strange byte
 
-		var tokenPresentResponse C.CK_BBOOL
-		var slotCountResponse uint32
+		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
-		err := binary.Read(outBuffer, binary.BigEndian, &tokenPresentResponse)
-		if err != nil {
-			fmt.Println("Boolean byte expected.")
-			return C.CKR_FUNCTION_FAILED
-		}
-		err = binary.Read(outBuffer, binary.BigEndian, &slotCountResponse)
-		if err != nil {
-			fmt.Println("32-bit integer expected.")
-			return C.CKR_FUNCTION_FAILED
-		}
-
-		if tokenPresent != tokenPresentResponse {
-			if tokenPresent != 0x00 {
-				fmt.Println("Slot tokens expected but not present in response.")
-			} else {
-				fmt.Println("Slot tokens not expected but present in response.")
-			}
-			return C.CKR_FUNCTION_FAILED
-		}
-
-		*pulCount = C.CK_ULONG(slotCountResponse)
-
-		if tokenPresentResponse != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSlotList, slotCountResponse)
-
-			for i := uint32(0); i < slotCountResponse; i++ {
-				var slotInfo uint64
-
-				err := binary.Read(outBuffer, binary.BigEndian, &slotInfo)
-				if err != nil {
-					fmt.Println("64-bit slot id expected.")
-					return C.CKR_FUNCTION_FAILED
-				}
-
-				pointerAsSliceDestination[i] = C.CK_SLOT_ID(slotInfo)
+		if pSlotList != nil {
+			pointerAsSliceDestination := unsafe.Slice(pSlotList, *pulCount)
+			for i := 0; i < int(*pulCount); i++ {
+				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
 		}
 
@@ -1373,7 +1344,10 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetTokenInfo, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_TOKEN_INFO_PTR pInfo
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*pInfo = DecodeTokenInfo(outBuffer.Next(C.sizeof_CK_TOKEN_INFO))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1604,7 +1578,10 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_OpenSession, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_SESSION_HANDLE_PTR phSession
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phSession = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 

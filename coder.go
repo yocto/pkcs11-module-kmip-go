@@ -14,12 +14,62 @@ func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
 	return 0x00
 }
 
+func DecodeUnsignedLong(data []byte) C.CK_ULONG {
+	var ulong uint64
+
+	buffer := bytes.NewBuffer(data)
+	binary.Read(buffer, binary.BigEndian, &ulong)
+
+	return C.CK_ULONG(ulong)
+}
+
+func DecodeUnsignedLongAsLength(data []byte) C.CK_ULONG {
+	var ulong uint32
+
+	buffer := bytes.NewBuffer(data)
+	binary.Read(buffer, binary.BigEndian, &ulong)
+
+	return C.CK_ULONG(ulong)
+}
+
 func DecodeInfo(data []byte) C.CK_INFO {
 	info := C.CK_INFO{
 		//TODO Decode
 	}
 
 	return info
+}
+
+func DecodeSlotInfo(data []byte) C.CK_SLOT_INFO {
+	slotInfo := C.CK_SLOT_INFO{
+		//TODO Decode
+	}
+
+	return slotInfo
+}
+
+func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
+	tokenInfo := C.CK_TOKEN_INFO{
+		//TODO Decode
+	}
+
+	return tokenInfo
+}
+
+func DecodeSessionInfo(data []byte) C.CK_SESSION_INFO {
+	sessionInfo := C.CK_SESSION_INFO{
+		//TODO Decode
+	}
+
+	return sessionInfo
+}
+
+func DecodeMechanismInfo(data []byte) C.CK_MECHANISM_INFO {
+	mechanismInfo := C.CK_MECHANISM_INFO{
+		//TODO Decode
+	}
+
+	return mechanismInfo
 }
 
 func EncodeByte(_byte C.CK_BYTE) []byte {
