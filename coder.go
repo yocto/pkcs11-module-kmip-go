@@ -33,41 +33,46 @@ func DecodeUnsignedLongAsLength(data []byte) C.CK_ULONG {
 }
 
 func DecodeInfo(data []byte) C.CK_INFO {
-	info := C.CK_INFO{
-		//TODO Decode
-	}
+	info := C.CK_INFO{}
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&info)), C.sizeof_CK_INFO)
+	copy(pointerAsSliceDestination, data)
 
 	return info
 }
 
 func DecodeSlotInfo(data []byte) C.CK_SLOT_INFO {
-	slotInfo := C.CK_SLOT_INFO{
-		//TODO Decode
-	}
+	slotInfo := C.CK_SLOT_INFO{}
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo)), C.sizeof_CK_SLOT_INFO)
+	copy(pointerAsSliceDestination, data)
 
 	return slotInfo
 }
 
 func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
-	tokenInfo := C.CK_TOKEN_INFO{
-		//TODO Decode
-	}
+	tokenInfo := C.CK_TOKEN_INFO{}
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo)), C.sizeof_CK_TOKEN_INFO)
+	copy(pointerAsSliceDestination, data)
 
 	return tokenInfo
 }
 
 func DecodeSessionInfo(data []byte) C.CK_SESSION_INFO {
-	sessionInfo := C.CK_SESSION_INFO{
-		//TODO Decode
-	}
+	sessionInfo := C.CK_SESSION_INFO{}
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&sessionInfo)), C.sizeof_CK_SESSION_INFO)
+	copy(pointerAsSliceDestination, data)
 
 	return sessionInfo
 }
 
 func DecodeMechanismInfo(data []byte) C.CK_MECHANISM_INFO {
-	mechanismInfo := C.CK_MECHANISM_INFO{
-		//TODO Decode
-	}
+	mechanismInfo := C.CK_MECHANISM_INFO{}
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&mechanismInfo)), C.sizeof_CK_MECHANISM_INFO)
+	copy(pointerAsSliceDestination, data)
 
 	return mechanismInfo
 }
