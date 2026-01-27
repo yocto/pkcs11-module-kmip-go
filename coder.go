@@ -33,10 +33,34 @@ func DecodeUnsignedLongAsLength(data []byte) C.CK_ULONG {
 }
 
 func DecodeInfo(data []byte) C.CK_INFO {
+	//   CK_VERSION    cryptokiVersion;     /* Cryptoki interface ver */
+	//   CK_UTF8CHAR   manufacturerID[32];  /* blank padded */
+	//   CK_FLAGS      flags;               /* must be zero */
+	//   CK_UTF8CHAR   libraryDescription[32];  /* blank padded */
+	//   CK_VERSION    libraryVersion;          /* version of library */
+
 	info := C.CK_INFO{}
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&info)), C.sizeof_CK_INFO)
-	copy(pointerAsSliceDestination, data)
+	var offset int
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&info.cryptokiVersion)), 2)
+	copy(pointerAsSliceDestination, data[offset:(offset+2)])
+	offset += 2
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&info.manufacturerID)), 32)
+	copy(pointerAsSliceDestination, data[offset:(offset+32)])
+	offset += 32
+
+	info.flags = DecodeUnsignedLong(data[offset:(offset + 4)])
+	offset += 4
+
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&info.libraryDescription)), 32)
+	copy(pointerAsSliceDestination, data[offset:(offset+32)])
+	offset += 32
+
+	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&info.libraryVersion)), 2)
+	copy(pointerAsSliceDestination, data[offset:(offset+2)])
+	offset += 2
 
 	return info
 }
