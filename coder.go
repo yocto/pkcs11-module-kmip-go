@@ -14,7 +14,7 @@ func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
 	return 0x00
 }
 
-func DecodeInfo(data [C.sizeof_CK_INFO]byte) C.CK_INFO {
+func DecodeInfo(data []byte) C.CK_INFO {
 	info := C.CK_INFO{
 		//TODO Decode
 	}

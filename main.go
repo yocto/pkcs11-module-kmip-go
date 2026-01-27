@@ -208,7 +208,7 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 
 var client *kmipclient.Client
 
-func main() {}
+func main() { fmt.Println(C_GetInfo(&C.CK_INFO{})) }
 
 func getKMIPClient() (*kmipclient.Client, error) {
 	if client != nil {
@@ -1082,15 +1082,9 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		var infoResponse [C.sizeof_CK_INFO]byte
+		info := DecodeInfo(outBuffer.Next(C.sizeof_CK_INFO))
 
-		err := binary.Read(outBuffer, binary.BigEndian, &infoResponse)
-		if err != nil {
-			fmt.Println("Info structure expected.")
-			return C.CKR_FUNCTION_FAILED
-		}
-
-		*pInfo = DecodeInfo(infoResponse)
+		*pInfo = info
 
 		return (C.CK_RV)(returnCode)
 	}
