@@ -158,8 +158,19 @@ func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
 func DecodeSessionInfo(data []byte) C.CK_SESSION_INFO {
 	sessionInfo := C.CK_SESSION_INFO{}
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&sessionInfo)), C.sizeof_CK_SESSION_INFO)
-	copy(pointerAsSliceDestination, data)
+	var offset int
+
+	sessionInfo.slotID = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	sessionInfo.state = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	sessionInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	sessionInfo.ulDeviceError = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
 
 	return sessionInfo
 }
@@ -167,8 +178,16 @@ func DecodeSessionInfo(data []byte) C.CK_SESSION_INFO {
 func DecodeMechanismInfo(data []byte) C.CK_MECHANISM_INFO {
 	mechanismInfo := C.CK_MECHANISM_INFO{}
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&mechanismInfo)), C.sizeof_CK_MECHANISM_INFO)
-	copy(pointerAsSliceDestination, data)
+	var offset int
+
+	mechanismInfo.ulMinKeySize = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	mechanismInfo.ulMaxKeySize = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	mechanismInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
 
 	return mechanismInfo
 }
