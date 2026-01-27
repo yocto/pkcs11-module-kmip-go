@@ -315,11 +315,7 @@ func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CancelFunction, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_CancelFunction, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -332,11 +328,7 @@ func C_CloseAllSessions(slotID C.CK_SLOT_ID) C.CK_RV { // Since v1.0
 	inBuffer.Write(EncodeUnsignedLong(slotID))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseAllSessions, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseAllSessions, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -349,11 +341,7 @@ func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseSession, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseSession, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -375,10 +363,12 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CopyObject, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_OBJECT_HANDLE_PTR phNewObject
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_CreateObject
@@ -397,10 +387,12 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CreateObject, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: K_OBJECT_HANDLE_PTR phObject
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_Decrypt
@@ -419,10 +411,12 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Decrypt, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_ULONG_PTR pulDataLen & CK_BYTE_PTR pData
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DecryptDigestUpdate
@@ -441,10 +435,12 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptDigestUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pPart & CK_ULONG_PTR pulPartLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DecryptFinal
@@ -460,10 +456,12 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pLastPart & CK_ULONG_PTR pulLastPartLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DecryptInit
@@ -476,11 +474,7 @@ func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	inBuffer.Write(EncodeUnsignedLong(hKey))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptInit, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptInit, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -507,10 +501,12 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessage, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pPlaintext & CK_ULONG_PTR pulPlaintextLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DecryptMessageBegin
@@ -527,11 +523,7 @@ func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageBegin, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageBegin, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -556,10 +548,12 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageNext, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pPlaintextPart & CK_ULONG_PTR pulPlaintextPartLen,
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DecryptUpdate
@@ -578,10 +572,12 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pPart & CK_ULONG_PTR pulPartLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DecryptVerifyUpdate
@@ -600,10 +596,12 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptVerifyUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pPart & CK_ULONG_PTR pulPartLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DeriveKey
@@ -624,10 +622,12 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DeriveKey, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_OBJECT_HANDLE_PTR phKey
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DestroyObject
@@ -639,11 +639,7 @@ func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DestroyObject, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DestroyObject, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -664,10 +660,12 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Digest, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pDigest & CK_ULONG_PTR pulDigestLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DigestEncryptUpdate
@@ -686,10 +684,12 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestEncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pEncryptedPart & CK_ULONG_PTR pulEncryptedPartLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DigestFinal
@@ -705,10 +705,12 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pDigest & CK_ULONG_PTR pulDigestLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_DigestInit
@@ -720,11 +722,7 @@ func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestInit, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestInit, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -738,11 +736,7 @@ func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV 
 	inBuffer.Write(EncodeUnsignedLong(hKey))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestKey, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestKey, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -758,11 +752,7 @@ func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -783,10 +773,12 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Encrypt, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pEncryptedData & CK_ULONG_PTR pulEncryptedDataLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_EncryptFinal
@@ -802,8 +794,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
-
+		// TODO FIELD: CK_BYTE_PTR pLastEncryptedPart & CK_ULONG_PTR pulLastEncryptedPartLen
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -848,10 +839,12 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessage, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pCiphertext & CK_ULONG_PTR pulCiphertextLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_EncryptMessageBegin
@@ -868,11 +861,7 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageBegin, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageBegin, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -897,10 +886,12 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageNext, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pCiphertextPart & CK_ULONG_PTR pulCiphertextPartLen,
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_EncryptUpdate
@@ -919,10 +910,12 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_BYTE_PTR pEncryptedPart & CK_ULONG_PTR pulEncryptedPartLen
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_Finalize
@@ -946,10 +939,13 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjects, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_OBJECT_HANDLE_PTR phObject
+		// TODO FIELD: CK_ULONG_PTR pulObjectCount
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_FindObjectsFinal
@@ -960,11 +956,7 @@ func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsFinal, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsFinal, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -982,11 +974,7 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
-	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsInit, inputParameters)
-
-	if outputParameters != nil {
-		// TODO Handle output parameters
-	}
+	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsInit, inputParameters)
 
 	return (C.CK_RV)(returnCode)
 }
@@ -1008,10 +996,12 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKey, inputParameters)
 
 	if outputParameters != nil {
-		// TODO Handle output parameters
+		// TODO FIELD: CK_OBJECT_HANDLE_PTR phKey
+		return (C.CK_RV)(returnCode)
 	}
 
-	return (C.CK_RV)(returnCode)
+	fmt.Println("Expected output parameters")
+	return C.CKR_FUNCTION_FAILED
 }
 
 //export C_GenerateKeyPair
