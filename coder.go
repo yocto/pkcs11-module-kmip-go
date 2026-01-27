@@ -38,6 +38,16 @@ func EncodeLong(long C.CK_LONG) []byte {
 	return buffer.Bytes()
 }
 
+func EncodeBytePointer(bytePointer C.CK_BYTE_PTR, bytePointerLength C.CK_ULONG) []byte {
+	inBuffer := new(bytes.Buffer)
+	inBuffer.Write(EncodeUnsignedLongAsLength(bytePointerLength)) // Moved up
+	for _, _byte := range unsafe.Slice(bytePointer, bytePointerLength) {
+		inBuffer.Write(EncodeByte(_byte))
+	}
+	// Length field originally placed here, but "moved up" before variable byte pointer array.
+	return inBuffer.Bytes()
+}
+
 func EncodeAttribute(attribute C.CK_ATTRIBUTE, isRequest bool) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, uint64(attribute._type))

@@ -401,9 +401,7 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pEncryptedData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pEncryptedData, ulEncryptedDataLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pData != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulDataLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -425,9 +423,7 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pEncryptedPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pEncryptedPart, ulEncryptedPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -486,14 +482,10 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulAssociatedDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pAssociatedData)
-	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulCiphertextLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pCiphertext)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pAssociatedData, ulAssociatedDataLen))
+	inBuffer.Write(EncodeBytePointer(pCiphertext, ulCiphertextLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPlaintext != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPlaintextLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -516,11 +508,9 @@ func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulAssociatedDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pAssociatedData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pAssociatedData, ulAssociatedDataLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageBegin, inputParameters)
@@ -535,11 +525,9 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulCiphertextPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pCiphertextPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pCiphertextPart, ulCiphertextPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPlaintextPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPlaintextPartLen))        // Output pointer length
 	inBuffer.Write(EncodeUnsignedLong(flags))
@@ -562,9 +550,7 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pEncryptedPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pEncryptedPart, ulEncryptedPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -586,9 +572,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulEncryptedPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pEncryptedPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pEncryptedPart, ulEncryptedPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -650,9 +634,7 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pDigest != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulDigestLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -674,9 +656,7 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pPart, ulPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -747,9 +727,7 @@ func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pPart, ulPartLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, inputParameters)
@@ -763,9 +741,7 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedData != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedDataLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -824,14 +800,10 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulAssociatedDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pAssociatedData)
-	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPlaintextLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPlaintext)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pAssociatedData, ulAssociatedDataLen))
+	inBuffer.Write(EncodeBytePointer(pPlaintext, ulPlaintextLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pCiphertext != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCiphertextLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -854,11 +826,9 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulAssociatedDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pAssociatedData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pAssociatedData, ulAssociatedDataLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageBegin, inputParameters)
@@ -873,11 +843,9 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPlaintextPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPlaintextPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pPlaintextPart, ulPlaintextPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pCiphertextPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulCiphertextPartLen))        // Output pointer length
 	inBuffer.Write(EncodeUnsignedLong(flags))
@@ -900,9 +868,7 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pPart, ulPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -1041,9 +1007,7 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulRandomLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pRandomData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pRandomData, ulRandomLen)) // TODO: Or just only sending length?
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateRandom, inputParameters)
@@ -1628,7 +1592,7 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 	inBuffer.Write(EncodeUnsignedLong(slotID))
 	inBuffer.Write(EncodeUnsignedLong(flags))
 	if pApplication != nil {
-		binary.Write(inBuffer, binary.BigEndian, pApplication)
+		binary.Write(inBuffer, binary.BigEndian, pApplication) // TODO Check void pointer
 	}
 	inputParameters := inBuffer.Bytes()
 
@@ -1649,9 +1613,7 @@ func C_SeedRandom(hSession C.CK_SESSION_HANDLE, pSeed C.CK_BYTE_PTR, ulSeedLen C
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulSeedLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pSeed)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pSeed, ulSeedLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SeedRandom, inputParameters)
@@ -1698,9 +1660,7 @@ func C_SetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulOperationStateLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pOperationState)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pOperationState, ulOperationStateLen))
 	inBuffer.Write(EncodeUnsignedLong(hEncryptionKey))
 	inBuffer.Write(EncodeUnsignedLong(hAuthenticationKey))
 	inputParameters := inBuffer.Bytes()
@@ -1735,9 +1695,7 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pSignature != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulSignatureLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -1759,9 +1717,7 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pPart, ulPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pEncryptedPart != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulEncryptedPartLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -1820,11 +1776,9 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pSignature != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulSignatureLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -1847,7 +1801,7 @@ func C_SignMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
@@ -1863,11 +1817,9 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pDataPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pDataPart, ulDataPartLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pSignature != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulSignatureLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -1889,9 +1841,7 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pSignature != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulSignatureLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
@@ -1928,9 +1878,7 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPart)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pPart, ulPartLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SignUpdate, inputParameters)
@@ -1946,9 +1894,7 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLong(hUnwrappingKey))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulWrappedKeyLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pWrappedKey)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pWrappedKey, ulWrappedKeyLen))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
 		inBuffer.Write(EncodeAttribute(attribute, true))
@@ -1973,12 +1919,8 @@ func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pSignature)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
+	inBuffer.Write(EncodeBytePointer(pSignature, ulSignatureLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Verify, inputParameters)
@@ -2023,14 +1965,10 @@ func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulP
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pData)
-	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pSignature)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pData, ulDataLen))
+	inBuffer.Write(EncodeBytePointer(pSignature, ulSignatureLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessage, inputParameters)
@@ -2045,7 +1983,7 @@ func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
@@ -2061,14 +1999,10 @@ func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR,
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulParameterLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pParameter)
+	binary.Write(inBuffer, binary.BigEndian, pParameter)       // TODO: Check void pointer
 	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulDataPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pDataPart)
-	// (See: Moved up)
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pSignature)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pDataPart, ulDataPartLen))
+	inBuffer.Write(EncodeBytePointer(pSignature, ulSignatureLen))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageNext, inputParameters)
@@ -2082,9 +2016,7 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pSignature)
-	// (See: Moved up)
+	inBuffer.Write(EncodeBytePointer(pSignature, ulSignatureLen))
 	inBuffer.Write(EncodeByte(ConvertBooleanToByte(pData != nil))) // Output pointer
 	inBuffer.Write(EncodeUnsignedLongAsLength(*pulDataLen))        // Output pointer length
 	inputParameters := inBuffer.Bytes()
