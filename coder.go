@@ -58,7 +58,7 @@ func DecodeInfo(data []byte) C.CK_INFO {
 	copy(pointerAsSliceDestination, data[offset:(offset+32)])
 	offset += 32
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&info.libraryVersion)), 2)
+	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&info.libraryVersion)), 2)
 	copy(pointerAsSliceDestination, data[offset:(offset+2)])
 	offset += 2
 
