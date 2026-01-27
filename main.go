@@ -1080,7 +1080,18 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInfo, nil)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_INFO_PTR pInfo
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		var infoResponse [C.sizeof_CK_INFO]byte
+
+		err := binary.Read(outBuffer, binary.BigEndian, &infoResponse)
+		if err != nil {
+			fmt.Println("Info structure expected.")
+			return C.CKR_FUNCTION_FAILED
+		}
+
+		*pInfo = DecodeInfo(infoResponse)
+
 		return (C.CK_RV)(returnCode)
 	}
 

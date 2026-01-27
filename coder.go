@@ -14,6 +14,14 @@ func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
 	return 0x00
 }
 
+func DecodeInfo(data [C.sizeof_CK_INFO]byte) C.CK_INFO {
+	info := C.CK_INFO{
+		//TODO Decode
+	}
+
+	return info
+}
+
 func EncodeByte(_byte C.CK_BYTE) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, byte(_byte))
