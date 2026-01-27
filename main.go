@@ -215,16 +215,22 @@ func getKMIPClient() (*kmipclient.Client, error) {
 		return client, nil
 	}
 
+	middlewares := []kmipclient.Middleware{
+		kmipclient.CorrelationValueMiddleware(uuid.NewString),
+		kmipclient.TimeoutMiddleware(500 * time.Millisecond),
+	}
+
+	env_debug := os.Getenv("PKCS11_DEBUG")
+	if env_debug == "1" {
+		middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
+	}
+
 	createdClient, err := kmipclient.Dial(
 		"yocto.com:5696",
 		kmipclient.WithTlsConfig(&tls.Config{
 			InsecureSkipVerify: true,
 		}),
-		kmipclient.WithMiddlewares(
-			kmipclient.CorrelationValueMiddleware(uuid.NewString),
-			kmipclient.DebugMiddleware(os.Stdout, nil),
-			kmipclient.TimeoutMiddleware(500*time.Millisecond),
-		),
+		kmipclient.WithMiddlewares(middlewares...),
 	)
 	client = createdClient
 
