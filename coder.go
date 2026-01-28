@@ -376,27 +376,66 @@ func ConvertAttributeValue(attribute C.CK_ATTRIBUTE) any {
 		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
 		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
 	}
-	// TODO: Attribute CKA_START_DATE         0x00000110UL CK_DATE
-	// TODO: Attribute CKA_END_DATE           0x00000111UL CK_DATE
-	// TODO: Attribute CKA_MODULUS            0x00000120UL BIGINT
+	if attribute._type == C.CKA_START_DATE {
+		count := attribute.ulValueLen / C.sizeof_CK_DATE
+		return unsafe.Slice((*C.CK_DATE)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_END_DATE {
+		count := attribute.ulValueLen / C.sizeof_CK_DATE
+		return unsafe.Slice((*C.CK_DATE)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_MODULUS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
 	if attribute._type == C.CKA_MODULUS_BITS {
 		count := attribute.ulValueLen / C.sizeof_CK_ULONG
 		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
 	}
-	// TODO: Attribute CKA_PUBLIC_EXPONENT    0x00000122UL BIGINT
-	// TODO: Attribute CKA_PRIVATE_EXPONENT   0x00000123UL BIGINT
-	// TODO: Attribute CKA_PRIME_1            0x00000124UL BIGINT
-	// TODO: Attribute CKA_PRIME_2            0x00000125UL BIGINT
-	// TODO: Attribute CKA_EXPONENT_1         0x00000126UL BIGINT
-	// TODO: Attribute CKA_EXPONENT_2         0x00000127UL BIGINT
-	// TODO: Attribute CKA_COEFFICIENT        0x00000128UL BIGINT
+	if attribute._type == C.CKA_PUBLIC_EXPONENT {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_PRIVATE_EXPONENT {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_PRIME_1 {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_PRIME_2 {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_EXPONENT_1 {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_EXPONENT_2 {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_COEFFICIENT {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
 	if attribute._type == C.CKA_PUBLIC_KEY_INFO {
 		count := attribute.ulValueLen / C.sizeof_CK_BYTE
 		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
 	}
-	// TODO: Attribute CKA_PRIME              0x00000130UL BIGINT
-	// TODO: Attribute CKA_SUBPRIME           0x00000131UL BIGINT
-	// TODO: Attribute CKA_BASE               0x00000132UL BIGINT
+	if attribute._type == C.CKA_PRIME {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_SUBPRIME {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_BASE {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
 	if attribute._type == C.CKA_PRIME_BITS {
 		count := attribute.ulValueLen / C.sizeof_CK_ULONG
 		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
@@ -405,16 +444,46 @@ func ConvertAttributeValue(attribute C.CK_ATTRIBUTE) any {
 		count := attribute.ulValueLen / C.sizeof_CK_ULONG
 		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
 	}
-	// TODO: Attribute CKA_VALUE_BITS         0x00000160UL CK_ULONG
-	// TODO: Attribute CKA_VALUE_LEN          0x00000161UL CK_ULONG
-	// TODO: Attribute CKA_EXTRACTABLE        0x00000162UL CK_BBOOL
-	// TODO: Attribute CKA_LOCAL              0x00000163UL CK_BBOOL
-	// TODO: Attribute CKA_NEVER_EXTRACTABLE  0x00000164UL CK_BBOOL
-	// TODO: Attribute CKA_ALWAYS_SENSITIVE   0x00000165UL CK_BBOOL
-	// TODO: Attribute CKA_KEY_GEN_MECHANISM  0x00000166UL CK_MECHANISM_TYPE
-	// TODO: Attribute CKA_MODIFIABLE         0x00000170UL CK_BBOOL
-	// TODO: Attribute CKA_COPYABLE           0x00000171UL CK_BBOOL
-	// TODO: Attribute CKA_DESTROYABLE        0x00000172UL CK_BBOOL
+	if attribute._type == C.CKA_VALUE_BITS {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_VALUE_LEN {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_EXTRACTABLE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_LOCAL {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_NEVER_EXTRACTABLE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_ALWAYS_SENSITIVE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_KEY_GEN_MECHANISM {
+		count := attribute.ulValueLen / C.sizeof_CK_MECHANISM_TYPE
+		return unsafe.Slice((*C.CK_MECHANISM_TYPE)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_MODIFIABLE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_COPYABLE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_DESTROYABLE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
 	if attribute._type == C.CKA_EC_PARAMS {
 		count := attribute.ulValueLen / C.sizeof_CK_BYTE
 		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
@@ -423,47 +492,168 @@ func ConvertAttributeValue(attribute C.CK_ATTRIBUTE) any {
 		count := attribute.ulValueLen / C.sizeof_CK_BYTE
 		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
 	}
-	// TODO: Attribute CKA_SECONDARY_AUTH     0x00000200UL /* Deprecated */
-	// TODO: Attribute CKA_AUTH_PIN_FLAGS     0x00000201UL /* Deprecated */
-	// TODO: Attribute CKA_ALWAYS_AUTHENTICATE  0x00000202UL
-	// TODO: Attribute CKA_WRAP_WITH_TRUSTED    0x00000210UL CKA_ALWAYS_AUTHENTICATE
-	// TODO: Attribute CKA_WRAP_TEMPLATE        (CKF_ARRAY_ATTRIBUTE|0x00000211UL)
-	// TODO: Attribute CKA_UNWRAP_TEMPLATE      (CKF_ARRAY_ATTRIBUTE|0x00000212UL)
-	// TODO: Attribute CKA_DERIVE_TEMPLATE      (CKF_ARRAY_ATTRIBUTE|0x00000213UL)
-	// TODO: Attribute CKA_OTP_FORMAT                0x00000220UL
-	// TODO: Attribute CKA_OTP_LENGTH                0x00000221UL
-	// TODO: Attribute CKA_OTP_TIME_INTERVAL         0x00000222UL
-	// TODO: Attribute CKA_OTP_USER_FRIENDLY_MODE    0x00000223UL
-	// TODO: Attribute CKA_OTP_CHALLENGE_REQUIREMENT 0x00000224UL
-	// TODO: Attribute CKA_OTP_TIME_REQUIREMENT      0x00000225UL
-	// TODO: Attribute CKA_OTP_COUNTER_REQUIREMENT   0x00000226UL
-	// TODO: Attribute CKA_OTP_PIN_REQUIREMENT       0x00000227UL
-	// TODO: Attribute CKA_OTP_COUNTER               0x0000022eUL
-	// TODO: Attribute CKA_OTP_TIME                  0x0000022fUL
-	// TODO: Attribute CKA_OTP_USER_IDENTIFIER       0x0000022aUL
-	// TODO: Attribute CKA_OTP_SERVICE_IDENTIFIER    0x0000022bUL
-	// TODO: Attribute CKA_OTP_SERVICE_LOGO          0x0000022cUL
-	// TODO: Attribute CKA_OTP_SERVICE_LOGO_TYPE     0x0000022dUL
-	// TODO: Attribute CKA_GOSTR3410_PARAMS            0x00000250UL
-	// TODO: Attribute CKA_GOSTR3411_PARAMS            0x00000251UL
-	// TODO: Attribute CKA_GOST28147_PARAMS            0x00000252UL
-	// TODO: Attribute CKA_HW_FEATURE_TYPE             0x00000300UL
-	// TODO: Attribute CKA_RESET_ON_INIT               0x00000301UL
-	// TODO: Attribute CKA_HAS_RESET                   0x00000302UL
-	// TODO: Attribute CKA_PIXEL_X                     0x00000400UL
-	// TODO: Attribute CKA_PIXEL_Y                     0x00000401UL
-	// TODO: Attribute CKA_RESOLUTION                  0x00000402UL
-	// TODO: Attribute CKA_CHAR_ROWS                   0x00000403UL
-	// TODO: Attribute CKA_CHAR_COLUMNS                0x00000404UL
-	// TODO: Attribute CKA_COLOR                       0x00000405UL
-	// TODO: Attribute CKA_BITS_PER_PIXEL              0x00000406UL
-	// TODO: Attribute CKA_CHAR_SETS                   0x00000480UL
-	// TODO: Attribute CKA_ENCODING_METHODS            0x00000481UL
-	// TODO: Attribute CKA_MIME_TYPES                  0x00000482UL
-	// TODO: Attribute CKA_MECHANISM_TYPE              0x00000500UL
-	// TODO: Attribute CKA_REQUIRED_CMS_ATTRIBUTES     0x00000501UL
-	// TODO: Attribute CKA_DEFAULT_CMS_ATTRIBUTES      0x00000502UL
-	// TODO: Attribute CKA_SUPPORTED_CMS_ATTRIBUTES    0x00000503UL
+	// TODO: Attribute CKA_SECONDARY_AUTH (Deprecated)
+	// TODO: Attribute CKA_AUTH_PIN_FLAGS (Deprecated)
+	if attribute._type == C.CKA_ALWAYS_AUTHENTICATE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_WRAP_WITH_TRUSTED {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_WRAP_TEMPLATE {
+		count := attribute.ulValueLen / C.sizeof_CK_ATTRIBUTE
+		return unsafe.Slice((C.CK_ATTRIBUTE_PTR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_WRAP_TEMPLATE {
+		count := attribute.ulValueLen / C.sizeof_CK_ATTRIBUTE
+		return unsafe.Slice((C.CK_ATTRIBUTE_PTR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_UNWRAP_TEMPLATE {
+		count := attribute.ulValueLen / C.sizeof_CK_ATTRIBUTE
+		return unsafe.Slice((C.CK_ATTRIBUTE_PTR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_DERIVE_TEMPLATE {
+		count := attribute.ulValueLen / C.sizeof_CK_ATTRIBUTE
+		return unsafe.Slice((C.CK_ATTRIBUTE_PTR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_OTP_FORMAT {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_LENGTH {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_TIME_INTERVAL {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_USER_FRIENDLY_MODE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_CHALLENGE_REQUIREMENT {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_TIME_REQUIREMENT {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_COUNTER_REQUIREMENT {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_PIN_REQUIREMENT {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_OTP_COUNTER {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_OTP_TIME {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_OTP_USER_IDENTIFIER {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_OTP_SERVICE_IDENTIFIER {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_OTP_SERVICE_LOGO {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_OTP_SERVICE_LOGO_TYPE {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_GOSTR3410_PARAMS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_GOSTR3411_PARAMS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_GOST28147_PARAMS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_HW_FEATURE_TYPE {
+		count := attribute.ulValueLen / C.sizeof_CK_HW_FEATURE_TYPE
+		return unsafe.Slice((*C.CK_HW_FEATURE_TYPE)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_RESET_ON_INIT {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_HAS_RESET {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_PIXEL_X {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_PIXEL_Y {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_RESOLUTION {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_CHAR_ROWS {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_CHAR_COLUMNS {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_COLOR {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_BITS_PER_PIXEL {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_CHAR_SETS {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_ENCODING_METHODS {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_MIME_TYPES {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_MECHANISM_TYPE {
+		count := attribute.ulValueLen / C.sizeof_CK_MECHANISM_TYPE
+		return unsafe.Slice((*C.CK_MECHANISM_TYPE)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_REQUIRED_CMS_ATTRIBUTES {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_DEFAULT_CMS_ATTRIBUTES {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_SUPPORTED_CMS_ATTRIBUTES {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
 	if attribute._type == C.CKA_ALLOWED_MECHANISMS {
 		count := attribute.ulValueLen / C.sizeof_CK_MECHANISM_TYPE
 		return unsafe.Slice((C.CK_MECHANISM_TYPE_PTR)(attribute.pValue), count)
@@ -472,29 +662,98 @@ func ConvertAttributeValue(attribute C.CK_ATTRIBUTE) any {
 		count := attribute.ulValueLen / C.sizeof_CK_PROFILE_ID
 		return unsafe.Slice((*C.CK_PROFILE_ID)(attribute.pValue), count)[0]
 	}
-	// TODO: Attribute CKA_X2RATCHET_BAG               0x00000602UL []byte
-	// TODO: Attribute CKA_X2RATCHET_BAGSIZE           0x00000603UL ULONG
-	// TODO: Attribute CKA_X2RATCHET_BOBS1STMSG        0x00000604UL BOOL
-	// TODO: Attribute CKA_X2RATCHET_CKR               0x00000605UL []byte
-	// TODO: Attribute CKA_X2RATCHET_CKS               0x00000606UL []byte
-	// TODO: Attribute CKA_X2RATCHET_DHP               0x00000607UL []byte
-	// TODO: Attribute CKA_X2RATCHET_DHR               0x00000608UL []byte
-	// TODO: Attribute CKA_X2RATCHET_DHS               0x00000609UL []byte
-	// TODO: Attribute CKA_X2RATCHET_HKR               0x0000060aUL []byte
-	// TODO: Attribute CKA_X2RATCHET_HKS               0x0000060bUL []byte
-	// TODO: Attribute CKA_X2RATCHET_ISALICE           0x0000060cUL BOOL
-	// TODO: Attribute CKA_X2RATCHET_NHKR              0x0000060dUL []byte
-	// TODO: Attribute CKA_X2RATCHET_NHKS              0x0000060eUL []byte
-	// TODO: Attribute CKA_X2RATCHET_NR                0x0000060fUL ULONG
-	// TODO: Attribute CKA_X2RATCHET_NS                0x00000610UL ULONG
-	// TODO: Attribute CKA_X2RATCHET_PNS               0x00000611UL ULONG
-	// TODO: Attribute CKA_X2RATCHET_RK                0x00000612UL []byte
-	// TODO: Attribute CKA_HSS_LEVELS                  0x00000617UL CK_ULONG
-	// TODO: Attribute CKA_HSS_LMS_TYPE                0x00000618UL CK_ULONG
-	// TODO: Attribute CKA_HSS_LMOTS_TYPE              0x00000619UL CK_ULONG
-	// TODO: Attribute CKA_HSS_LMS_TYPES               0x0000061aUL CK_ULONG_PTR
-	// TODO: Attribute CKA_HSS_LMOTS_TYPES             0x0000061bUL CK_ULONG_PTR
-	// TODO: Attribute CKA_HSS_KEYS_REMAINING          0x0000061cUL CK_ULONG
+	if attribute._type == C.CKA_X2RATCHET_BAG {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_BAGSIZE {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_X2RATCHET_BOBS1STMSG {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_X2RATCHET_CKR {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_CKS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_DHP {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_DHR {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_DHS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_HKR {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_HKS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_ISALICE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_X2RATCHET_NHKR {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_NHKS {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_X2RATCHET_NR {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_X2RATCHET_NS {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_X2RATCHET_PNS {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_X2RATCHET_RK {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_HSS_LEVELS {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_HSS_LMS_TYPE {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_HSS_LMOTS_TYPE {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_HSS_LMS_TYPES {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_HSS_LMOTS_TYPES {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_HSS_KEYS_REMAINING {
+		count := attribute.ulValueLen / C.sizeof_CK_ULONG
+		return unsafe.Slice((*C.CK_ULONG)(attribute.pValue), count)[0]
+	}
 	return nil
 }
 
