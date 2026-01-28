@@ -911,8 +911,15 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjects, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phObject
-		// TODO FIELD: CK_ULONG_PTR pulObjectCount
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*pulObjectCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		pointerAsSliceDestination := unsafe.Slice(phObject, *pulObjectCount)
+		for i := 0; i < len(pointerAsSliceDestination); i++ {
+			pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1209,7 +1216,7 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 
 		if pMechanismList != nil {
 			pointerAsSliceDestination := unsafe.Slice(pMechanismList, *pulCount)
-			for i := 0; i < int(*pulCount); i++ {
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
 		}
@@ -1327,7 +1334,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 
 		if pSlotList != nil {
 			pointerAsSliceDestination := unsafe.Slice(pSlotList, *pulCount)
-			for i := 0; i < int(*pulCount); i++ {
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
 		}
