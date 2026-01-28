@@ -5,6 +5,7 @@ import "bytes"
 // #include "cgo.h"
 import "C"
 import "encoding/binary"
+import "reflect"
 import "unsafe"
 
 func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
@@ -226,17 +227,63 @@ func EncodeBytePointer(bytePointer C.CK_BYTE_PTR, bytePointerLength C.CK_ULONG) 
 	return inBuffer.Bytes()
 }
 
-func EncodeAttribute(attribute C.CK_ATTRIBUTE, withValue bool) []byte {
-	buffer := new(bytes.Buffer)
-	binary.Write(buffer, binary.BigEndian, uint64(attribute._type))
-	binary.Write(buffer, binary.BigEndian, bool(attribute.pValue != nil && withValue))
-	binary.Write(buffer, binary.BigEndian, bool(attribute.ulValueLen != 0))
-	if withValue {
-		// If the void pointer points to a single thing, there is no length
-		buffer.Write(EncodeUnsignedLongAsLength(attribute.ulValueLen)) // Moved up
-		binary.Write(buffer, binary.BigEndian, attribute.pValue)       // TODO: Check void pointer
-		// (See: Moved up)
+func EncodeVoidPointerAsBytePointer(voidPointer C.CK_VOID_PTR, voidPointerLength C.CK_ULONG) []byte {
+	return EncodeBytePointer(C.CK_BYTE_PTR(voidPointer), voidPointerLength)
+}
+
+func ConvertAttributeValue(attribute C.CK_ATTRIBUTE) any {
+	if attribute.pValue == nil {
+		return nil
 	}
+	// ---------------
+	if attribute._type == C.CKA_CLASS {
+		count := attribute.ulValueLen / C.sizeof_CK_OBJECT_CLASS
+		return unsafe.Slice((*C.CK_OBJECT_CLASS)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_SENSITIVE {
+		count := attribute.ulValueLen / C.sizeof_CK_BBOOL
+		return unsafe.Slice((*C.CK_BBOOL)(attribute.pValue), count)[0]
+	}
+	if attribute._type == C.CKA_CHECK_VALUE {
+		count := attribute.ulValueLen / C.sizeof_CK_BYTE
+		return unsafe.Slice((*C.CK_BYTE)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_ALLOWED_MECHANISMS {
+		count := attribute.ulValueLen / C.sizeof_CK_MECHANISM_TYPE
+		return unsafe.Slice((C.CK_MECHANISM_TYPE_PTR)(attribute.pValue), count)
+	}
+	if attribute._type == C.CKA_LABEL {
+		count := attribute.ulValueLen / C.sizeof_CK_UTF8CHAR
+		return unsafe.Slice((*C.CK_UTF8CHAR)(attribute.pValue), count)
+	}
+	// TODO: Fill all
+	return nil
+}
+
+func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
+	attributeValue := ConvertAttributeValue(attribute)
+
+	hasValue := bool(attribute.pValue != nil)
+	hasLength := bool(attribute.ulValueLen != 0) // Assuming exact multiple
+
+	if forceValueNil || !hasLength {
+		hasValue = false
+	}
+
+	buffer := new(bytes.Buffer)
+	buffer.Write(EncodeUnsignedLong(attribute._type))
+
+	buffer.Write(EncodeByte(ConvertBooleanToByte(hasValue)))
+	buffer.Write(EncodeByte(ConvertBooleanToByte(hasLength)))
+
+	if hasLength && reflect.TypeOf(attributeValue).Kind() == reflect.Slice {
+		buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(reflect.ValueOf(attributeValue).Len())))
+	}
+
+	if hasValue {
+		buffer.Write(EncodeVoidPointerAsBytePointer(attribute.pValue, attribute.ulValueLen)[4:])
+	}
+
 	return buffer.Bytes()
 }
 
@@ -278,7 +325,7 @@ func getAttributeForTest1() C.CK_ATTRIBUTE {
 }
 
 func getAttributeForTest2() C.CK_ATTRIBUTE {
-	var checkValue [16]C.CK_BYTE_PTR
+	var checkValue [16]C.CK_BYTE
 
 	return C.CK_ATTRIBUTE{
 		_type:      C.CKA_CHECK_VALUE,
@@ -294,6 +341,16 @@ func getAttributeForTest3() C.CK_ATTRIBUTE {
 		_type:      C.CKA_ALLOWED_MECHANISMS,
 		pValue:     C.CK_VOID_PTR(&mechanisms),
 		ulValueLen: C.CK_ULONG(unsafe.Sizeof(mechanisms)),
+	}
+}
+
+func getAttributeForTest4() C.CK_ATTRIBUTE {
+	var label [42]C.CK_BYTE
+
+	return C.CK_ATTRIBUTE{
+		_type:      C.CKA_LABEL,
+		pValue:     C.CK_VOID_PTR(&label),
+		ulValueLen: C.CK_ULONG(unsafe.Sizeof(label)),
 	}
 }
 
