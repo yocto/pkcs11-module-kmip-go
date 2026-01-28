@@ -229,27 +229,27 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 	remaining := data[10:]
 
 	if attribute._type == C.CKA_CLASS {
-		value := DecodeUnsignedLong(remaining)
-		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 8
+		value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+		attribute.pValue = C.CK_VOID_PTR(&value)
 	}
 
 	if attribute._type == C.CKA_KEY_TYPE {
-		value := DecodeUnsignedLong(remaining)
-		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 8
+		value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+		attribute.pValue = C.CK_VOID_PTR(&value)
 	}
 
 	if attribute._type == C.CKA_COPYABLE {
-		value := DecodeByte(remaining)
-		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 1
+		value := DecodeByte(remaining[0:attribute.ulValueLen])
+		attribute.pValue = C.CK_VOID_PTR(&value)
 	}
 
 	if attribute._type == C.CKA_TOKEN {
-		value := DecodeByte(remaining)
-		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 1
+		value := DecodeByte(remaining[0:attribute.ulValueLen])
+		attribute.pValue = C.CK_VOID_PTR(&value)
 	}
 	// TODO: Do for all attributes
 
