@@ -281,7 +281,19 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 	}
 
 	if hasValue {
-		buffer.Write(EncodeVoidPointerAsBytePointer(attribute.pValue, attribute.ulValueLen)[4:])
+		switch casted := attributeValue.(type) {
+		case C.CK_BYTE:
+			{
+				buffer.Write(EncodeByte(casted))
+				break
+			}
+		case []C.CK_BYTE:
+			{
+				buffer.Write(EncodeVoidPointerAsBytePointer(attribute.pValue, attribute.ulValueLen)[4:])
+				break
+			}
+		}
+		// TODO: Do for every attribute value type
 	}
 
 	return buffer.Bytes()
