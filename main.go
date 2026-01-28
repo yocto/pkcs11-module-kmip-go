@@ -1051,7 +1051,20 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetAttributeValue, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_ATTRIBUTE_PTR pTemplate
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		var offset int
+
+		ulCount := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		offset += 4
+
+		pointerAsSliceDestination := unsafe.Slice(pTemplate, ulCount)
+		for i := 0; i < len(pointerAsSliceDestination); i++ {
+			attributeSize := CalculateAttributeSize(outputParameters.([]byte)[offset:])
+			pointerAsSliceDestination[i] = DecodeAttribute(outBuffer.Next(attributeSize))
+			offset += attributeSize
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 

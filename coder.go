@@ -15,6 +15,15 @@ func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
 	return 0x00
 }
 
+func DecodeByte(data []byte) C.CK_BYTE {
+	var _byte byte
+
+	buffer := bytes.NewBuffer(data)
+	binary.Read(buffer, binary.BigEndian, &_byte)
+
+	return C.CK_BYTE(_byte)
+}
+
 func DecodeUnsignedLong(data []byte) C.CK_ULONG {
 	var ulong uint64
 
@@ -174,6 +183,73 @@ func DecodeSessionInfo(data []byte) C.CK_SESSION_INFO {
 	offset += 8
 
 	return sessionInfo
+}
+
+func CalculateAttributeSize(data []byte) int {
+	_type := DecodeUnsignedLong(data[0:8])
+	hasValue := DecodeByte(data[8:9])
+	hasLength := DecodeByte(data[9:10])
+
+	var lengthSize int
+	var valueSize int
+
+	if _type == C.CKA_CLASS {
+		lengthSize = 0
+		valueSize = 8
+	}
+	if _type == C.CKA_KEY_TYPE {
+		lengthSize = 0
+		valueSize = 8
+	}
+	if _type == C.CKA_COPYABLE {
+		lengthSize = 0
+		valueSize = 1
+	}
+	if _type == C.CKA_TOKEN {
+		lengthSize = 0
+		valueSize = 1
+	}
+	// TODO: Do for all attribute types
+
+	totalSize := 10
+	if hasLength != 0x00 {
+		totalSize += lengthSize
+	}
+	if hasValue != 0x00 {
+		totalSize += valueSize
+	}
+	return totalSize
+}
+
+func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
+	attribute := C.CK_ATTRIBUTE{}
+
+	var offset int
+
+	attribute._type = DecodeUnsignedLong(data[offset:(offset + 8)])
+	offset += 8
+
+	if attribute._type == C.CKA_CLASS {
+		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		attribute.ulValueLen = 8
+	}
+
+	if attribute._type == C.CKA_KEY_TYPE {
+		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		attribute.ulValueLen = 8
+	}
+
+	if attribute._type == C.CKA_COPYABLE {
+		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		attribute.ulValueLen = 1
+	}
+
+	if attribute._type == C.CKA_TOKEN {
+		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		attribute.ulValueLen = 1
+	}
+
+	return attribute
 }
 
 func DecodeMechanismInfo(data []byte) C.CK_MECHANISM_INFO {
