@@ -224,30 +224,34 @@ func CalculateAttributeSize(data []byte) int {
 func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 	attribute := C.CK_ATTRIBUTE{}
 
-	var offset int
+	attribute._type = DecodeUnsignedLong(data[0:8])
 
-	attribute._type = DecodeUnsignedLong(data[offset:(offset + 8)])
-	offset += 8
+	remaining := data[10:]
 
 	if attribute._type == C.CKA_CLASS {
-		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		value := DecodeUnsignedLong(remaining)
+		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 8
 	}
 
 	if attribute._type == C.CKA_KEY_TYPE {
-		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		value := DecodeUnsignedLong(remaining)
+		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 8
 	}
 
 	if attribute._type == C.CKA_COPYABLE {
-		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		value := DecodeByte(remaining)
+		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 1
 	}
 
 	if attribute._type == C.CKA_TOKEN {
-		attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(data[8:]))
+		value := DecodeByte(remaining)
+		attribute.pValue = C.CK_VOID_PTR(&value)
 		attribute.ulValueLen = 1
 	}
+	// TODO: Do for all attributes
 
 	return attribute
 }
