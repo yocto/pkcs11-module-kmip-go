@@ -229,29 +229,29 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 	attribute := C.CK_ATTRIBUTE{}
 
 	attribute._type = DecodeUnsignedLong(data[0:8])
-	hasValue = DecodeByte(data[8:9])
-	hasLength = DecodeByte(data[9:10])
+	hasValue := DecodeByte(data[8:9])
+	hasLength := DecodeByte(data[9:10])
 
-	if hasLength {
+	if hasLength != 0x00 {
 		remaining := data[10:]
 
 		if attribute._type == C.CKA_CLASS {
 			attribute.ulValueLen = 8
-			if hasValue {
+			if hasValue != 0x00 {
 				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				attribute.pValue = C.CK_VOID_PTR(&value)
 			}
 		}
 		if attribute._type == C.CKA_TOKEN {
 			attribute.ulValueLen = 1
-			if hasValue {
+			if hasValue != 0x00 {
 				value := DecodeByte(remaining[0:attribute.ulValueLen])
 				attribute.pValue = C.CK_VOID_PTR(&value)
 			}
 		}
 		if attribute._type == C.CKA_LABEL {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue {
+			if hasValue != 0x00 {
 				value := remaining[4:attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
@@ -259,7 +259,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		}
 		if attribute._type == C.CKA_KEY_TYPE {
 			attribute.ulValueLen = 8
-			if hasValue {
+			if hasValue != 0x00 {
 				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				attribute.pValue = C.CK_VOID_PTR(&value)
 			}
@@ -267,7 +267,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		}
 		if attribute._type == C.CKA_COPYABLE {
 			attribute.ulValueLen = 1
-			if hasValue {
+			if hasValue != 0x00 {
 				value := DecodeByte(remaining[0:attribute.ulValueLen])
 				attribute.pValue = C.CK_VOID_PTR(&value)
 			}
