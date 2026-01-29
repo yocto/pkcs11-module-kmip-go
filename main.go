@@ -1063,7 +1063,11 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 			attributeSize := CalculateAttributeSize(outputParameters.([]byte)[offset:])
 			attribute := DecodeAttribute(outBuffer.Next(attributeSize))
 			pointerAsSliceDestination[i]._type = attribute._type
-			pointerAsSliceDestination[i].pValue = attribute.pValue
+			if attribute.pValue != nil {
+				destination := unsafe.Slice((*byte)(pointerAsSliceDestination[i].pValue), ulValueLen)
+				source := unsafe.Slice((*byte)(attribute.pValue), ulValueLen)
+				copy(destination, source)
+			}
 			pointerAsSliceDestination[i].ulValueLen = attribute.ulValueLen
 			offset += attributeSize
 		}
