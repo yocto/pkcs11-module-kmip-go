@@ -844,7 +844,7 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 
 //export C_EncryptMessageNext
 func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pPlaintextPart C.CK_BYTE_PTR, ulPlaintextPartLen C.CK_ULONG, pCiphertextPart C.CK_BYTE_PTR, pulCiphertextPartLen C.CK_ULONG_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
-	fmt.Printf("Function called: C_EncryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pPlaintextPart=%+v, ulPlaintextPartLen=%+v, pCiphertextPart=%+v, pulCiphertextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pPlaintextPart, ulPlaintextPartLen), ulPlaintextPartLen, unsafe.Slice(pCiphertextPart, ulCiphertextPartLen), *pulCiphertextPartLen, flags)
+	fmt.Printf("Function called: C_EncryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pPlaintextPart=%+v, ulPlaintextPartLen=%+v, pCiphertextPart=%+v, pulCiphertextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pPlaintextPart, ulPlaintextPartLen), ulPlaintextPartLen, unsafe.Slice(pCiphertextPart, *pulCiphertextPartLen), *pulCiphertextPartLen, flags)
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
