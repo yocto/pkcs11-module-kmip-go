@@ -209,7 +209,23 @@ func CalculateAttributeSize(data []byte) int {
 		lengthSize = 0
 		valueSize = 8
 	}
+	if _type == C.CKA_ID {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
+	if _type == C.CKA_MODULUS {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
+	if _type == C.CKA_PUBLIC_EXPONENT {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
 	if _type == C.CKA_COPYABLE {
+		lengthSize = 0
+		valueSize = 1
+	}
+	if _type == C.CKA_ALWAYS_AUTHENTICATE {
 		lengthSize = 0
 		valueSize = 1
 	}
@@ -265,7 +281,38 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 			}
 
 		}
+		if attribute._type == C.CKA_ID {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4:attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+
+		}
+		if attribute._type == C.CKA_MODULUS {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4:attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+
+		}
+		if attribute._type == C.CKA_PUBLIC_EXPONENT {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4:attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+
+		}
 		if attribute._type == C.CKA_COPYABLE {
+			attribute.ulValueLen = 1
+			if hasValue != 0x00 {
+				value := DecodeByte(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		if attribute._type == C.CKA_ALWAYS_AUTHENTICATE {
 			attribute.ulValueLen = 1
 			if hasValue != 0x00 {
 				value := DecodeByte(remaining[0:attribute.ulValueLen])
