@@ -229,6 +229,10 @@ func CalculateAttributeSize(data []byte) int {
 		lengthSize = 0
 		valueSize = 1
 	}
+	if _type == C.CKA_ALLOWED_MECHANISMS {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
+	}
 	// TODO: Do for all attribute types
 
 	totalSize := 10
@@ -317,6 +321,13 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 			if hasValue != 0x00 {
 				value := DecodeByte(remaining[0:attribute.ulValueLen])
 				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		if attribute._type == C.CKA_ALLOWED_MECHANISMS {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
+			if hasValue != 0x00 {
+				value := remaining[4:attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
 		}
 		// TODO: Do for all attributes
