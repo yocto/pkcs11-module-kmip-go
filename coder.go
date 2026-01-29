@@ -334,6 +334,9 @@ func EncodeVoidPointerAsBytePointer(voidPointer C.CK_VOID_PTR, voidPointerLength
 }
 
 func ConvertAttributeValue(attribute C.CK_ATTRIBUTE) any {
+	if attribute.ulValueLen == 0 {
+		return nil
+	}
 	if attribute.pValue == nil {
 		return nil
 	}
