@@ -272,7 +272,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		if attribute._type == C.CKA_LABEL {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			if hasValue != 0x00 {
-				value := remaining[4:attribute.ulValueLen]
+				value := remaining[4 : 4+attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
 
@@ -288,7 +288,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		if attribute._type == C.CKA_ID {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			if hasValue != 0x00 {
-				value := remaining[4:attribute.ulValueLen]
+				value := remaining[4 : 4+attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
 
@@ -296,7 +296,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		if attribute._type == C.CKA_MODULUS {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			if hasValue != 0x00 {
-				value := remaining[4:attribute.ulValueLen]
+				value := remaining[4 : 4+attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
 
@@ -304,7 +304,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		if attribute._type == C.CKA_PUBLIC_EXPONENT {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			if hasValue != 0x00 {
-				value := remaining[4:attribute.ulValueLen]
+				value := remaining[4 : 4+attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
 
@@ -326,7 +326,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		if attribute._type == C.CKA_ALLOWED_MECHANISMS {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
 			if hasValue != 0x00 {
-				value := remaining[4:attribute.ulValueLen]
+				value := remaining[4 : 4+attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
 		}
