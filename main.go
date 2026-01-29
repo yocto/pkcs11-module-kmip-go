@@ -1761,7 +1761,19 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pSignature & CK_ULONG_PTR pulSignatureLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
