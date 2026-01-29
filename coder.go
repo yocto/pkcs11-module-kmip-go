@@ -197,15 +197,19 @@ func CalculateAttributeSize(data []byte) int {
 		lengthSize = 0
 		valueSize = 8
 	}
+	if _type == C.CKA_TOKEN {
+		lengthSize = 0
+		valueSize = 1
+	}
+	if _type == C.CKA_LABEL {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
 	if _type == C.CKA_KEY_TYPE {
 		lengthSize = 0
 		valueSize = 8
 	}
 	if _type == C.CKA_COPYABLE {
-		lengthSize = 0
-		valueSize = 1
-	}
-	if _type == C.CKA_TOKEN {
 		lengthSize = 0
 		valueSize = 1
 	}
@@ -225,33 +229,51 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 	attribute := C.CK_ATTRIBUTE{}
 
 	attribute._type = DecodeUnsignedLong(data[0:8])
+	hasValue = DecodeByte(data[8:9])
+	hasLength = DecodeByte(data[9:10])
 
-	remaining := data[10:]
+	if hasLength {
+		remaining := data[10:]
 
-	if attribute._type == C.CKA_CLASS {
-		attribute.ulValueLen = 8
-		value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-		attribute.pValue = C.CK_VOID_PTR(&value)
+		if attribute._type == C.CKA_CLASS {
+			attribute.ulValueLen = 8
+			if hasValue {
+				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		if attribute._type == C.CKA_TOKEN {
+			attribute.ulValueLen = 1
+			if hasValue {
+				value := DecodeByte(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		if attribute._type == C.CKA_LABEL {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue {
+				value := remaining[4:attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+
+		}
+		if attribute._type == C.CKA_KEY_TYPE {
+			attribute.ulValueLen = 8
+			if hasValue {
+				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+
+		}
+		if attribute._type == C.CKA_COPYABLE {
+			attribute.ulValueLen = 1
+			if hasValue {
+				value := DecodeByte(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		// TODO: Do for all attributes
 	}
-
-	if attribute._type == C.CKA_KEY_TYPE {
-		attribute.ulValueLen = 8
-		value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-		attribute.pValue = C.CK_VOID_PTR(&value)
-	}
-
-	if attribute._type == C.CKA_COPYABLE {
-		attribute.ulValueLen = 1
-		value := DecodeByte(remaining[0:attribute.ulValueLen])
-		attribute.pValue = C.CK_VOID_PTR(&value)
-	}
-
-	if attribute._type == C.CKA_TOKEN {
-		attribute.ulValueLen = 1
-		value := DecodeByte(remaining[0:attribute.ulValueLen])
-		attribute.pValue = C.CK_VOID_PTR(&value)
-	}
-	// TODO: Do for all attributes
 
 	return attribute
 }
