@@ -1434,9 +1434,11 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
+		hasValue := DecodeByte(outBuffer.Next(1))
+
 		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
-		if pMechanismList != nil {
+		if hasValue != 0x00 {
 			pointerAsSliceDestination := unsafe.Slice(pMechanismList, *pulCount)
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
@@ -1565,11 +1567,11 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		outBuffer.Next(1) // Strange byte
+		hasValue := DecodeByte(outBuffer.Next(1))
 
 		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
-		if pSlotList != nil {
+		if hasValue != 0x00 {
 			pointerAsSliceDestination := unsafe.Slice(pSlotList, *pulCount)
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
