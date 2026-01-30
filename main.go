@@ -9,7 +9,7 @@ import "crypto/tls"
 import "encoding/binary"
 import "fmt"
 import "os"
-import "runtime"
+import "sync"
 import "time"
 import "unsafe"
 import "github.com/google/uuid"
@@ -207,39 +207,33 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 	C_MessageVerifyFinal:  (C.CK_C_MessageVerifyFinal)(C.C_MessageVerifyFinal),
 }
 
+var onceClient sync.Once
 var client *kmipclient.Client
-
-func init() {
-	runtime.LockOSThread()
-}
 
 func main() {}
 
 func getKMIPClient() (*kmipclient.Client, error) {
-	if client != nil {
-		return client, nil
-	}
+	var err error
+	onceClient.Do(func() {
+		middlewares := []kmipclient.Middleware{
+			kmipclient.CorrelationValueMiddleware(uuid.NewString),
+			kmipclient.TimeoutMiddleware(500 * time.Millisecond),
+		}
 
-	middlewares := []kmipclient.Middleware{
-		kmipclient.CorrelationValueMiddleware(uuid.NewString),
-		kmipclient.TimeoutMiddleware(500 * time.Millisecond),
-	}
+		env_debug := os.Getenv("PKCS11_DEBUG")
+		if env_debug == "1" {
+			middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
+		}
 
-	env_debug := os.Getenv("PKCS11_DEBUG")
-	if env_debug == "1" {
-		middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
-	}
-
-	createdClient, err := kmipclient.Dial(
-		"yocto.com:5696",
-		kmipclient.WithTlsConfig(&tls.Config{
-			InsecureSkipVerify: true,
-		}),
-		kmipclient.WithMiddlewares(middlewares...),
-	)
-	client = createdClient
-
-	return createdClient, err
+		client, err = kmipclient.Dial(
+			"yocto.com:5696",
+			kmipclient.WithTlsConfig(&tls.Config{
+				InsecureSkipVerify: true,
+			}),
+			kmipclient.WithMiddlewares(middlewares...),
+		)
+	})
+	return client, err
 }
 
 func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) *kmip.UnknownPayload {
@@ -272,11 +266,42 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 
 	request := createKMIPRequest(pkcs1Interface, pkcs11Function, pkcs11InputParameters)
 
-	response, err := client.Request(context.Background(), request)
+	type kmipResult struct {
+		payload kmip.OperationPayload
+		err     error
+	}
+
+	// Begin channel
+
+	ch := make(chan kmipResult, 1)
+
+	go func() {
+		resp, err := client.Request(context.Background(), request)
+		ch <- kmipResult{payload: resp, err: err}
+	}()
+
+	var res kmipResult
+	select {
+	case res = <-ch:
+		// got it
+	case <-time.After(30 * time.Second):
+		fmt.Println("KMIP request timed out after 30 seconds")
+		return nil, nil, C.CKR_DEVICE_ERROR
+	}
+
+	if res.err != nil {
+		fmt.Println("Failed processing KMIP payload:", res.err)
+		return nil, nil, C.CKR_FUNCTION_FAILED
+	}
+
 	if err != nil {
 		fmt.Println("Failed processing KMIP payload:", err)
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
+
+	response := res.payload
+
+	// End channel
 
 	fields := interface{}(response).(*kmip.UnknownPayload).Fields
 
