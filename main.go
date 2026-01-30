@@ -1718,7 +1718,19 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Sign, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pSignature & CK_ULONG_PTR pulSignatureLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1740,7 +1752,19 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignEncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pEncryptedPart & CK_ULONG_PTR pulEncryptedPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pEncryptedPart, *pulEncryptedPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1813,7 +1837,19 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessage, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pSignature & CK_ULONG_PTR pulSignatureLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1854,7 +1890,19 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessageNext, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pSignature & CK_ULONG_PTR pulSignatureLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1876,7 +1924,19 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignRecover, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pSignature & CK_ULONG_PTR pulSignatureLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
