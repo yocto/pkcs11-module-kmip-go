@@ -415,7 +415,19 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Decrypt, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_ULONG_PTR pulDataLen & CK_BYTE_PTR pData
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pData, *pulDataLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -437,7 +449,19 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptDigestUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pPart & CK_ULONG_PTR pulPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pPart, *pulPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -458,7 +482,19 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pLastPart & CK_ULONG_PTR pulLastPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulLastPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pLastPart, *pulLastPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -499,7 +535,19 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessage, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pPlaintext & CK_ULONG_PTR pulPlaintextLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulPlaintextLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pPlaintext, *pulPlaintextLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -542,7 +590,19 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageNext, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pPlaintextPart & CK_ULONG_PTR pulPlaintextPartLen,
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulPlaintextPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pPlaintextPart, *pulPlaintextPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -564,7 +624,19 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pPart & CK_ULONG_PTR pulPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pPart, *pulPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -586,7 +658,19 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptVerifyUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pPart & CK_ULONG_PTR pulPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pPart, *pulPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -648,7 +732,19 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Digest, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pDigest & CK_ULONG_PTR pulDigestLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulDigestLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pDigest, *pulDigestLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -670,7 +766,19 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestEncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pEncryptedPart & CK_ULONG_PTR pulEncryptedPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pEncryptedPart, *pulEncryptedPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -691,7 +799,19 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pDigest & CK_ULONG_PTR pulDigestLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulDigestLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pDigest, *pulDigestLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -755,7 +875,19 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Encrypt, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pEncryptedData & CK_ULONG_PTR pulEncryptedDataLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulEncryptedDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pEncryptedData, *pulEncryptedDataLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -776,7 +908,19 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pLastEncryptedPart & CK_ULONG_PTR pulLastEncryptedPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulLastEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pLastEncryptedPart, *pulLastEncryptedPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -817,7 +961,19 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessage, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pCiphertext & CK_ULONG_PTR pulCiphertextLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulCiphertextLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pCiphertext, *pulCiphertextLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -860,7 +1016,19 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageNext, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pCiphertextPart & CK_ULONG_PTR pulCiphertextPartLen,
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulCiphertextPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pCiphertextPart, *pulCiphertextPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -882,7 +1050,19 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pEncryptedPart & CK_ULONG_PTR pulEncryptedPartLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pEncryptedPart, *pulEncryptedPartLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1026,7 +1206,13 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateRandom, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pRandomData
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		pointerAsSliceDestination := unsafe.Slice(pRandomData, ulRandomLen)
+		for i := 0; i < len(pointerAsSliceDestination); i++ {
+			pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1281,7 +1467,19 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetOperationState, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pOperationState & CK_ULONG_PTR pulOperationStateLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulOperationStateLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pOperationState, *pulOperationStateLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -2111,7 +2309,19 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecover, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pData & CK_ULONG_PTR pulDataLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pData, *pulDataLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -2173,7 +2383,19 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_WrapKey, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_BYTE_PTR pWrappedKey & CK_ULONG_PTR pulWrappedKeyLen
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		hasValue := DecodeByte(outBuffer.Next(1))
+
+		*pulWrappedKeyLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
+		if hasValue != 0x00 {
+			pointerAsSliceDestination := unsafe.Slice(pWrappedKey, *pulWrappedKeyLen)
+			for i := 0; i < len(pointerAsSliceDestination); i++ {
+				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
+			}
+		}
+
 		return (C.CK_RV)(returnCode)
 	}
 
