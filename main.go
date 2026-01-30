@@ -208,6 +208,10 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 
 var client *kmipclient.Client
 
+func init() {
+	runtime.LockOSThread()
+}
+
 func main() {}
 
 func getKMIPClient() (*kmipclient.Client, error) {
