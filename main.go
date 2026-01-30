@@ -369,7 +369,10 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CopyObject, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phNewObject
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phNewObject = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -393,7 +396,10 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CreateObject, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: K_OBJECT_HANDLE_PTR phObject
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phObject = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -696,7 +702,10 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DeriveKey, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phKey
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phKey = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1155,7 +1164,10 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKey, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phKey
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phKey = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1185,8 +1197,12 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKeyPair, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phPublicKey
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phPrivateKey
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phPublicKey = DecodeUnsignedLong(outBuffer.Next(8))
+
+		*phPrivateKey = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -1446,7 +1462,10 @@ func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, p
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetObjectSize, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_ULONG_PTR pulSize
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*pulSize = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+
 		return (C.CK_RV)(returnCode)
 	}
 
@@ -2190,7 +2209,10 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_UnwrapKey, inputParameters)
 
 	if outputParameters != nil {
-		// TODO FIELD: CK_OBJECT_HANDLE_PTR phKey
+		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
+
+		*phKey = DecodeUnsignedLong(outBuffer.Next(8))
+
 		return (C.CK_RV)(returnCode)
 	}
 
