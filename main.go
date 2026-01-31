@@ -266,42 +266,11 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 
 	request := createKMIPRequest(pkcs1Interface, pkcs11Function, pkcs11InputParameters)
 
-	type kmipResult struct {
-		payload kmip.OperationPayload
-		err     error
-	}
-
-	// Begin channel
-
-	ch := make(chan kmipResult, 1)
-
-	go func() {
-		resp, err := client.Request(context.Background(), request)
-		ch <- kmipResult{payload: resp, err: err}
-	}()
-
-	var res kmipResult
-	select {
-	case res = <-ch:
-		// got it
-	case <-time.After(30 * time.Second):
-		fmt.Println("KMIP request timed out after 30 seconds")
-		return nil, nil, C.CKR_DEVICE_ERROR
-	}
-
-	if res.err != nil {
-		fmt.Println("Failed processing KMIP payload:", res.err)
-		return nil, nil, C.CKR_FUNCTION_FAILED
-	}
-
+	response, err := client.Request(context.Background(), request)
 	if err != nil {
 		fmt.Println("Failed processing KMIP payload:", err)
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
-
-	response := res.payload
-
-	// End channel
 
 	fields := interface{}(response).(*kmip.UnknownPayload).Fields
 
@@ -1640,6 +1609,14 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 //export C_Initialize
 func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*/) C.CK_RV { // Since v1.0
 	fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
+
+	if pInitArgs != nil {
+		initializeArgumentsPointer := C.CK_C_INITIALIZE_ARGS_PTR(pInitArgs)
+		initializeArguments := unsafe.Slice(initializeArgumentsPointer, 1)[0]
+		fmt.Printf("PKCS#11 library initiated with: %+v\n", initializeArguments)
+	} else {
+		fmt.Println("PKCS#11 library initiated without arguments")
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeByte(profileVersion))
