@@ -15,4 +15,4 @@ install:
 clean:
 	rm -Rf bin
 
-.PHONY: build install clean
+.PHONY: all build install clean
