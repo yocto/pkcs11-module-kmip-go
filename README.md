@@ -9,8 +9,7 @@ A PKCS#11 module which connects to a KMIP server.
 To build this module, you just run:
 
 ```shell
-./download_headers.sh
-go build --buildmode=c-shared -o bin/
+make build
 ```
 
 Note: Because of Cgo, `gcc` is expected to be installed.
