@@ -7,6 +7,7 @@ build:
 
 install:
 	cp bin/pkcs11-kmip /usr/lib/pkcs11/pkcs11-kmip.so
+	mkdir -p /usr/lib/pkcs11/
 	chmod +x /usr/lib/pkcs11/pkcs11-kmip.so
 
 clean:
