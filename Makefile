@@ -1,7 +1,4 @@
-all:
-	build
-	install
-	clean
+all: clean build install
 
 build:
 	if [ ! -d "./include" ];then chmod +x *.sh && ./download_headers.sh; fi
