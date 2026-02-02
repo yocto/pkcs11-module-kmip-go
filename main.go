@@ -322,7 +322,7 @@ func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_CancelFunction, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_CloseAllSessions
@@ -335,7 +335,7 @@ func C_CloseAllSessions(slotID C.CK_SLOT_ID) C.CK_RV { // Since v1.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseAllSessions, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_CloseSession
@@ -348,7 +348,7 @@ func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_CloseSession, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_CopyObject
@@ -367,16 +367,18 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CopyObject, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phNewObject = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_CreateObject
@@ -394,16 +396,18 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_CreateObject, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phObject = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_Decrypt
@@ -419,6 +423,11 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Decrypt, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -432,12 +441,9 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptDigestUpdate
@@ -453,6 +459,11 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptDigestUpdate, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -466,12 +477,9 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptFinal
@@ -486,6 +494,11 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptFinal, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -499,12 +512,9 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptInit
@@ -519,7 +529,7 @@ func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptMessage
@@ -539,6 +549,11 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessage, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -552,12 +567,9 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptMessageBegin
@@ -574,7 +586,7 @@ func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageBegin, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptMessageNext
@@ -594,6 +606,11 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptMessageNext, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -607,12 +624,9 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptUpdate
@@ -628,6 +642,11 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptUpdate, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -641,12 +660,9 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DecryptVerifyUpdate
@@ -662,6 +678,11 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DecryptVerifyUpdate, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -675,12 +696,9 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DeriveKey
@@ -700,16 +718,18 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DeriveKey, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phKey = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DestroyObject
@@ -723,7 +743,7 @@ func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DestroyObject, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_Digest
@@ -739,6 +759,11 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Digest, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -752,12 +777,9 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DigestEncryptUpdate
@@ -773,6 +795,11 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestEncryptUpdate, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -786,12 +813,9 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DigestFinal
@@ -806,6 +830,11 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestFinal, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -819,12 +848,9 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_DigestInit
@@ -838,7 +864,7 @@ func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_DigestKey
@@ -852,7 +878,7 @@ func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV 
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestKey, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_DigestUpdate
@@ -866,7 +892,7 @@ func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_DigestUpdate, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_Encrypt
@@ -882,6 +908,11 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Encrypt, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -895,12 +926,9 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_EncryptFinal
@@ -915,6 +943,11 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptFinal, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -928,12 +961,9 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_EncryptInit
@@ -948,7 +978,7 @@ func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_EncryptMessage
@@ -968,6 +998,11 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessage, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -981,12 +1016,9 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_EncryptMessageBegin
@@ -1003,7 +1035,7 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageBegin, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_EncryptMessageNext
@@ -1023,6 +1055,11 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptMessageNext, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1036,12 +1073,9 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_EncryptUpdate
@@ -1057,6 +1091,11 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_EncryptUpdate, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1070,12 +1109,9 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_Finalize
@@ -1084,7 +1120,7 @@ func C_Finalize(pReserved C.CK_VOID_PTR) C.CK_RV { // Since v2.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Finalize, nil)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_FindObjects
@@ -1098,6 +1134,11 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjects, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1107,12 +1148,9 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
 			pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_FindObjectsFinal
@@ -1125,7 +1163,7 @@ func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsFinal, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_FindObjectsInit
@@ -1143,7 +1181,7 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjectsInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_GenerateKey
@@ -1162,16 +1200,18 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKey, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phKey = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GenerateKeyPair
@@ -1195,18 +1235,20 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateKeyPair, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phPublicKey = DecodeUnsignedLong(outBuffer.Next(8))
 
 		*phPrivateKey = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GenerateRandom
@@ -1220,6 +1262,11 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GenerateRandom, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1227,12 +1274,9 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
 			pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetAttributeValue
@@ -1250,6 +1294,11 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetAttributeValue, inputParameters)
+
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
 
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
@@ -1272,12 +1321,9 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 			pointerAsSliceDestination[i].ulValueLen = attribute.ulValueLen
 			offset += attributeSize
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetFunctionList
@@ -1304,7 +1350,7 @@ func C_GetFunctionStatus(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_GetFunctionStatus, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetInfo
@@ -1313,16 +1359,18 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInfo, nil)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*pInfo = DecodeInfo(outBuffer.Next(C.sizeof_CK_INFO))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetInterface
@@ -1406,16 +1454,18 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismInfo, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*pInfo = DecodeMechanismInfo(outBuffer.Next(C.sizeof_CK_MECHANISM_INFO))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetMechanismList
@@ -1430,6 +1480,11 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetMechanismList, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1443,12 +1498,9 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetObjectSize
@@ -1462,16 +1514,18 @@ func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, p
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetObjectSize, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*pulSize = DecodeUnsignedLongAsLength(outBuffer.Next(4))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetOperationState
@@ -1486,6 +1540,11 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetOperationState, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1499,12 +1558,9 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetSessionInfo
@@ -1517,16 +1573,18 @@ func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR)
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSessionInfo, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*pInfo = DecodeSessionInfo(outBuffer.Next(C.sizeof_CK_SESSION_INFO))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetSlotInfo
@@ -1539,16 +1597,18 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotInfo, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*pInfo = DecodeSlotInfo(outBuffer.Next(C.sizeof_CK_SLOT_INFO))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetSlotList
@@ -1563,6 +1623,11 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetSlotList, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1576,12 +1641,9 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_GetTokenInfo
@@ -1594,16 +1656,18 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetTokenInfo, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*pInfo = DecodeTokenInfo(outBuffer.Next(C.sizeof_CK_TOKEN_INFO))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_Initialize
@@ -1624,7 +1688,7 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_InitPIN
@@ -1640,7 +1704,7 @@ func C_InitPIN(hSession C.CK_SESSION_HANDLE, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_InitPIN, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_InitToken
@@ -1657,7 +1721,7 @@ func C_InitToken(slotID C.CK_SLOT_ID, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PT
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_InitToken, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_Login
@@ -1674,7 +1738,7 @@ func C_Login(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.CK_UT
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Login, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_LoginUser
@@ -1694,7 +1758,7 @@ func C_LoginUser(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.C
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_LoginUser, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_Logout
@@ -1707,7 +1771,7 @@ func C_Logout(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Logout, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageDecryptFinal
@@ -1720,7 +1784,7 @@ func C_MessageDecryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageDecryptFinal, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageDecryptInit
@@ -1735,7 +1799,7 @@ func C_MessageDecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageDecryptInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageEncryptFinal
@@ -1748,7 +1812,7 @@ func C_MessageEncryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageEncryptFinal, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageEncryptInit
@@ -1763,7 +1827,7 @@ func C_MessageEncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageEncryptInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageSignFinal
@@ -1776,7 +1840,7 @@ func C_MessageSignFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageSignFinal, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageSignInit
@@ -1791,7 +1855,7 @@ func C_MessageSignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageSignInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageVerifyFinal
@@ -1804,7 +1868,7 @@ func C_MessageVerifyFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageVerifyFinal, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_MessageVerifyInit
@@ -1819,7 +1883,7 @@ func C_MessageVerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_MessageVerifyInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_OpenSession
@@ -1836,16 +1900,18 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_OpenSession, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phSession = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SeedRandom
@@ -1859,7 +1925,7 @@ func C_SeedRandom(hSession C.CK_SESSION_HANDLE, pSeed C.CK_BYTE_PTR, ulSeedLen C
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SeedRandom, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SessionCancel
@@ -1873,7 +1939,7 @@ func C_SessionCancel(hSession C.CK_SESSION_HANDLE, flags C.CK_FLAGS) C.CK_RV { /
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SessionCancel, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SetAttributeValue
@@ -1892,7 +1958,7 @@ func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SetAttributeValue, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SetOperationState
@@ -1908,7 +1974,7 @@ func C_SetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SetOperationState, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SetPIN
@@ -1927,7 +1993,7 @@ func C_SetPIN(hSession C.CK_SESSION_HANDLE, pOldPin C.CK_UTF8CHAR_PTR /*pOldPin 
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SetPIN, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_Sign
@@ -1943,6 +2009,11 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_Sign, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1956,12 +2027,9 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignEncryptUpdate
@@ -1977,6 +2045,11 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignEncryptUpdate, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -1990,12 +2063,9 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignFinal
@@ -2010,6 +2080,11 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignFinal, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -2023,12 +2098,9 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignInit
@@ -2043,7 +2115,7 @@ func C_SignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKe
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SignInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignMessage
@@ -2062,6 +2134,11 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessage, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -2075,12 +2152,9 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignMessageBegin
@@ -2096,7 +2170,7 @@ func C_SignMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, 
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessageBegin, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignMessageNext
@@ -2115,6 +2189,11 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignMessageNext, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -2128,12 +2207,9 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignRecover
@@ -2149,6 +2225,11 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_SignRecover, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -2162,12 +2243,9 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignRecoverInit
@@ -2182,7 +2260,7 @@ func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SignRecoverInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_SignUpdate
@@ -2196,7 +2274,7 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_SignUpdate, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_UnwrapKey
@@ -2217,16 +2295,18 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_UnwrapKey, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
 		*phKey = DecodeUnsignedLong(outBuffer.Next(8))
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_Verify
@@ -2241,7 +2321,7 @@ func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Verify, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyFinal
@@ -2256,7 +2336,7 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyFinal, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyInit
@@ -2271,7 +2351,7 @@ func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, h
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyMessage
@@ -2289,7 +2369,7 @@ func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulP
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessage, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyMessageBegin
@@ -2305,7 +2385,7 @@ func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageBegin, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyMessageNext
@@ -2323,7 +2403,7 @@ func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR,
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyMessageNext, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyRecover
@@ -2339,6 +2419,11 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecover, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -2352,12 +2437,9 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyRecoverInit
@@ -2372,7 +2454,7 @@ func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyRecoverInit, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_VerifyUpdate
@@ -2388,7 +2470,7 @@ func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyUpdate, inputParameters)
 
-	return (C.CK_RV)(returnCode)
+	return C.CK_RV(returnCode)
 }
 
 //export C_WaitForSlotEvent
@@ -2413,6 +2495,11 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_WrapKey, inputParameters)
 
+	if outputParameters == nil && returnCode != C.CKR_OK {
+		fmt.Println("Expected output parameters")
+		return C.CKR_FUNCTION_FAILED
+	}
+
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
@@ -2426,10 +2513,7 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
 		}
-
-		return (C.CK_RV)(returnCode)
 	}
 
-	fmt.Println("Expected output parameters")
-	return C.CKR_FUNCTION_FAILED
+	return C.CK_RV(returnCode)
 }
