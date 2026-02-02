@@ -1,7 +1,7 @@
 all: clean build install
 
 build:
-	if [ ! -d "./include" ];then chmod +x *.sh && ./download_headers.sh; fi
+	if [ ! -f "./include/pkcs11.h" ];then chmod +x *.sh && ./download_headers.sh; fi
 	mkdir -p bin
 	go build --buildmode=c-shared -o bin/
 
