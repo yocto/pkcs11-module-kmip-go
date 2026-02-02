@@ -6,8 +6,8 @@ build:
 	go build --buildmode=c-shared -o bin/
 
 install:
-	cp bin/pkcs11-kmip /usr/lib/pkcs11/pkcs11-kmip.so
 	mkdir -p /usr/lib/pkcs11/
+	cp bin/pkcs11-kmip /usr/lib/pkcs11/pkcs11-kmip.so
 	chmod +x /usr/lib/pkcs11/pkcs11-kmip.so
 
 clean:
