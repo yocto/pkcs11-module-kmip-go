@@ -225,8 +225,9 @@ func getKMIPClient() (*kmipclient.Client, error) {
 			middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
 		}
 
+        env_kmip_server := os.Getenv("PKCS11_KMIP_SERVER")
 		client, err = kmipclient.Dial(
-			"yocto.com:5696",
+			env_kmip_server,
 			kmipclient.WithTlsConfig(&tls.Config{
 				InsecureSkipVerify: true,
 			}),

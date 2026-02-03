@@ -13,3 +13,8 @@ make build
 ```
 
 Note: Because of Cgo, `gcc` is expected to be installed.
+
+## Environment variables
+
+- `PKCS11_DEBUG` - Enable debugging.
+- `PKCS11_KMIP_SERVER` - The KMIP server that should be used, e.g. `example.com:5696`.
