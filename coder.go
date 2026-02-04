@@ -205,9 +205,37 @@ func CalculateAttributeSize(data []byte) int {
 		lengthSize = 4
 		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
 	}
+	if _type == C.CKA_VALUE {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
+	if _type == C.CKA_CERTIFICATE_TYPE {
+		lengthSize = 0
+		valueSize = 8
+	}
+	if _type == C.CKA_ISSUER {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
+	if _type == C.CKA_SERIAL_NUMBER {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
+	if _type == C.CKA_TRUSTED {
+		lengthSize = 0
+		valueSize = 1
+	}
+	if _type == C.CKA_CERTIFICATE_CATEGORY {
+		lengthSize = 0
+		valueSize = 8
+	}
 	if _type == C.CKA_KEY_TYPE {
 		lengthSize = 0
 		valueSize = 8
+	}
+	if _type == C.CKA_SUBJECT {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
 	}
 	if _type == C.CKA_ID {
 		lengthSize = 4
@@ -218,6 +246,10 @@ func CalculateAttributeSize(data []byte) int {
 		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
 	}
 	if _type == C.CKA_PUBLIC_EXPONENT {
+		lengthSize = 4
+		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+	}
+	if _type == C.CKA_PUBLIC_KEY_INFO {
 		lengthSize = 4
 		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
 	}
@@ -277,6 +309,48 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 			}
 
 		}
+		if attribute._type == C.CKA_VALUE {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4 : 4+attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+		}
+		if attribute._type == C.CKA_CERTIFICATE_TYPE {
+			attribute.ulValueLen = 8
+			if hasValue != 0x00 {
+				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		if attribute._type == C.CKA_ISSUER {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4 : 4+attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+		}
+		if attribute._type == C.CKA_SERIAL_NUMBER {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4 : 4+attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
+		}
+		if attribute._type == C.CKA_TRUSTED {
+			attribute.ulValueLen = 1
+			if hasValue != 0x00 {
+				value := DecodeByte(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
+		if attribute._type == C.CKA_CERTIFICATE_CATEGORY {
+			attribute.ulValueLen = 8
+			if hasValue != 0x00 {
+				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+				attribute.pValue = C.CK_VOID_PTR(&value)
+			}
+		}
 		if attribute._type == C.CKA_KEY_TYPE {
 			attribute.ulValueLen = 8
 			if hasValue != 0x00 {
@@ -284,6 +358,13 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 				attribute.pValue = C.CK_VOID_PTR(&value)
 			}
 
+		}
+		if attribute._type == C.CKA_SUBJECT {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4 : 4+attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
 		}
 		if attribute._type == C.CKA_ID {
 			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
@@ -307,7 +388,13 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 				value := remaining[4 : 4+attribute.ulValueLen]
 				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 			}
-
+		}
+		if attribute._type == C.CKA_PUBLIC_KEY_INFO {
+			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			if hasValue != 0x00 {
+				value := remaining[4 : 4+attribute.ulValueLen]
+				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+			}
 		}
 		if attribute._type == C.CKA_COPYABLE {
 			attribute.ulValueLen = 1
