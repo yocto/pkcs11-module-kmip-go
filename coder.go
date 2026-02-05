@@ -190,82 +190,48 @@ func CalculateAttributeSize(data []byte) int {
 	hasValue := DecodeByte(data[8:9])
 	hasLength := DecodeByte(data[9:10])
 
+	valueType := GetAttributeValueType(_type, 0)
+
 	var lengthSize int
 	var valueSize int
 
-	if _type == C.CKA_CLASS {
+	if valueType.Kind() == reflect.Slice {
+		lengthSize = 4
+		if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
+			// TODO: Encode attribute with attributes
+		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
+			valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+			valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
+		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
+			valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
+		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
+			valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+		}
+	} else {
 		lengthSize = 0
-		valueSize = 8
+		if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
+			valueSize = 1
+		} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
+			// TODO: Encode attribute with date
+		} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_KEY_TYPE)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_OBJECT_CLASS)) {
+			valueSize = 8
+		} else if valueType == reflect.TypeOf(*new(C.CK_ULONG)) {
+			valueSize = 8
+		}
 	}
-	if _type == C.CKA_TOKEN {
-		lengthSize = 0
-		valueSize = 1
-	}
-	if _type == C.CKA_LABEL {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_VALUE {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_CERTIFICATE_TYPE {
-		lengthSize = 0
-		valueSize = 8
-	}
-	if _type == C.CKA_ISSUER {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_SERIAL_NUMBER {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_TRUSTED {
-		lengthSize = 0
-		valueSize = 1
-	}
-	if _type == C.CKA_CERTIFICATE_CATEGORY {
-		lengthSize = 0
-		valueSize = 8
-	}
-	if _type == C.CKA_KEY_TYPE {
-		lengthSize = 0
-		valueSize = 8
-	}
-	if _type == C.CKA_SUBJECT {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_ID {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_MODULUS {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_PUBLIC_EXPONENT {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_PUBLIC_KEY_INFO {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-	}
-	if _type == C.CKA_COPYABLE {
-		lengthSize = 0
-		valueSize = 1
-	}
-	if _type == C.CKA_ALWAYS_AUTHENTICATE {
-		lengthSize = 0
-		valueSize = 1
-	}
-	if _type == C.CKA_ALLOWED_MECHANISMS {
-		lengthSize = 4
-		valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
-	}
-	// TODO: Do for all attribute types
 
 	totalSize := 10
 	if hasLength != 0x00 {
@@ -284,140 +250,97 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 	hasValue := DecodeByte(data[8:9])
 	hasLength := DecodeByte(data[9:10])
 
+	valueType := GetAttributeValueType(attribute._type, attribute.ulValueLen)
+
 	if hasLength != 0x00 {
 		remaining := data[10:]
 
-		if attribute._type == C.CKA_CLASS {
-			attribute.ulValueLen = 8
-			if hasValue != 0x00 {
-				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
+		if valueType.Kind() == reflect.Slice {
+			if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
+				// TODO: Encode attribute with attributes
+			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
+			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
+			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
+			}
+		} else {
+			if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
+				attribute.ulValueLen = 1
+			} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
+				// TODO: Encode attribute with date
+			} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_KEY_TYPE)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_OBJECT_CLASS)) {
+				attribute.ulValueLen = 8
+			} else if valueType == reflect.TypeOf(*new(C.CK_ULONG)) {
+				attribute.ulValueLen = 8
 			}
 		}
-		if attribute._type == C.CKA_TOKEN {
-			attribute.ulValueLen = 1
-			if hasValue != 0x00 {
-				value := DecodeByte(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-		}
-		if attribute._type == C.CKA_LABEL {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
 
-		}
-		if attribute._type == C.CKA_VALUE {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+		if hasValue != 0x00 {
+			if valueType.Kind() == reflect.Slice {
+				if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
+					// TODO: Encode attribute with attributes
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
+					value := remaining[4 : 4+attribute.ulValueLen]
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+					value := remaining[4 : 4+attribute.ulValueLen]
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
+					value := remaining[4 : 4+attribute.ulValueLen]
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
+					value := remaining[4 : 4+attribute.ulValueLen]
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+				}
+			} else {
+				if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
+					value := DecodeByte(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
+					// TODO: Encode attribute with date
+				} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_KEY_TYPE)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_OBJECT_CLASS)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				} else if valueType == reflect.TypeOf(*new(C.CK_ULONG)) {
+					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					attribute.pValue = C.CK_VOID_PTR(&value)
+				}
 			}
 		}
-		if attribute._type == C.CKA_CERTIFICATE_TYPE {
-			attribute.ulValueLen = 8
-			if hasValue != 0x00 {
-				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-		}
-		if attribute._type == C.CKA_ISSUER {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-		}
-		if attribute._type == C.CKA_SERIAL_NUMBER {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-		}
-		if attribute._type == C.CKA_TRUSTED {
-			attribute.ulValueLen = 1
-			if hasValue != 0x00 {
-				value := DecodeByte(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-		}
-		if attribute._type == C.CKA_CERTIFICATE_CATEGORY {
-			attribute.ulValueLen = 8
-			if hasValue != 0x00 {
-				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-		}
-		if attribute._type == C.CKA_KEY_TYPE {
-			attribute.ulValueLen = 8
-			if hasValue != 0x00 {
-				value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-
-		}
-		if attribute._type == C.CKA_SUBJECT {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-		}
-		if attribute._type == C.CKA_ID {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-
-		}
-		if attribute._type == C.CKA_MODULUS {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-
-		}
-		if attribute._type == C.CKA_PUBLIC_EXPONENT {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-		}
-		if attribute._type == C.CKA_PUBLIC_KEY_INFO {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-		}
-		if attribute._type == C.CKA_COPYABLE {
-			attribute.ulValueLen = 1
-			if hasValue != 0x00 {
-				value := DecodeByte(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-		}
-		if attribute._type == C.CKA_ALWAYS_AUTHENTICATE {
-			attribute.ulValueLen = 1
-			if hasValue != 0x00 {
-				value := DecodeByte(remaining[0:attribute.ulValueLen])
-				attribute.pValue = C.CK_VOID_PTR(&value)
-			}
-		}
-		if attribute._type == C.CKA_ALLOWED_MECHANISMS {
-			attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
-			if hasValue != 0x00 {
-				value := remaining[4 : 4+attribute.ulValueLen]
-				attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
-			}
-		}
-		// TODO: Do for all attributes
 	}
 
 	return attribute
@@ -518,7 +441,7 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 	buffer.Write(EncodeByte(ConvertBooleanToByte(hasValue)))
 	buffer.Write(EncodeByte(ConvertBooleanToByte(hasLength)))
 
-	valueType := GetAttributeValueType(attribute)
+	valueType := GetAttributeValueType(attribute._type, attribute.ulValueLen)
 
 	if hasLength && valueType.Kind() == reflect.Slice {
 		if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
@@ -588,391 +511,391 @@ func EncodeMechanism(mechanism C.CK_MECHANISM) []byte {
 	return buffer.Bytes()
 }
 
-func GetAttributeValueType(attribute C.CK_ATTRIBUTE) reflect.Type {
-	if attribute._type == C.CKA_CLASS {
+func GetAttributeValueType(attributeType C.CK_ATTRIBUTE_TYPE, valueLength C.CK_ULONG) reflect.Type {
+	if attributeType == C.CKA_CLASS {
 		return reflect.TypeOf(*new(C.CK_OBJECT_CLASS))
 	}
-	if attribute._type == C.CKA_TOKEN {
+	if attributeType == C.CKA_TOKEN {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_PRIVATE {
+	if attributeType == C.CKA_PRIVATE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_LABEL {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_LABEL {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_UNIQUE_ID {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_UNIQUE_ID {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_APPLICATION {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_APPLICATION {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_VALUE {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_VALUE {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_OBJECT_ID {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_OBJECT_ID {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_CERTIFICATE_TYPE {
+	if attributeType == C.CKA_CERTIFICATE_TYPE {
 		return reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE))
 	}
-	if attribute._type == C.CKA_ISSUER {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_ISSUER {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_SERIAL_NUMBER {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_SERIAL_NUMBER {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_AC_ISSUER {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_AC_ISSUER {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_OWNER {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_OWNER {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_ATTR_TYPES {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_ATTR_TYPES {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_TRUSTED {
+	if attributeType == C.CKA_TRUSTED {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_CERTIFICATE_CATEGORY {
+	if attributeType == C.CKA_CERTIFICATE_CATEGORY {
 		return reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY))
 	}
-	if attribute._type == C.CKA_JAVA_MIDP_SECURITY_DOMAIN {
+	if attributeType == C.CKA_JAVA_MIDP_SECURITY_DOMAIN {
 		return reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN))
 	}
-	if attribute._type == C.CKA_URL {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_URL {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_HASH_OF_SUBJECT_PUBLIC_KEY {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_HASH_OF_SUBJECT_PUBLIC_KEY {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_HASH_OF_ISSUER_PUBLIC_KEY {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_HASH_OF_ISSUER_PUBLIC_KEY {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_NAME_HASH_ALGORITHM {
+	if attributeType == C.CKA_NAME_HASH_ALGORITHM {
 		return reflect.TypeOf(*new(C.CK_MECHANISM_TYPE))
 	}
-	if attribute._type == C.CKA_CHECK_VALUE {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_CHECK_VALUE {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_KEY_TYPE {
+	if attributeType == C.CKA_KEY_TYPE {
 		return reflect.TypeOf(*new(C.CK_KEY_TYPE))
 	}
-	if attribute._type == C.CKA_SUBJECT {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_SUBJECT {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_ID {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_ID {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_SENSITIVE {
+	if attributeType == C.CKA_SENSITIVE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_ENCRYPT {
+	if attributeType == C.CKA_ENCRYPT {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_DECRYPT {
+	if attributeType == C.CKA_DECRYPT {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_WRAP {
+	if attributeType == C.CKA_WRAP {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_UNWRAP {
+	if attributeType == C.CKA_UNWRAP {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_SIGN {
+	if attributeType == C.CKA_SIGN {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_SIGN_RECOVER {
+	if attributeType == C.CKA_SIGN_RECOVER {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_VERIFY {
+	if attributeType == C.CKA_VERIFY {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_VERIFY_RECOVER {
+	if attributeType == C.CKA_VERIFY_RECOVER {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_DERIVE {
+	if attributeType == C.CKA_DERIVE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_START_DATE {
+	if attributeType == C.CKA_START_DATE {
 		return reflect.TypeOf(*new(C.CK_DATE))
 	}
-	if attribute._type == C.CKA_END_DATE {
+	if attributeType == C.CKA_END_DATE {
 		return reflect.TypeOf(*new(C.CK_DATE))
 	}
-	if attribute._type == C.CKA_MODULUS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_MODULUS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_MODULUS_BITS {
+	if attributeType == C.CKA_MODULUS_BITS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_PUBLIC_EXPONENT {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_PUBLIC_EXPONENT {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_PRIVATE_EXPONENT {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_PRIVATE_EXPONENT {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_PRIME_1 {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_PRIME_1 {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_PRIME_2 {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_PRIME_2 {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_EXPONENT_1 {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_EXPONENT_1 {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_EXPONENT_2 {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_EXPONENT_2 {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_COEFFICIENT {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_COEFFICIENT {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_PUBLIC_KEY_INFO {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_PUBLIC_KEY_INFO {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_PRIME {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_PRIME {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_SUBPRIME {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_SUBPRIME {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_BASE {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_BASE {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_PRIME_BITS {
+	if attributeType == C.CKA_PRIME_BITS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_SUBPRIME_BITS {
+	if attributeType == C.CKA_SUBPRIME_BITS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_VALUE_BITS {
+	if attributeType == C.CKA_VALUE_BITS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_VALUE_LEN {
+	if attributeType == C.CKA_VALUE_LEN {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_EXTRACTABLE {
+	if attributeType == C.CKA_EXTRACTABLE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_LOCAL {
+	if attributeType == C.CKA_LOCAL {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_NEVER_EXTRACTABLE {
+	if attributeType == C.CKA_NEVER_EXTRACTABLE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_ALWAYS_SENSITIVE {
+	if attributeType == C.CKA_ALWAYS_SENSITIVE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_KEY_GEN_MECHANISM {
+	if attributeType == C.CKA_KEY_GEN_MECHANISM {
 		return reflect.TypeOf(*new(C.CK_MECHANISM_TYPE))
 	}
-	if attribute._type == C.CKA_MODIFIABLE {
+	if attributeType == C.CKA_MODIFIABLE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_COPYABLE {
+	if attributeType == C.CKA_COPYABLE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_DESTROYABLE {
+	if attributeType == C.CKA_DESTROYABLE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_EC_PARAMS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_EC_PARAMS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_EC_POINT {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_EC_POINT {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
 	// TODO: Attribute CKA_SECONDARY_AUTH (Deprecated)
 	// TODO: Attribute CKA_AUTH_PIN_FLAGS (Deprecated)
-	if attribute._type == C.CKA_ALWAYS_AUTHENTICATE {
+	if attributeType == C.CKA_ALWAYS_AUTHENTICATE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_WRAP_WITH_TRUSTED {
+	if attributeType == C.CKA_WRAP_WITH_TRUSTED {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_WRAP_TEMPLATE {
-		return reflect.TypeOf(make([]C.CK_ATTRIBUTE, attribute.ulValueLen/C.sizeof_CK_ATTRIBUTE))
+	if attributeType == C.CKA_WRAP_TEMPLATE {
+		return reflect.TypeOf(make([]C.CK_ATTRIBUTE, valueLength/C.sizeof_CK_ATTRIBUTE))
 	}
-	if attribute._type == C.CKA_UNWRAP_TEMPLATE {
-		return reflect.TypeOf(make([]C.CK_ATTRIBUTE, attribute.ulValueLen/C.sizeof_CK_ATTRIBUTE))
+	if attributeType == C.CKA_UNWRAP_TEMPLATE {
+		return reflect.TypeOf(make([]C.CK_ATTRIBUTE, valueLength/C.sizeof_CK_ATTRIBUTE))
 	}
-	if attribute._type == C.CKA_DERIVE_TEMPLATE {
-		return reflect.TypeOf(make([]C.CK_ATTRIBUTE, attribute.ulValueLen/C.sizeof_CK_ATTRIBUTE))
+	if attributeType == C.CKA_DERIVE_TEMPLATE {
+		return reflect.TypeOf(make([]C.CK_ATTRIBUTE, valueLength/C.sizeof_CK_ATTRIBUTE))
 	}
-	if attribute._type == C.CKA_OTP_FORMAT {
+	if attributeType == C.CKA_OTP_FORMAT {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_LENGTH {
+	if attributeType == C.CKA_OTP_LENGTH {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_TIME_INTERVAL {
+	if attributeType == C.CKA_OTP_TIME_INTERVAL {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_USER_FRIENDLY_MODE {
+	if attributeType == C.CKA_OTP_USER_FRIENDLY_MODE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_OTP_CHALLENGE_REQUIREMENT {
+	if attributeType == C.CKA_OTP_CHALLENGE_REQUIREMENT {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_TIME_REQUIREMENT {
+	if attributeType == C.CKA_OTP_TIME_REQUIREMENT {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_COUNTER_REQUIREMENT {
+	if attributeType == C.CKA_OTP_COUNTER_REQUIREMENT {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_PIN_REQUIREMENT {
+	if attributeType == C.CKA_OTP_PIN_REQUIREMENT {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_OTP_COUNTER {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_OTP_COUNTER {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_OTP_TIME {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_OTP_TIME {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_OTP_USER_IDENTIFIER {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_OTP_USER_IDENTIFIER {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_OTP_SERVICE_IDENTIFIER {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_OTP_SERVICE_IDENTIFIER {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_OTP_SERVICE_LOGO {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_OTP_SERVICE_LOGO {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_OTP_SERVICE_LOGO_TYPE {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_OTP_SERVICE_LOGO_TYPE {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_GOSTR3410_PARAMS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_GOSTR3410_PARAMS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_GOSTR3411_PARAMS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_GOSTR3411_PARAMS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_GOST28147_PARAMS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_GOST28147_PARAMS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_HW_FEATURE_TYPE {
+	if attributeType == C.CKA_HW_FEATURE_TYPE {
 		return reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE))
 	}
-	if attribute._type == C.CKA_RESET_ON_INIT {
+	if attributeType == C.CKA_RESET_ON_INIT {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_HAS_RESET {
+	if attributeType == C.CKA_HAS_RESET {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_PIXEL_X {
+	if attributeType == C.CKA_PIXEL_X {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_PIXEL_Y {
+	if attributeType == C.CKA_PIXEL_Y {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_RESOLUTION {
+	if attributeType == C.CKA_RESOLUTION {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_CHAR_ROWS {
+	if attributeType == C.CKA_CHAR_ROWS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_CHAR_COLUMNS {
+	if attributeType == C.CKA_CHAR_COLUMNS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_COLOR {
+	if attributeType == C.CKA_COLOR {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_BITS_PER_PIXEL {
+	if attributeType == C.CKA_BITS_PER_PIXEL {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_CHAR_SETS {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_CHAR_SETS {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_ENCODING_METHODS {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_ENCODING_METHODS {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_MIME_TYPES {
-		return reflect.TypeOf(make([]C.CK_UTF8CHAR, attribute.ulValueLen/C.sizeof_CK_UTF8CHAR))
+	if attributeType == C.CKA_MIME_TYPES {
+		return reflect.TypeOf(make([]C.CK_UTF8CHAR, valueLength/C.sizeof_CK_UTF8CHAR))
 	}
-	if attribute._type == C.CKA_MECHANISM_TYPE {
+	if attributeType == C.CKA_MECHANISM_TYPE {
 		return reflect.TypeOf(*new(C.CK_MECHANISM_TYPE))
 	}
-	if attribute._type == C.CKA_REQUIRED_CMS_ATTRIBUTES {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_REQUIRED_CMS_ATTRIBUTES {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_DEFAULT_CMS_ATTRIBUTES {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_DEFAULT_CMS_ATTRIBUTES {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_SUPPORTED_CMS_ATTRIBUTES {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_SUPPORTED_CMS_ATTRIBUTES {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_ALLOWED_MECHANISMS {
-		return reflect.TypeOf(make([]C.CK_MECHANISM_TYPE, attribute.ulValueLen/C.sizeof_CK_MECHANISM_TYPE))
+	if attributeType == C.CKA_ALLOWED_MECHANISMS {
+		return reflect.TypeOf(make([]C.CK_MECHANISM_TYPE, valueLength/C.sizeof_CK_MECHANISM_TYPE))
 	}
-	if attribute._type == C.CKA_PROFILE_ID {
+	if attributeType == C.CKA_PROFILE_ID {
 		return reflect.TypeOf(*new(C.CK_PROFILE_ID))
 	}
-	if attribute._type == C.CKA_X2RATCHET_BAG {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_BAG {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_BAGSIZE {
+	if attributeType == C.CKA_X2RATCHET_BAGSIZE {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_X2RATCHET_BOBS1STMSG {
+	if attributeType == C.CKA_X2RATCHET_BOBS1STMSG {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_X2RATCHET_CKR {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_CKR {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_CKS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_CKS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_DHP {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_DHP {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_DHR {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_DHR {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_DHS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_DHS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_HKR {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_HKR {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_HKS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_HKS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_ISALICE {
+	if attributeType == C.CKA_X2RATCHET_ISALICE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
-	if attribute._type == C.CKA_X2RATCHET_NHKR {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_NHKR {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_NHKS {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_NHKS {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_X2RATCHET_NR {
+	if attributeType == C.CKA_X2RATCHET_NR {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_X2RATCHET_NS {
+	if attributeType == C.CKA_X2RATCHET_NS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_X2RATCHET_PNS {
+	if attributeType == C.CKA_X2RATCHET_PNS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_X2RATCHET_RK {
-		return reflect.TypeOf(make([]C.CK_BYTE, attribute.ulValueLen/C.sizeof_CK_BYTE))
+	if attributeType == C.CKA_X2RATCHET_RK {
+		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	if attribute._type == C.CKA_HSS_LEVELS {
+	if attributeType == C.CKA_HSS_LEVELS {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_HSS_LMS_TYPE {
+	if attributeType == C.CKA_HSS_LMS_TYPE {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_HSS_LMOTS_TYPE {
+	if attributeType == C.CKA_HSS_LMOTS_TYPE {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
-	if attribute._type == C.CKA_HSS_LMS_TYPES {
-		return reflect.TypeOf(make([]C.CK_ULONG, attribute.ulValueLen/C.sizeof_CK_ULONG))
+	if attributeType == C.CKA_HSS_LMS_TYPES {
+		return reflect.TypeOf(make([]C.CK_ULONG, valueLength/C.sizeof_CK_ULONG))
 	}
-	if attribute._type == C.CKA_HSS_LMOTS_TYPES {
-		return reflect.TypeOf(make([]C.CK_ULONG, attribute.ulValueLen/C.sizeof_CK_ULONG))
+	if attributeType == C.CKA_HSS_LMOTS_TYPES {
+		return reflect.TypeOf(make([]C.CK_ULONG, valueLength/C.sizeof_CK_ULONG))
 	}
-	if attribute._type == C.CKA_HSS_KEYS_REMAINING {
+	if attributeType == C.CKA_HSS_KEYS_REMAINING {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
 	return nil
