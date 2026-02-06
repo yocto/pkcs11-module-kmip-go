@@ -1130,7 +1130,7 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(EncodeUnsignedLong(ulMaxObjectCount))
+	inBuffer.Write(EncodeUnsignedLongAsLength(ulMaxObjectCount))
 	inputParameters := inBuffer.Bytes()
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_FindObjects, inputParameters)
