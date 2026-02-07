@@ -303,7 +303,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 					arrayBuffer := bytes.NewBuffer(value)
 
 					mechanismTypeArray := make([]C.CK_MECHANISM_TYPE, attribute.ulValueLen/8)
-					for i := 0; i < len(ulongArray); i++ {
+					for i := 0; i < len(mechanismTypeArray); i++ {
 						mechanismTypeArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
 					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(mechanismTypeArray))
