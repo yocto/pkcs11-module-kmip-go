@@ -300,10 +300,22 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
 					value := remaining[4 : 4+attribute.ulValueLen]
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					arrayBuffer := bytes.NewBuffer(value)
+
+					mechanismTypeArray := make([]C.CK_MECHANISM_TYPE, attribute.ulValueLen/8)
+					for i := 0; i < len(ulongArray); i++ {
+						mechanismTypeArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
+					}
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(mechanismTypeArray))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
 					value := remaining[4 : 4+attribute.ulValueLen]
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					arrayBuffer := bytes.NewBuffer(value)
+
+					ulongArray := make([]C.CK_ULONG, attribute.ulValueLen/8)
+					for i := 0; i < len(ulongArray); i++ {
+						ulongArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
+					}
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(ulongArray))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
 					value := remaining[4 : 4+attribute.ulValueLen]
 					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
