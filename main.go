@@ -7,6 +7,7 @@ import "C"
 import "context"
 import "crypto/tls"
 import "encoding/binary"
+import "errors"
 import "fmt"
 import "os"
 import "sync"
@@ -213,6 +214,13 @@ var client *kmipclient.Client
 func main() {}
 
 func getKMIPClient() (*kmipclient.Client, error) {
+	env_debug := os.Getenv("PKCS11_DEBUG")
+	env_kmip_server := os.Getenv("PKCS11_KMIP_SERVER")
+
+	if env_kmip_server == "" {
+		return nil, errors.New("Missing KMIP server address.")
+	}
+
 	var err error
 	onceClient.Do(func() {
 		middlewares := []kmipclient.Middleware{
@@ -220,12 +228,10 @@ func getKMIPClient() (*kmipclient.Client, error) {
 			kmipclient.TimeoutMiddleware(500 * time.Millisecond),
 		}
 
-		env_debug := os.Getenv("PKCS11_DEBUG")
 		if env_debug == "1" {
 			middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
 		}
 
-		env_kmip_server := os.Getenv("PKCS11_KMIP_SERVER")
 		client, err = kmipclient.Dial(
 			env_kmip_server,
 			kmipclient.WithTlsConfig(&tls.Config{
@@ -234,6 +240,11 @@ func getKMIPClient() (*kmipclient.Client, error) {
 			kmipclient.WithMiddlewares(middlewares...),
 		)
 	})
+
+	if client == nil && err == nil {
+		err = errors.New("Client failed to connect earlier.")
+	}
+
 	return client, err
 }
 
