@@ -195,41 +195,49 @@ func CalculateAttributeSize(data []byte) int {
 	var lengthSize int
 	var valueSize int
 
-	if valueType.Kind() == reflect.Slice {
-		lengthSize = 4
-		if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-			// TODO: Encode attribute with attributes
-		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
-			valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
-			valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
-		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
-			valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
-		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
-			valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
-		}
-	} else {
-		lengthSize = 0
-		if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
-			valueSize = 1
-		} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
-			// TODO: Encode attribute with date
-		} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_KEY_TYPE)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_OBJECT_CLASS)) {
-			valueSize = 8
-		} else if valueType == reflect.TypeOf(*new(C.CK_ULONG)) {
-			valueSize = 8
+	if hasLength != 0x00 {
+		if valueType.Kind() == reflect.Slice {
+			lengthSize = 4
+
+			if hasValue != 0x00 {
+				if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
+					// TODO: Encode attribute with attributes
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
+					valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+					valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
+					valueSize = int(DecodeUnsignedLongAsLength(data[10:14])) * 8
+				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
+					valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
+				}
+			}
+		} else {
+			lengthSize = 0
+
+			if hasValue != 0x00 {
+				if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
+					valueSize = 1
+				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
+					// TODO: Encode attribute with date
+				} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_KEY_TYPE)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_OBJECT_CLASS)) {
+					valueSize = 8
+				} else if valueType == reflect.TypeOf(*new(C.CK_ULONG)) {
+					valueSize = 8
+				}
+			}
 		}
 	}
 
