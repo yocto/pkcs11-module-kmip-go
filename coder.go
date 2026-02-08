@@ -241,14 +241,7 @@ func CalculateAttributeSize(data []byte) int {
 		}
 	}
 
-	totalSize := 10
-	if hasLength != 0x00 {
-		totalSize += lengthSize
-	}
-	if hasValue != 0x00 {
-		totalSize += valueSize
-	}
-	return totalSize
+	return 10 + lengthSize + valueSize
 }
 
 func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
