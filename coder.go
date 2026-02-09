@@ -455,6 +455,9 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 	buffer.Write(EncodeByte(ConvertBooleanToByte(hasLength)))
 
 	valueType := GetAttributeValueType(attribute._type, attribute.ulValueLen)
+	if valueType == nil {
+		return nil
+	}
 
 	if hasLength && valueType.Kind() == reflect.Slice {
 		if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {

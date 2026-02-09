@@ -372,7 +372,11 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -401,7 +405,11 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -723,7 +731,11 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 	inBuffer.Write(EncodeUnsignedLong(hBaseKey))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -1186,7 +1198,11 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -1205,7 +1221,11 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -1235,12 +1255,20 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPublicKeyAttributeCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pPublicKeyTemplate, ulPublicKeyAttributeCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPrivateKeyAttributeCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pPrivateKeyTemplate, ulPrivateKeyAttributeCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -1300,7 +1328,11 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, true))
+		attr := EncodeAttribute(attribute, true)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -1963,7 +1995,11 @@ func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
@@ -2300,7 +2336,11 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 	inBuffer.Write(EncodeBytePointer(pWrappedKey, ulWrappedKeyLen))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
 	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
-		inBuffer.Write(EncodeAttribute(attribute, false))
+		attr := EncodeAttribute(attribute, false)
+		if attr == nil {
+			return C.CKR_ATTRIBUTE_TYPE_INVALID
+		}
+		inBuffer.Write(attr)
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
