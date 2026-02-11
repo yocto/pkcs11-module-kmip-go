@@ -293,63 +293,60 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		}
 
 		if hasValue != 0x00 {
+			var value any
+
 			if valueType.Kind() == reflect.Slice {
 				if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
 					// TODO: Encode attribute with attributes
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
-					value := remaining[4 : 4+attribute.ulValueLen]
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					value = remaining[4 : 4+attribute.ulValueLen]
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
-					value := remaining[4 : 4+attribute.ulValueLen]
-					arrayBuffer := bytes.NewBuffer(value)
+					arrayBuffer := bytes.NewBuffer(remaining[4 : 4+attribute.ulValueLen])
 
 					mechanismTypeArray := make([]C.CK_MECHANISM_TYPE, attribute.ulValueLen/8)
 					for i := 0; i < len(mechanismTypeArray); i++ {
 						mechanismTypeArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(mechanismTypeArray))
+					value = mechanismTypeArray
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
-					value := remaining[4 : 4+attribute.ulValueLen]
-					arrayBuffer := bytes.NewBuffer(value)
+					arrayBuffer := bytes.NewBuffer(remaining[4 : 4+attribute.ulValueLen])
 
 					ulongArray := make([]C.CK_ULONG, attribute.ulValueLen/8)
 					for i := 0; i < len(ulongArray); i++ {
 						ulongArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(ulongArray))
+					value = ulongArray
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
-					value := remaining[4 : 4+attribute.ulValueLen]
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					value = remaining[4 : 4+attribute.ulValueLen]
+				}
+
+				if value != nil {
+					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value.([]any)))
 				}
 			} else {
 				if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
-					value := DecodeByte(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeByte(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_CATEGORY)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
 					// TODO: Encode attribute with date
 				} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_KEY_TYPE)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_OBJECT_CLASS)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
-					attribute.pValue = C.CK_VOID_PTR(&value)
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 				} else if valueType == reflect.TypeOf(*new(C.CK_ULONG)) {
-					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+					value = DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
+				}
+
+				if value != nil {
 					attribute.pValue = C.CK_VOID_PTR(&value)
 				}
 			}
