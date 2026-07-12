@@ -149,7 +149,7 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 	C_DecryptInit:         (C.CK_C_DecryptInit)(C.C_DecryptInit),
 	C_Decrypt:             (C.CK_C_Decrypt)(C.C_Decrypt),
 	C_DecryptUpdate:       (C.CK_C_DecryptUpdate)(C.C_DecryptUpdate),
-	C_DecryptFinal:        (C.CK_C_DecryptFinal)(C.C_DecryptUpdate),
+	C_DecryptFinal:        (C.CK_C_DecryptFinal)(C.C_DecryptFinal),
 	C_DigestInit:          (C.CK_C_DigestInit)(C.C_DigestInit),
 	C_Digest:              (C.CK_C_Digest)(C.C_Digest),
 	C_DigestUpdate:        (C.CK_C_DigestUpdate)(C.C_DigestUpdate),

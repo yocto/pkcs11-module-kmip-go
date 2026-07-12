@@ -2,8 +2,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/ovh/kmip-go v0.7.2 h1:O+gK7el92gpC57WzYGeyAPySeMPIDEWDUeT1IvkdrF0=
-github.com/ovh/kmip-go v0.7.2/go.mod h1:0UZqQCIlZ4/W+cYFbmtRwZ4if582CjlEvy86Xx+ob8E=
+github.com/ovh/kmip-go v0.9.1 h1:dPrO3t5AdNEl6mlx7C4tI2mlfL67oGRpt++faOxe3Uw=
+github.com/ovh/kmip-go v0.9.1/go.mod h1:vZDmUCBchiQzWWr1v7EmotrKwQkpGATikl/zNgonjDo=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
