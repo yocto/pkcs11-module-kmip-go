@@ -1523,6 +1523,10 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 			attribute := DecodeAttribute(outBuffer.Next(attributeSize))
 			pointerAsSliceDestination[i]._type = attribute._type
 			if pointerAsSliceDestination[i].pValue != nil && attribute.pValue != nil {
+				if pointerAsSliceDestination[i].ulValueLen < attribute.ulValueLen {
+					pointerAsSliceDestination[i].ulValueLen = attribute.ulValueLen
+					return C.CKR_BUFFER_TOO_SMALL
+				}
 				destination := pointerToArray((*byte)(pointerAsSliceDestination[i].pValue), uint(attribute.ulValueLen))
 				source := pointerToArray((*byte)(attribute.pValue), uint(attribute.ulValueLen))
 				copy(destination, source)
