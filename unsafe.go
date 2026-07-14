@@ -18,6 +18,6 @@ func pointerToArray[ArbitraryType any](ptr *ArbitraryType, len uint) []Arbitrary
 	return unsafe.Slice(ptr, len)
 }
 
-func getSizeOf[ArbitraryType any](x ArbitraryType) uintptr {
-	return unsafe.Sizeof(x)
+func getSizeOf[ArbitraryType any](x ArbitraryType) uint {
+	return uint(unsafe.Sizeof(x))
 }
