@@ -50,7 +50,7 @@ func DecodeInfo(data []byte) C.CK_INFO {
 	offset += copyIntoField(data[offset:offset+2], &info.cryptokiVersion)
 	offset += copyIntoField(data[offset:offset+32], &info.manufacturerID)
 
-	info.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	info.flags = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
 	offset += copyIntoField(data[offset:offset+32], &info.libraryDescription)
@@ -86,37 +86,37 @@ func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
 	offset += copyIntoField(data[offset:offset+16], &tokenInfo.model)
 	offset += copyIntoField(data[offset:offset+16], &tokenInfo.serialNumber)
 
-	tokenInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.flags = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulMaxSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulMaxSessionCount = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulSessionCount = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulMaxRwSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulMaxRwSessionCount = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulRwSessionCount = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulRwSessionCount = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulMaxPinLen = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulMaxPinLen = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulMinPinLen = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulMinPinLen = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulTotalPublicMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulTotalPublicMemory = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulFreePublicMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulFreePublicMemory = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulTotalPrivateMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulTotalPrivateMemory = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	tokenInfo.ulFreePrivateMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
+	tokenInfo.ulFreePrivateMemory = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
 	offset += copyIntoField(data[offset:offset+2], &tokenInfo.hardwareVersion)
@@ -131,16 +131,16 @@ func DecodeSessionInfo(data []byte) C.CK_SESSION_INFO {
 
 	var offset int
 
-	sessionInfo.slotID = DecodeUnsignedLong(data[offset:(offset + 8)])
+	sessionInfo.slotID = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	sessionInfo.state = DecodeUnsignedLong(data[offset:(offset + 8)])
+	sessionInfo.state = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	sessionInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	sessionInfo.flags = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	sessionInfo.ulDeviceError = DecodeUnsignedLong(data[offset:(offset + 8)])
+	sessionInfo.ulDeviceError = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
 	return sessionInfo
@@ -325,13 +325,13 @@ func DecodeMechanismInfo(data []byte) C.CK_MECHANISM_INFO {
 
 	var offset int
 
-	mechanismInfo.ulMinKeySize = DecodeUnsignedLong(data[offset:(offset + 8)])
+	mechanismInfo.ulMinKeySize = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	mechanismInfo.ulMaxKeySize = DecodeUnsignedLong(data[offset:(offset + 8)])
+	mechanismInfo.ulMaxKeySize = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	mechanismInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	mechanismInfo.flags = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
 	return mechanismInfo
@@ -898,7 +898,7 @@ func getAttributeForTest1() C.CK_ATTRIBUTE {
 	return C.CK_ATTRIBUTE{
 		_type:      C.CKA_SENSITIVE,
 		pValue:     C.CK_VOID_PTR(&sensitive),
-		ulValueLen: C.CK_ULONG(unsafe.Sizeof(sensitive)),
+		ulValueLen: C.CK_ULONG(getSizeOf(sensitive)),
 	}
 }
 
@@ -908,7 +908,7 @@ func getAttributeForTest2() C.CK_ATTRIBUTE {
 	return C.CK_ATTRIBUTE{
 		_type:      C.CKA_CHECK_VALUE,
 		pValue:     C.CK_VOID_PTR(&checkValue),
-		ulValueLen: C.CK_ULONG(unsafe.Sizeof(checkValue)),
+		ulValueLen: C.CK_ULONG(getSizeOf(checkValue)),
 	}
 }
 
@@ -928,7 +928,7 @@ func getAttributeForTest4() C.CK_ATTRIBUTE {
 	return C.CK_ATTRIBUTE{
 		_type:      C.CKA_LABEL,
 		pValue:     C.CK_VOID_PTR(&label),
-		ulValueLen: C.CK_ULONG(unsafe.Sizeof(label)),
+		ulValueLen: C.CK_ULONG(getSizeOf(label)),
 	}
 }
 

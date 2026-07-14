@@ -9,3 +9,7 @@ func copyIntoField(source []byte, destination any) int {
 	copy(slice, source)
 	return len
 }
+
+func getSizeOf(x any) uintptr {
+	return unsafe.Sizeof(x)
+}

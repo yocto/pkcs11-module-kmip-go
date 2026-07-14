@@ -1573,7 +1573,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 	const CK_INTERFACE_SIZE = C.sizeof_CK_INTERFACE
 
 	*pulCount = (C.CK_ULONG)(INTERFACE_COUNT)
-	if int(unsafe.Sizeof(*pInterfaceList)) < INTERFACE_COUNT*int(CK_INTERFACE_SIZE) {
+	if int(getSizeOf(*pInterfaceList)) < INTERFACE_COUNT*int(CK_INTERFACE_SIZE) {
 		return C.CKR_BUFFER_TOO_SMALL
 	}
 
