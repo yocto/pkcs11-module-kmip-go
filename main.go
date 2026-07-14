@@ -317,11 +317,11 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 	}
 
 	if fieldFunction == nil {
-		fmt.Println("Response does bot contain a function.")
+		fmt.Println("Response does not contain a function.")
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
 	if fieldReturnCode == nil {
-		fmt.Println("Response does bot contain a return value.")
+		fmt.Println("Response does not contain a return value.")
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
 	if (*fieldFunction).Value != pkcs11Function.(ttlv.Enum) {
