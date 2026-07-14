@@ -15,6 +15,9 @@ func copyIntoField[ArbitraryType any](source []byte, destination *ArbitraryType)
 }
 
 func pointerToArray[ArbitraryType any](ptr *ArbitraryType, len uint) []ArbitraryType {
+	if ptr == nil {
+		return []ArbitraryType{}
+	}
 	return unsafe.Slice(ptr, len)
 }
 
