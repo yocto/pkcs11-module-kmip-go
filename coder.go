@@ -6,7 +6,6 @@ import "bytes"
 import "C"
 import "encoding/binary"
 import "reflect"
-import "unsafe"
 
 func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
 	if boolean {
@@ -259,7 +258,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 					// TODO: Encode attribute with attributes
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 					value := remaining[4 : 4+attribute.ulValueLen]
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					attribute.pValue = C.CK_VOID_PTR(arrayToPointer(value))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
 					arrayBuffer := bytes.NewBuffer(remaining[4 : 4+attribute.ulValueLen])
 
@@ -268,7 +267,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 						mechanismTypeArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
 					value := mechanismTypeArray
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					attribute.pValue = C.CK_VOID_PTR(arrayToPointer(value))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
 					arrayBuffer := bytes.NewBuffer(remaining[4 : 4+attribute.ulValueLen])
 
@@ -277,10 +276,10 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 						ulongArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
 					value := ulongArray
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					attribute.pValue = C.CK_VOID_PTR(arrayToPointer(value))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
 					value := remaining[4 : 4+attribute.ulValueLen]
-					attribute.pValue = C.CK_VOID_PTR(unsafe.SliceData(value))
+					attribute.pValue = C.CK_VOID_PTR(arrayToPointer(value))
 				}
 			} else {
 				if valueType == reflect.TypeOf(*new(C.CK_BBOOL)) {
@@ -937,7 +936,7 @@ func getMechanismForTest() C.CK_MECHANISM {
 
 	return C.CK_MECHANISM{
 		mechanism:      C.CKM_DES_CBC_PAD,
-		pParameter:     C.CK_VOID_PTR(unsafe.SliceData(iv)),
+		pParameter:     C.CK_VOID_PTR(arrayToPointer(iv)),
 		ulParameterLen: C.CK_ULONG(len(iv)),
 	}
 }

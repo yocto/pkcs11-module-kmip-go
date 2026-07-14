@@ -13,7 +13,6 @@ import "os"
 import "strconv"
 import "sync"
 import "time"
-import "unsafe"
 import "github.com/google/uuid"
 import "github.com/ovh/kmip-go"
 import "github.com/ovh/kmip-go/kmipclient"
@@ -30,7 +29,7 @@ var defaultInterface string = "PKCS 11"
 
 var interfaces = []C.CK_INTERFACE{
 	C.CK_INTERFACE{
-		pInterfaceName: (*C.CK_CHAR)(unsafe.SliceData([]byte("PKCS 11"))),
+		pInterfaceName: (*C.CK_CHAR)(arrayToPointer([]byte("PKCS 11"))),
 		pFunctionList:  (C.CK_VOID_PTR)(&functionList30),
 		flags:          0x0,
 	},

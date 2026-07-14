@@ -2,10 +2,14 @@ package main
 
 import "unsafe"
 
+func arrayToPointer[ArbitraryType any](slice []ArbitraryType) *ArbitraryType {
+	return unsafe.SliceData(slice)
+}
+
 func copyIntoField(source []byte, destination any) int {
 	len := len(source)
 	ptr := unsafe.Pointer(destination.(*any))
-	slice := unsafe.Slice((*byte)(ptr), len)
+	slice := pointerToArray((*byte)(ptr), uint(len))
 	copy(slice, source)
 	return len
 }
