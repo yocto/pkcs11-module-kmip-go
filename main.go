@@ -1314,11 +1314,6 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		objectCount := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulObjectCount < objectCount {
-			*pulObjectCount = objectCount
-			return C.CKR_BUFFER_TOO_SMALL
-		}
 		*pulObjectCount = objectCount
 
 		pointerAsSliceDestination := pointerToArray(phObject, uint(*pulObjectCount))
