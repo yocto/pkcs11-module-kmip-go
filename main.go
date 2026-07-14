@@ -1314,7 +1314,7 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		*pulObjectCount := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		*pulObjectCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		pointerAsSliceDestination := pointerToArray(phObject, uint(*pulObjectCount))
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
@@ -1746,7 +1746,7 @@ func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, p
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		*pulSize := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		*pulSize = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 	}
 
 	return C.CK_RV(returnCode)
