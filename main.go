@@ -476,7 +476,11 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		dataLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulDataLen < dataLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulDataLen = dataLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pData, uint(*pulDataLen))
@@ -514,7 +518,11 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		partLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulPartLen < partLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulPartLen = partLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pPart, uint(*pulPartLen))
@@ -551,7 +559,11 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulLastPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		lastPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulLastPartLen < lastPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulLastPartLen = lastPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pLastPart, uint(*pulLastPartLen))
@@ -610,7 +622,11 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulPlaintextLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		plaintextLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulPlaintextLen < plaintextLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulPlaintextLen = plaintextLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pPlaintext, uint(*pulPlaintextLen))
@@ -671,7 +687,11 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulPlaintextPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		plaintextPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulPlaintextPartLen < plaintextPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulPlaintextPartLen = plaintextPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pPlaintextPart, uint(*pulPlaintextPartLen))
@@ -709,7 +729,11 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		partLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulPartLen < partLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulPartLen = partLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pPart, uint(*pulPartLen))
@@ -747,7 +771,11 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		partLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulPartLen < partLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulPartLen = partLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pPart, uint(*pulPartLen))
@@ -838,7 +866,11 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulDigestLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		digestLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulDigestLen < digestLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulDigestLen = digestLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pDigest, uint(*pulDigestLen))
@@ -876,7 +908,11 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		encryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulEncryptedPartLen < encryptedPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulEncryptedPartLen = encryptedPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pEncryptedPart, uint(*pulEncryptedPartLen))
@@ -913,7 +949,11 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulDigestLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		digestLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulDigestLen < digestLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulDigestLen = digestLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pDigest, uint(*pulDigestLen))
@@ -999,7 +1039,11 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulEncryptedDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		encryptedDataLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulEncryptedDataLen < encryptedDataLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulEncryptedDataLen = encryptedDataLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pEncryptedData, uint(*pulEncryptedDataLen))
@@ -1036,7 +1080,11 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulLastEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		lastEncryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulLastEncryptedPartLen < lastEncryptedPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulLastEncryptedPartLen = lastEncryptedPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pLastEncryptedPart, uint(*pulLastEncryptedPartLen))
@@ -1095,7 +1143,11 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulCiphertextLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		ciphertextLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulCiphertextLen < ciphertextLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulCiphertextLen = ciphertextLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pCiphertext, uint(*pulCiphertextLen))
@@ -1156,7 +1208,11 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulCiphertextPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		ciphertextPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulCiphertextPartLen < ciphertextPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulCiphertextPartLen = ciphertextPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pCiphertextPart, uint(*pulCiphertextPartLen))
@@ -1194,7 +1250,11 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		encryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulEncryptedPartLen < encryptedPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulEncryptedPartLen = encryptedPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pEncryptedPart, uint(*pulEncryptedPartLen))
@@ -1239,7 +1299,11 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		*pulObjectCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		objectCount := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulObjectCount < objectCount {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulObjectCount = objectCount
 
 		pointerAsSliceDestination := pointerToArray(phObject, uint(*pulObjectCount))
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
@@ -1633,7 +1697,11 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		count := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulCount < count {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulCount = count
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pMechanismList, uint(*pulCount))
@@ -1667,7 +1735,11 @@ func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, p
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		*pulSize = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		size := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulSize < size {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulSize = size
 	}
 
 	return C.CK_RV(returnCode)
@@ -1697,7 +1769,11 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulOperationStateLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		operationStateLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulOperationStateLen < operationStateLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulOperationStateLen = operationStateLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pOperationState, uint(*pulOperationStateLen))
@@ -1786,7 +1862,11 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		count := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulCount < count {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulCount = count
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pSlotList, uint(*pulCount))
@@ -2220,7 +2300,11 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulSignatureLen < signatureLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulSignatureLen = signatureLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
@@ -2258,7 +2342,11 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		encryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulEncryptedPartLen < encryptedPartLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulEncryptedPartLen = encryptedPartLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pEncryptedPart, uint(*pulEncryptedPartLen))
@@ -2295,7 +2383,11 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulSignatureLen < signatureLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulSignatureLen = signatureLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
@@ -2353,7 +2445,11 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulSignatureLen < signatureLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulSignatureLen = signatureLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
@@ -2412,7 +2508,11 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulSignatureLen < signatureLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulSignatureLen = signatureLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
@@ -2450,7 +2550,11 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulSignatureLen < signatureLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulSignatureLen = signatureLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
@@ -2668,7 +2772,11 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		dataLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulDataLen < dataLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulDataLen = dataLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pData, uint(*pulDataLen))
@@ -2752,7 +2860,11 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
-		*pulWrappedKeyLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		wrappedKeyLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
+		if *pulWrappedKeyLen < wrappedKeyLen {
+			return C.CKR_BUFFER_TOO_SMALL
+		}
+		*pulWrappedKeyLen = wrappedKeyLen
 
 		if hasValue != 0x00 {
 			pointerAsSliceDestination := pointerToArray(pWrappedKey, uint(*pulWrappedKeyLen))
