@@ -384,14 +384,14 @@ func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 //export C_CopyObject
 func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phNewObject C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CopyObject(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v, phNewObject=%+v)\n", hSession, hObject, unsafe.Slice(pTemplate, ulCount), ulCount, phNewObject)
+		fmt.Printf("Function called: C_CopyObject(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v, phNewObject=%+v)\n", hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount, phNewObject)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -420,13 +420,13 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 //export C_CreateObject
 func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phObject C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CreateObject(hSession=%+v, pTemplate=%+v, ulCount=%+v, phObject=%+v)\n", hSession, unsafe.Slice(pTemplate, ulCount), ulCount, phObject)
+		fmt.Printf("Function called: C_CreateObject(hSession=%+v, pTemplate=%+v, ulCount=%+v, phObject=%+v)\n", hSession, pointerToArray(pTemplate, uint(ulCount)), ulCount, phObject)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -455,7 +455,7 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 //export C_Decrypt
 func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEncryptedDataLen C.CK_ULONG /*usEncryptedDataLen C.CK_USHORT (v1.0)*/, pData C.CK_BYTE_PTR, pulDataLen C.CK_ULONG_PTR /*pusDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Decrypt(hSession=%+v, pEncryptedData=%+v, ulEncryptedDataLen=%+v, pData=%+v, pulDataLen=%+v)\n", hSession, unsafe.Slice(pEncryptedData, ulEncryptedDataLen), ulEncryptedDataLen, pData, *pulDataLen)
+		fmt.Printf("Function called: C_Decrypt(hSession=%+v, pEncryptedData=%+v, ulEncryptedDataLen=%+v, pData=%+v, pulDataLen=%+v)\n", hSession, pointerToArray(pEncryptedData, uint(ulEncryptedDataLen)), ulEncryptedDataLen, pData, *pulDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -480,7 +480,7 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 		*pulDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pData, *pulDataLen)
+			pointerAsSliceDestination := pointerToArray(pData, uint(*pulDataLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -493,7 +493,7 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 //export C_DecryptDigestUpdate
 func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptDigestUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, unsafe.Slice(pEncryptedPart, ulEncryptedPartLen), ulEncryptedPartLen, pPart, *pulPartLen)
+		fmt.Printf("Function called: C_DecryptDigestUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, *pulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -518,7 +518,7 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pPart, *pulPartLen)
+			pointerAsSliceDestination := pointerToArray(pPart, uint(*pulPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -555,7 +555,7 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 		*pulLastPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pLastPart, *pulLastPartLen)
+			pointerAsSliceDestination := pointerToArray(pLastPart, uint(*pulLastPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -585,7 +585,7 @@ func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_DecryptMessage
 func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG, pCiphertext C.CK_BYTE_PTR, ulCiphertextLen C.CK_ULONG, pPlaintext C.CK_BYTE_PTR, pulPlaintextLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pCiphertext=%+v, ulCiphertextLen=%+v, pPlaintext=%+v, pulPlaintextLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pAssociatedData, ulAssociatedDataLen), ulAssociatedDataLen, unsafe.Slice(pCiphertext, ulCiphertextLen), ulCiphertextLen, pPlaintext, *pulPlaintextLen)
+		fmt.Printf("Function called: C_DecryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pCiphertext=%+v, ulCiphertextLen=%+v, pPlaintext=%+v, pulPlaintextLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen, pointerToArray(pCiphertext, uint(ulCiphertextLen)), ulCiphertextLen, pPlaintext, *pulPlaintextLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -614,7 +614,7 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 		*pulPlaintextLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pPlaintext, *pulPlaintextLen)
+			pointerAsSliceDestination := pointerToArray(pPlaintext, uint(*pulPlaintextLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -627,7 +627,7 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 //export C_DecryptMessageBegin
 func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pAssociatedData, ulAssociatedDataLen), ulAssociatedDataLen)
+		fmt.Printf("Function called: C_DecryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -646,7 +646,7 @@ func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 //export C_DecryptMessageNext
 func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pCiphertextPart C.CK_BYTE_PTR, ulCiphertextPartLen C.CK_ULONG, pPlaintextPart C.CK_BYTE_PTR, pulPlaintextPartLen C.CK_ULONG_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pCiphertextPart=%+v, ulCiphertextPartLen=%+v, pPlaintextPart=%+v, pulPlaintextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pCiphertextPart, ulCiphertextPartLen), ulCiphertextPartLen, pPlaintextPart, *pulPlaintextPartLen, flags)
+		fmt.Printf("Function called: C_DecryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pCiphertextPart=%+v, ulCiphertextPartLen=%+v, pPlaintextPart=%+v, pulPlaintextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pCiphertextPart, uint(ulCiphertextPartLen)), ulCiphertextPartLen, pPlaintextPart, *pulPlaintextPartLen, flags)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -675,7 +675,7 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 		*pulPlaintextPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pPlaintextPart, *pulPlaintextPartLen)
+			pointerAsSliceDestination := pointerToArray(pPlaintextPart, uint(*pulPlaintextPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -688,7 +688,7 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 //export C_DecryptUpdate
 func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG /*usEncryptedPartLen C.CK_USHORT (v1.0)*/, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR /*pusPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, unsafe.Slice(pEncryptedPart, ulEncryptedPartLen), ulEncryptedPartLen, pPart, *pulPartLen)
+		fmt.Printf("Function called: C_DecryptUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, *pulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -713,7 +713,7 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pPart, *pulPartLen)
+			pointerAsSliceDestination := pointerToArray(pPart, uint(*pulPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -726,7 +726,7 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 //export C_DecryptVerifyUpdate
 func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptVerifyUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, unsafe.Slice(pEncryptedPart, ulEncryptedPartLen), ulEncryptedPartLen, pPart, *pulPartLen)
+		fmt.Printf("Function called: C_DecryptVerifyUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, *pulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -751,7 +751,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 		*pulPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pPart, *pulPartLen)
+			pointerAsSliceDestination := pointerToArray(pPart, uint(*pulPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -764,7 +764,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 //export C_DeriveKey
 func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hBaseKey C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DeriveKey(hSession=%+v, pMechanism=%+v, hBaseKey=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, *pMechanism, hBaseKey, unsafe.Slice(pTemplate, ulAttributeCount), ulAttributeCount)
+		fmt.Printf("Function called: C_DeriveKey(hSession=%+v, pMechanism=%+v, hBaseKey=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, *pMechanism, hBaseKey, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -772,7 +772,7 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLong(hBaseKey))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulAttributeCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -817,7 +817,7 @@ func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C
 //export C_Digest
 func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pDigest C.CK_BYTE_PTR, pulDigestLen C.CK_ULONG_PTR /*pusDigestLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Digest(hSession=%+v, pData=%+v, ulDataLen=%+v, pDigest=%+v, pulDigestLen=%+v)\n", hSession, unsafe.Slice(pData, ulDataLen), ulDataLen, pDigest, *pulDigestLen)
+		fmt.Printf("Function called: C_Digest(hSession=%+v, pData=%+v, ulDataLen=%+v, pDigest=%+v, pulDigestLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pDigest, *pulDigestLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -842,7 +842,7 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 		*pulDigestLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pDigest, *pulDigestLen)
+			pointerAsSliceDestination := pointerToArray(pDigest, uint(*pulDigestLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -855,7 +855,7 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 //export C_DigestEncryptUpdate
 func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, unsafe.Slice(pPart, ulPartLen), ulPartLen, pEncryptedPart, *pulEncryptedPartLen)
+		fmt.Printf("Function called: C_DigestEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, *pulEncryptedPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -880,7 +880,7 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pEncryptedPart, *pulEncryptedPartLen)
+			pointerAsSliceDestination := pointerToArray(pEncryptedPart, uint(*pulEncryptedPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -917,7 +917,7 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 		*pulDigestLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pDigest, *pulDigestLen)
+			pointerAsSliceDestination := pointerToArray(pDigest, uint(*pulDigestLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -962,7 +962,7 @@ func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV 
 //export C_DigestUpdate
 func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, unsafe.Slice(pPart, ulPartLen), ulPartLen)
+		fmt.Printf("Function called: C_DigestUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -978,7 +978,7 @@ func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 //export C_Encrypt
 func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pEncryptedData C.CK_BYTE_PTR, pulEncryptedDataLen C.CK_ULONG_PTR /*pusEncryptedDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Encrypt(hSession=%+v, pData=%+v, ulDataLen=%+v, pEncryptedData=%+v, pulEncryptedDataLen=%+v)\n", hSession, unsafe.Slice(pData, ulDataLen), ulDataLen, pEncryptedData, *pulEncryptedDataLen)
+		fmt.Printf("Function called: C_Encrypt(hSession=%+v, pData=%+v, ulDataLen=%+v, pEncryptedData=%+v, pulEncryptedDataLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pEncryptedData, *pulEncryptedDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1003,7 +1003,7 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 		*pulEncryptedDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pEncryptedData, *pulEncryptedDataLen)
+			pointerAsSliceDestination := pointerToArray(pEncryptedData, uint(*pulEncryptedDataLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -1040,7 +1040,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 		*pulLastEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pLastEncryptedPart, *pulLastEncryptedPartLen)
+			pointerAsSliceDestination := pointerToArray(pLastEncryptedPart, uint(*pulLastEncryptedPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -1070,7 +1070,7 @@ func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_EncryptMessage
 func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG, pPlaintext C.CK_BYTE_PTR, ulPlaintextLen C.CK_ULONG, pCiphertext C.CK_BYTE_PTR, pulCiphertextLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pPlaintext=%+v, ulPlaintextLen=%+v, pCiphertext=%+v, pulCiphertextLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pAssociatedData, ulAssociatedDataLen), ulAssociatedDataLen, unsafe.Slice(pPlaintext, ulPlaintextLen), ulPlaintextLen, pCiphertext, *pulCiphertextLen)
+		fmt.Printf("Function called: C_EncryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pPlaintext=%+v, ulPlaintextLen=%+v, pCiphertext=%+v, pulCiphertextLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen, pointerToArray(pPlaintext, uint(ulPlaintextLen)), ulPlaintextLen, pCiphertext, *pulCiphertextLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1099,7 +1099,7 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 		*pulCiphertextLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pCiphertext, *pulCiphertextLen)
+			pointerAsSliceDestination := pointerToArray(pCiphertext, uint(*pulCiphertextLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -1112,7 +1112,7 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 //export C_EncryptMessageBegin
 func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pAssociatedData, ulAssociatedDataLen), ulAssociatedDataLen)
+		fmt.Printf("Function called: C_EncryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1131,7 +1131,7 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 //export C_EncryptMessageNext
 func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pPlaintextPart C.CK_BYTE_PTR, ulPlaintextPartLen C.CK_ULONG, pCiphertextPart C.CK_BYTE_PTR, pulCiphertextPartLen C.CK_ULONG_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pPlaintextPart=%+v, ulPlaintextPartLen=%+v, pCiphertextPart=%+v, pulCiphertextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pPlaintextPart, ulPlaintextPartLen), ulPlaintextPartLen, unsafe.Slice(pCiphertextPart, *pulCiphertextPartLen), *pulCiphertextPartLen, flags)
+		fmt.Printf("Function called: C_EncryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pPlaintextPart=%+v, ulPlaintextPartLen=%+v, pCiphertextPart=%+v, pulCiphertextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pPlaintextPart, uint(ulPlaintextPartLen)), ulPlaintextPartLen, pointerToArray(pCiphertextPart, uint(*pulCiphertextPartLen)), *pulCiphertextPartLen, flags)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1160,7 +1160,7 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 		*pulCiphertextPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pCiphertextPart, *pulCiphertextPartLen)
+			pointerAsSliceDestination := pointerToArray(pCiphertextPart, uint(*pulCiphertextPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -1173,7 +1173,7 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 //export C_EncryptUpdate
 func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR /*pusEncryptedPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, unsafe.Slice(pPart, ulPartLen), ulPartLen, pEncryptedPart, *pulEncryptedPartLen)
+		fmt.Printf("Function called: C_EncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, *pulEncryptedPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1198,7 +1198,7 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pEncryptedPart, *pulEncryptedPartLen)
+			pointerAsSliceDestination := pointerToArray(pEncryptedPart, uint(*pulEncryptedPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -1242,7 +1242,7 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 
 		*pulObjectCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
-		pointerAsSliceDestination := unsafe.Slice(phObject, *pulObjectCount)
+		pointerAsSliceDestination := pointerToArray(phObject, uint(*pulObjectCount))
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
 			pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 		}
@@ -1269,13 +1269,13 @@ func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 //export C_FindObjectsInit
 func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_FindObjectsInit(hSession=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, unsafe.Slice(pTemplate, ulCount), ulCount)
+		fmt.Printf("Function called: C_FindObjectsInit(hSession=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -1293,14 +1293,14 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 //export C_GenerateKey
 func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, *pMechanism, unsafe.Slice(pTemplate, ulCount), ulCount)
+		fmt.Printf("Function called: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, *pMechanism, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -1329,14 +1329,14 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_GenerateKeyPair
 func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, pPublicKeyTemplate C.CK_ATTRIBUTE_PTR, ulPublicKeyAttributeCount C.CK_ULONG /*usPublicKeyAttributeCount C.CK_USHORT (v1.0)*/, pPrivateKeyTemplate C.CK_ATTRIBUTE_PTR, ulPrivateKeyAttributeCount C.CK_ULONG /*usPrivateKeyAttributeCount C.CK_USHORT (v1.0)*/, phPrivateKey C.CK_OBJECT_HANDLE_PTR, phPublicKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", hSession, *pMechanism, unsafe.Slice(pPublicKeyTemplate, ulPublicKeyAttributeCount), ulPublicKeyAttributeCount, unsafe.Slice(pPrivateKeyTemplate, ulPrivateKeyAttributeCount), ulPrivateKeyAttributeCount)
+		fmt.Printf("Function called: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", hSession, *pMechanism, pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)), ulPublicKeyAttributeCount, pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)), ulPrivateKeyAttributeCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeMechanism(*pMechanism))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPublicKeyAttributeCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pPublicKeyTemplate, ulPublicKeyAttributeCount) {
+	for _, attribute := range pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -1345,7 +1345,7 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	}
 	// (See: Moved up)
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPrivateKeyAttributeCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pPrivateKeyTemplate, ulPrivateKeyAttributeCount) {
+	for _, attribute := range pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -1394,7 +1394,7 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
-		pointerAsSliceDestination := unsafe.Slice(pRandomData, ulRandomLen)
+		pointerAsSliceDestination := pointerToArray(pRandomData, uint(ulRandomLen))
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
 			pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 		}
@@ -1406,14 +1406,14 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 //export C_GetAttributeValue
 func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, hObject, unsafe.Slice(pTemplate, ulCount), ulCount)
+		fmt.Printf("Function called: C_GetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, true)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -1438,14 +1438,14 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 		ulCount := DecodeUnsignedLongAsLength(outBuffer.Next(4))
 		offset += 4
 
-		pointerAsSliceDestination := unsafe.Slice(pTemplate, ulCount)
+		pointerAsSliceDestination := pointerToArray(pTemplate, uint(ulCount))
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
 			attributeSize := CalculateAttributeSize(outputParameters.([]byte)[offset:])
 			attribute := DecodeAttribute(outBuffer.Next(attributeSize))
 			pointerAsSliceDestination[i]._type = attribute._type
 			if pointerAsSliceDestination[i].pValue != nil && attribute.pValue != nil {
-				destination := unsafe.Slice((*byte)(pointerAsSliceDestination[i].pValue), attribute.ulValueLen)
-				source := unsafe.Slice((*byte)(attribute.pValue), attribute.ulValueLen)
+				destination := pointerToArray((*byte)(pointerAsSliceDestination[i].pValue), uint(attribute.ulValueLen))
+				source := pointerToArray((*byte)(attribute.pValue), uint(attribute.ulValueLen))
 				copy(destination, source)
 			}
 			pointerAsSliceDestination[i].ulValueLen = attribute.ulValueLen
@@ -1577,7 +1577,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 		return C.CKR_BUFFER_TOO_SMALL
 	}
 
-	pointerAsSliceDestination := unsafe.Slice(pInterfaceList, INTERFACE_COUNT)
+	pointerAsSliceDestination := pointerToArray(pInterfaceList, uint(INTERFACE_COUNT))
 	copy(pointerAsSliceDestination, interfaces)
 
 	return C.CKR_OK
@@ -1637,7 +1637,7 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pMechanismList, *pulCount)
+			pointerAsSliceDestination := pointerToArray(pMechanismList, uint(*pulCount))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
@@ -1701,7 +1701,7 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 		*pulOperationStateLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pOperationState, *pulOperationStateLen)
+			pointerAsSliceDestination := pointerToArray(pOperationState, uint(*pulOperationStateLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -1790,7 +1790,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 		*pulCount = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSlotList, *pulCount)
+			pointerAsSliceDestination := pointerToArray(pSlotList, uint(*pulCount))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = DecodeUnsignedLong(outBuffer.Next(8))
 			}
@@ -1834,7 +1834,7 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 
 	if pInitArgs != nil {
 		initializeArgumentsPointer := C.CK_C_INITIALIZE_ARGS_PTR(pInitArgs)
-		initializeArguments := unsafe.Slice(initializeArgumentsPointer, 1)[0]
+		initializeArguments := pointerToArray(initializeArgumentsPointer, 1)[0]
 		fmt.Printf("PKCS#11 library initiated with: %+v\n", initializeArguments)
 	} else {
 		fmt.Println("PKCS#11 library initiated without arguments")
@@ -2135,14 +2135,14 @@ func C_SessionCancel(hSession C.CK_SESSION_HANDLE, flags C.CK_FLAGS) C.CK_RV { /
 //export C_SetAttributeValue
 func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, hObject, unsafe.Slice(pTemplate, ulCount), ulCount)
+		fmt.Printf("Function called: C_SetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -2199,7 +2199,7 @@ func C_SetPIN(hSession C.CK_SESSION_HANDLE, pOldPin C.CK_UTF8CHAR_PTR /*pOldPin 
 //export C_Sign
 func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR /*pusSignatureLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Sign(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, unsafe.Slice(pData, ulDataLen), ulDataLen, pSignature, *pulSignatureLen)
+		fmt.Printf("Function called: C_Sign(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, *pulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2224,7 +2224,7 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2237,7 +2237,7 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 //export C_SignEncryptUpdate
 func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, unsafe.Slice(pPart, ulPartLen), ulPartLen, pEncryptedPart, *pulEncryptedPartLen)
+		fmt.Printf("Function called: C_SignEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, *pulEncryptedPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2262,7 +2262,7 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 		*pulEncryptedPartLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pEncryptedPart, *pulEncryptedPartLen)
+			pointerAsSliceDestination := pointerToArray(pEncryptedPart, uint(*pulEncryptedPartLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2299,7 +2299,7 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2329,7 +2329,7 @@ func C_SignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKe
 //export C_SignMessage
 func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pData, ulDataLen), ulDataLen, pSignature, *pulSignatureLen)
+		fmt.Printf("Function called: C_SignMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, *pulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2357,7 +2357,7 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2388,7 +2388,7 @@ func C_SignMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, 
 //export C_SignMessageNext
 func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pDataPart C.CK_BYTE_PTR, ulDataPartLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pDataPart, ulDataPartLen), ulDataPartLen, pSignature, *pulSignatureLen)
+		fmt.Printf("Function called: C_SignMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pDataPart, uint(ulDataPartLen)), ulDataPartLen, pSignature, *pulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2416,7 +2416,7 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2429,7 +2429,7 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 //export C_SignRecover
 func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR /*pusSignatureLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignRecover(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, unsafe.Slice(pData, ulDataLen), ulDataLen, pSignature, *pulSignatureLen)
+		fmt.Printf("Function called: C_SignRecover(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, *pulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2454,7 +2454,7 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 		*pulSignatureLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pSignature, *pulSignatureLen)
+			pointerAsSliceDestination := pointerToArray(pSignature, uint(*pulSignatureLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2484,7 +2484,7 @@ func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 //export C_SignUpdate
 func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, unsafe.Slice(pPart, ulPartLen), ulPartLen)
+		fmt.Printf("Function called: C_SignUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2500,7 +2500,7 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 //export C_UnwrapKey
 func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hUnwrappingKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, ulWrappedKeyLen C.CK_ULONG /*usWrappedKeyLen C.CK_USHORT (v1.0)*/, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, pWrappedKey=%+v, ulWrappedKeyLen=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, *pMechanism, hUnwrappingKey, unsafe.Slice(pWrappedKey, ulWrappedKeyLen), ulWrappedKeyLen, unsafe.Slice(pTemplate, ulAttributeCount), ulAttributeCount)
+		fmt.Printf("Function called: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, pWrappedKey=%+v, ulWrappedKeyLen=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, *pMechanism, hUnwrappingKey, pointerToArray(pWrappedKey, uint(ulWrappedKeyLen)), ulWrappedKeyLen, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2509,7 +2509,7 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 	inBuffer.Write(EncodeUnsignedLong(hUnwrappingKey))
 	inBuffer.Write(EncodeBytePointer(pWrappedKey, ulWrappedKeyLen))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulAttributeCount)) // Moved up
-	for _, attribute := range unsafe.Slice(pTemplate, ulAttributeCount) {
+	for _, attribute := range pointerToArray(pTemplate, uint(ulAttributeCount)) {
 		attr := EncodeAttribute(attribute, false)
 		if attr == nil {
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
@@ -2538,7 +2538,7 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 //export C_Verify
 func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Verify(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, unsafe.Slice(pData, ulDataLen), ulDataLen, unsafe.Slice(pSignature, ulSignatureLen), ulSignatureLen)
+		fmt.Printf("Function called: C_Verify(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2589,7 +2589,7 @@ func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, h
 //export C_VerifyMessage
 func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pData, ulDataLen), ulDataLen, unsafe.Slice(pSignature, ulSignatureLen), ulSignatureLen)
+		fmt.Printf("Function called: C_VerifyMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2627,7 +2627,7 @@ func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 //export C_VerifyMessageNext
 func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pDataPart C.CK_BYTE_PTR, ulDataPartLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, unsafe.Slice(pDataPart, ulDataPartLen), ulDataPartLen, unsafe.Slice(pSignature, ulSignatureLen), ulSignatureLen)
+		fmt.Printf("Function called: C_VerifyMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pDataPart, uint(ulDataPartLen)), ulDataPartLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2647,7 +2647,7 @@ func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR,
 //export C_VerifyRecover
 func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/, pData C.CK_BYTE_PTR, pulDataLen C.CK_ULONG_PTR /*pusDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyRecover(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v, pData=%+v, pulDataLen=%+v)\n", hSession, unsafe.Slice(pSignature, ulSignatureLen), ulSignatureLen, pData, *pulDataLen)
+		fmt.Printf("Function called: C_VerifyRecover(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v, pData=%+v, pulDataLen=%+v)\n", hSession, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen, pData, *pulDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2672,7 +2672,7 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 		*pulDataLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pData, *pulDataLen)
+			pointerAsSliceDestination := pointerToArray(pData, uint(*pulDataLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}
@@ -2702,7 +2702,7 @@ func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 //export C_VerifyUpdate
 func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, unsafe.Slice(pPart, ulPartLen), ulPartLen)
+		fmt.Printf("Function called: C_VerifyUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2756,7 +2756,7 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 		*pulWrappedKeyLen = DecodeUnsignedLongAsLength(outBuffer.Next(4))
 
 		if hasValue != 0x00 {
-			pointerAsSliceDestination := unsafe.Slice(pWrappedKey, *pulWrappedKeyLen)
+			pointerAsSliceDestination := pointerToArray(pWrappedKey, uint(*pulWrappedKeyLen))
 			for i := 0; i < len(pointerAsSliceDestination); i++ {
 				pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
 			}

@@ -10,6 +10,10 @@ func copyIntoField(source []byte, destination any) int {
 	return len
 }
 
+func pointerToArray[ArbitraryType any](ptr *ArbitraryType, len uint) []ArbitraryType {
+	return unsafe.Slice(ptr, len)
+}
+
 func getSizeOf[ArbitraryType any](x ArbitraryType) uintptr {
 	return unsafe.Sizeof(x)
 }

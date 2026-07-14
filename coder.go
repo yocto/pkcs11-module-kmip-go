@@ -364,7 +364,7 @@ func EncodeLong(long C.CK_LONG) []byte {
 func EncodeBytePointer(bytePointer C.CK_BYTE_PTR, bytePointerLength C.CK_ULONG) []byte {
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLongAsLength(bytePointerLength)) // Moved up
-	for _, _byte := range unsafe.Slice(bytePointer, bytePointerLength) {
+	for _, _byte := range pointerToArray(bytePointer, uint(bytePointerLength)) {
 		inBuffer.Write(EncodeByte(_byte))
 	}
 	// Length field originally placed here, but "moved up" before variable byte pointer array.
@@ -374,7 +374,7 @@ func EncodeBytePointer(bytePointer C.CK_BYTE_PTR, bytePointerLength C.CK_ULONG) 
 func EncodeUTF8CharacterPointer(utf8characterPointer C.CK_UTF8CHAR_PTR, utf8characterPointerLength C.CK_ULONG) []byte {
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLongAsLength(utf8characterPointerLength)) // Moved up
-	for _, utf8char := range unsafe.Slice(utf8characterPointer, utf8characterPointerLength) {
+	for _, utf8char := range pointerToArray(utf8characterPointer, uint(utf8characterPointerLength)) {
 		inBuffer.Write(EncodeByte(utf8char))
 	}
 	// Length field originally placed here, but "moved up" before variable byte pointer array.
@@ -384,7 +384,7 @@ func EncodeUTF8CharacterPointer(utf8characterPointer C.CK_UTF8CHAR_PTR, utf8char
 func EncodeUnsignedLongPointer(ulongPointer C.CK_ULONG_PTR, ulongPointerLength C.CK_ULONG) []byte {
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulongPointerLength)) // Moved up
-	for _, ulong := range unsafe.Slice(ulongPointer, ulongPointerLength) {
+	for _, ulong := range pointerToArray(ulongPointer, uint(ulongPointerLength)) {
 		inBuffer.Write(EncodeUnsignedLong(ulong))
 	}
 	// Length field originally placed here, but "moved up" before variable byte pointer array.
@@ -394,7 +394,7 @@ func EncodeUnsignedLongPointer(ulongPointer C.CK_ULONG_PTR, ulongPointerLength C
 func EncodeMechanismTypePointer(mechanismTypePointer C.CK_MECHANISM_TYPE_PTR, mechanismTypePointerLength C.CK_ULONG) []byte {
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLongAsLength(mechanismTypePointerLength)) // Moved up
-	for _, mechanismType := range unsafe.Slice(mechanismTypePointer, mechanismTypePointerLength) {
+	for _, mechanismType := range pointerToArray(mechanismTypePointer, uint(mechanismTypePointerLength)) {
 		inBuffer.Write(EncodeUnsignedLong(mechanismType))
 	}
 	// Length field originally placed here, but "moved up" before variable byte pointer array.
@@ -483,7 +483,7 @@ func EncodeMechanism(mechanism C.CK_MECHANISM) []byte {
 		binary.Write(buffer, binary.BigEndian, uint32(mechanism.ulParameterLen)+4)
 		// TODO: Detect if string. If yes: length prepend (and +4 in above), if not, just object.
 		binary.Write(buffer, binary.BigEndian, uint32(mechanism.ulParameterLen))
-		binary.Write(buffer, binary.BigEndian, unsafe.Slice((*byte)(mechanism.pParameter), mechanism.ulParameterLen))
+		binary.Write(buffer, binary.BigEndian, pointerToArray((*byte)(mechanism.pParameter), uint(mechanism.ulParameterLen)))
 	}
 	return buffer.Bytes()
 }
