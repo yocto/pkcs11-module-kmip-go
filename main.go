@@ -2688,8 +2688,8 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pSignature)), uint(ulSignatureLen)))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen))
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pSignature)), uint(ulSignatureLen)))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_VerifyFinal, inputParameters)
