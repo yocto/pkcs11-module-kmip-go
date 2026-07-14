@@ -10,6 +10,6 @@ func copyIntoField(source []byte, destination any) int {
 	return len
 }
 
-func getSizeOf(x any) uintptr {
+func getSizeOf[ArbitraryType any](x ArbitraryType) uintptr {
 	return unsafe.Sizeof(x)
 }
