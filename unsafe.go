@@ -6,9 +6,9 @@ func arrayToPointer[ArbitraryType any](slice []ArbitraryType) *ArbitraryType {
 	return unsafe.SliceData(slice)
 }
 
-func copyIntoField(source []byte, destination any) int {
+func copyIntoField[ArbitraryType any](source []byte, destination *ArbitraryType) int {
 	len := len(source)
-	ptr := unsafe.Pointer(destination.(*any))
+	ptr := unsafe.Pointer(destination)
 	slice := pointerToArray((*byte)(ptr), uint(len))
 	copy(slice, source)
 	return len
