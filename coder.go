@@ -7,6 +7,11 @@ import "C"
 import "encoding/binary"
 import "reflect"
 
+func copyIntoField[ArbitraryType any](source []byte, destination *ArbitraryType) int {
+	slice := pointerToArray((*byte)(getNativePointer(destination)), uint(len(source)))
+	return copy(slice, source)
+}
+
 func ConvertBooleanToByte(boolean bool) C.CK_BYTE {
 	if boolean {
 		return 0x01
@@ -482,7 +487,7 @@ func EncodeMechanism(mechanism C.CK_MECHANISM) []byte {
 		binary.Write(buffer, binary.BigEndian, uint32(mechanism.ulParameterLen)+4)
 		// TODO: Detect if string. If yes: length prepend (and +4 in above), if not, just object.
 		binary.Write(buffer, binary.BigEndian, uint32(mechanism.ulParameterLen))
-		binary.Write(buffer, binary.BigEndian, pointerToArray((*byte)(mechanism.pParameter), uint(mechanism.ulParameterLen)))
+		buffer.Write(pointerToArray((*byte)(mechanism.pParameter), uint(mechanism.ulParameterLen)))
 	}
 	return buffer.Bytes()
 }

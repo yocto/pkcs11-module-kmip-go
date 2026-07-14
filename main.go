@@ -1857,7 +1857,7 @@ func C_InitPIN(hSession C.CK_SESSION_HANDLE, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPinLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPin)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pPin)), uint(ulPinLen)))
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
@@ -1875,7 +1875,7 @@ func C_InitToken(slotID C.CK_SLOT_ID, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PT
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(slotID))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPinLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPin)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pPin)), uint(ulPinLen)))
 	// (See: Moved up)
 	binary.Write(inBuffer, binary.BigEndian, pLabel) // TODO: Check 32 byte space padded
 	inputParameters := inBuffer.Bytes()
@@ -1895,7 +1895,7 @@ func C_Login(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.CK_UT
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(userType))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPinLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPin)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pPin)), uint(ulPinLen)))
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
@@ -1914,10 +1914,10 @@ func C_LoginUser(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.C
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(userType))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPinLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPin)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pPin)), uint(ulPinLen)))
 	// (See: Moved up)
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulUsernameLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pUsername)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pUsername)), uint(ulUsernameLen)))
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
@@ -2183,10 +2183,10 @@ func C_SetPIN(hSession C.CK_SESSION_HANDLE, pOldPin C.CK_UTF8CHAR_PTR /*pOldPin 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulOldLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pOldPin)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pOldPin)), uint(ulOldLen)))
 	// (See: Moved up)
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulNewLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pNewPin)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pNewPin)), uint(ulNewLen)))
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
@@ -2559,7 +2559,7 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
-	binary.Write(inBuffer, binary.BigEndian, pSignature)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pSignature)), uint(ulSignatureLen)))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulSignatureLen))
 	inputParameters := inBuffer.Bytes()
 
@@ -2707,7 +2707,7 @@ func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulPartLen)) // Moved up
-	binary.Write(inBuffer, binary.BigEndian, pPart)
+	inBuffer.Write(pointerToArray((*byte)(getNativePointer(pPart)), uint(ulPartLen)))
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
 
