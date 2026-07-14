@@ -47,24 +47,14 @@ func DecodeInfo(data []byte) C.CK_INFO {
 
 	var offset int
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&info.cryptokiVersion)), 2)
-	copy(pointerAsSliceDestination, data[offset:(offset+2)])
-	offset += 2
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&info.manufacturerID)), 32)
-	copy(pointerAsSliceDestination, data[offset:(offset+32)])
-	offset += 32
+	offset += copyIntoField(data[offset:offset+2], &info.cryptokiVersion)
+	offset += copyIntoField(data[offset:offset+32], &info.manufacturerID)
 
 	info.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
 	offset += 8
 
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&info.libraryDescription)), 32)
-	copy(pointerAsSliceDestination, data[offset:(offset+32)])
-	offset += 32
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&info.libraryVersion)), 2)
-	copy(pointerAsSliceDestination, data[offset:(offset+2)])
-	offset += 2
+	offset += copyIntoField(data[offset:offset+32], &info.libraryDescription)
+	offset += copyIntoField(data[offset:offset+2], &info.libraryVersion)
 
 	return info
 }
@@ -74,24 +64,14 @@ func DecodeSlotInfo(data []byte) C.CK_SLOT_INFO {
 
 	var offset int
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo.slotDescription)), 64)
-	copy(pointerAsSliceDestination, data[offset:(offset+64)])
-	offset += 64
+	offset += copyIntoField(data[offset:offset+64], &slotInfo.slotDescription)
+	offset += copyIntoField(data[offset:offset+32], &slotInfo.manufacturerID)
 
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo.manufacturerID)), 32)
-	copy(pointerAsSliceDestination, data[offset:(offset+32)])
-	offset += 32
-
-	slotInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
+	slotInfo.flags = DecodeUnsignedLong(data[offset : offset+8])
 	offset += 8
 
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo.hardwareVersion)), 2)
-	copy(pointerAsSliceDestination, data[offset:(offset+2)])
-	offset += 2
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&slotInfo.firmwareVersion)), 2)
-	copy(pointerAsSliceDestination, data[offset:(offset+2)])
-	offset += 2
+	offset += copyIntoField(data[offset:offset+2], &slotInfo.hardwareVersion)
+	offset += copyIntoField(data[offset:offset+2], &slotInfo.firmwareVersion)
 
 	return slotInfo
 }
@@ -101,21 +81,10 @@ func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
 
 	var offset int
 
-	pointerAsSliceDestination := unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.label)), 32)
-	copy(pointerAsSliceDestination, data[offset:(offset+32)])
-	offset += 32
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.manufacturerID)), 32)
-	copy(pointerAsSliceDestination, data[offset:(offset+32)])
-	offset += 32
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.model)), 16)
-	copy(pointerAsSliceDestination, data[offset:(offset+16)])
-	offset += 16
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.serialNumber)), 16)
-	copy(pointerAsSliceDestination, data[offset:(offset+16)])
-	offset += 16
+	offset += copyIntoField(data[offset:offset+32], &tokenInfo.label)
+	offset += copyIntoField(data[offset:offset+32], &tokenInfo.manufacturerID)
+	offset += copyIntoField(data[offset:offset+16], &tokenInfo.model)
+	offset += copyIntoField(data[offset:offset+16], &tokenInfo.serialNumber)
 
 	tokenInfo.flags = DecodeUnsignedLong(data[offset:(offset + 8)])
 	offset += 8
@@ -150,17 +119,9 @@ func DecodeTokenInfo(data []byte) C.CK_TOKEN_INFO {
 	tokenInfo.ulFreePrivateMemory = DecodeUnsignedLong(data[offset:(offset + 8)])
 	offset += 8
 
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.hardwareVersion)), 2)
-	copy(pointerAsSliceDestination, data[offset:(offset+2)])
-	offset += 2
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.firmwareVersion)), 2)
-	copy(pointerAsSliceDestination, data[offset:(offset+2)])
-	offset += 2
-
-	pointerAsSliceDestination = unsafe.Slice((*byte)(unsafe.Pointer(&tokenInfo.utcTime)), 16)
-	copy(pointerAsSliceDestination, data[offset:(offset+16)])
-	offset += 16
+	offset += copyIntoField(data[offset:offset+2], &tokenInfo.hardwareVersion)
+	offset += copyIntoField(data[offset:offset+2], &tokenInfo.firmwareVersion)
+	offset += copyIntoField(data[offset:offset+16], &tokenInfo.utcTime)
 
 	return tokenInfo
 }
