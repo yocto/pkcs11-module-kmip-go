@@ -1603,8 +1603,7 @@ func C_GetInterface(pInterfaceName C.CK_UTF8CHAR_PTR, pVersion C.CK_VERSION_PTR,
 		if pInterfaceName == nil {
 			interfaceNameMatches = true
 		} else {
-			interfaceName := (C.CK_UTF8CHAR_PTR)(interfaceItem.pInterfaceName)
-			interfaceNameMatches = *pInterfaceName == *interfaceName
+			interfaceNameMatches = C.GoString((*C.char)(getNativePointer(pInterfaceName))) == C.GoString((*C.char)(getNativePointer(interfaceItem.pInterfaceName)))
 		}
 		if pVersion == nil {
 			versionMatches = true
