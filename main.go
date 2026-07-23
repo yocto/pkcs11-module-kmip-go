@@ -284,7 +284,7 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 	client, err := getKMIPClient()
 	if err != nil {
 		fmt.Println("Failed getting KMIP client:", err)
-		return nil, nil, C.CKR_FUNCTION_FAILED
+		return nil, nil, C.CKR_TOKEN_NOT_PRESENT
 	}
 
 	request := createKMIPRequest(pkcs1Interface, pkcs11Function, pkcs11InputParameters)
