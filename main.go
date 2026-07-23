@@ -11,7 +11,6 @@ import "errors"
 import "fmt"
 import "os"
 import "strconv"
-import "sync"
 import "time"
 import "github.com/google/uuid"
 import "github.com/ovh/kmip-go"
@@ -208,7 +207,6 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 	C_MessageVerifyFinal:  (C.CK_C_MessageVerifyFinal)(C.C_MessageVerifyFinal),
 }
 
-var onceClient sync.Once
 var client *kmipclient.Client
 
 func main() {}
@@ -226,6 +224,10 @@ func getKMIPServer() string {
 }
 
 func getKMIPClient() (*kmipclient.Client, error) {
+	if client != nil {
+		return client, nil
+	}
+
 	kmip_server := getKMIPServer()
 
 	if kmip_server == "" {
@@ -233,24 +235,23 @@ func getKMIPClient() (*kmipclient.Client, error) {
 	}
 
 	var err error
-	onceClient.Do(func() {
-		middlewares := []kmipclient.Middleware{
-			kmipclient.CorrelationValueMiddleware(uuid.NewString),
-			kmipclient.TimeoutMiddleware(500 * time.Millisecond),
-		}
 
-		if getDebugMode() >= 2 {
-			middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
-		}
+	middlewares := []kmipclient.Middleware{
+		kmipclient.CorrelationValueMiddleware(uuid.NewString),
+		kmipclient.TimeoutMiddleware(500 * time.Millisecond),
+	}
 
-		client, err = kmipclient.Dial(
-			kmip_server,
-			kmipclient.WithTlsConfig(&tls.Config{
-				InsecureSkipVerify: true,
-			}),
-			kmipclient.WithMiddlewares(middlewares...),
-		)
-	})
+	if getDebugMode() >= 2 {
+		middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
+	}
+
+	client, err = kmipclient.Dial(
+		kmip_server,
+		kmipclient.WithTlsConfig(&tls.Config{
+			InsecureSkipVerify: true,
+		}),
+		kmipclient.WithMiddlewares(middlewares...),
+	)
 
 	if client == nil && err == nil {
 		err = errors.New("Client failed to connect earlier.")
