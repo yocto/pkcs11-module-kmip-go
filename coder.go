@@ -223,7 +223,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 
 		if valueType.Kind() == reflect.Slice {
 			if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-				// TODO: Decode length @ attribute with attributes
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * C.sizeof_CK_ATTRIBUTE
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
