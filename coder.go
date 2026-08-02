@@ -188,7 +188,7 @@ func CalculateAttributeSize(data []byte) int {
 				} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
 					valueSize = 8
 				} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
-					// TODO: Encode attribute with date
+					valueSize = 8
 				} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
 					valueSize = 8
 				} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
@@ -241,7 +241,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 			} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
 				attribute.ulValueLen = 8
 			} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
-				// TODO: Encode attribute with date
+				attribute.ulValueLen = 8
 			} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
 				attribute.ulValueLen = 8
 			} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
@@ -297,7 +297,8 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 					attribute.pValue = C.CK_VOID_PTR(&value)
 				} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
-					// TODO: Encode attribute with date
+				    value := DecodeDate(remaining[0:attribute.ulValueLen])
+				    attribute.pValue = C.CK_VOID_PTR(&value)
 				} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
 					value := DecodeUnsignedLong(remaining[0:attribute.ulValueLen])
 					attribute.pValue = C.CK_VOID_PTR(&value)
@@ -322,6 +323,18 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 	}
 
 	return attribute
+}
+
+func DecodeDate(data []byte) C.CK_DATE {
+    date := C.CK_DATE{}
+
+    var offset int
+
+    offset += copyIntoField(data[offset:offset+4], &date.year)
+    offset += copyIntoField(data[offset:offset+2], &date.month)
+    offset += copyIntoField(data[offset:offset+2], &date.day)
+
+    return date
 }
 
 func DecodeMechanismInfo(data []byte) C.CK_MECHANISM_INFO {
@@ -459,7 +472,7 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 			} else if valueType == reflect.TypeOf(*new(C.CK_CERTIFICATE_TYPE)) {
 				buffer.Write(EncodeUnsignedLong(*C.CK_ULONG_PTR(attribute.pValue)))
 			} else if valueType == reflect.TypeOf(*new(C.CK_DATE)) {
-				// TODO: Encode attribute with date
+			    buffer.Write(EncodeDate(*(*C.CK_DATE)(attribute.pValue)))
 			} else if valueType == reflect.TypeOf(*new(C.CK_HW_FEATURE_TYPE)) {
 				buffer.Write(EncodeUnsignedLong(*C.CK_ULONG_PTR(attribute.pValue)))
 			} else if valueType == reflect.TypeOf(*new(C.CK_JAVA_MIDP_SECURITY_DOMAIN)) {
@@ -476,6 +489,14 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 		}
 	}
 
+	return buffer.Bytes()
+}
+
+func EncodeDate(date C.CK_DATE) []byte{
+	buffer := new(bytes.Buffer)
+	buffer.Write(pointerToArray((*byte)(getNativePointer(&date.year)), 4))
+	buffer.Write(pointerToArray((*byte)(getNativePointer(&date.month)), 2))
+	buffer.Write(pointerToArray((*byte)(getNativePointer(&date.day)), 2))
 	return buffer.Bytes()
 }
 
