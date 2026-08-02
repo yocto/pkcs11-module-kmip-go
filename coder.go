@@ -706,8 +706,12 @@ func GetAttributeValueType(attributeType C.CK_ATTRIBUTE_TYPE, valueLength C.CK_U
 	if attributeType == C.CKA_EC_POINT {
 		return reflect.TypeOf(make([]C.CK_BYTE, valueLength/C.sizeof_CK_BYTE))
 	}
-	// TODO: Attribute CKA_SECONDARY_AUTH (Deprecated)
-	// TODO: Attribute CKA_AUTH_PIN_FLAGS (Deprecated)
+	if attributeType == C.CKA_SECONDARY_AUTH { // Deprecated
+		return reflect.TypeOf(*new(C.CK_BBOOL))
+	}
+	if attributeType == C.CKA_AUTH_PIN_FLAGS { // Deprecated
+		return reflect.TypeOf(*new(C.CK_FLAGS))
+	}
 	if attributeType == C.CKA_ALWAYS_AUTHENTICATE {
 		return reflect.TypeOf(*new(C.CK_BBOOL))
 	}
