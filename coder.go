@@ -166,7 +166,7 @@ func CalculateAttributeSize(data []byte) int {
 
 			if hasValue != 0x00 {
 				if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-					// TODO: Encode attribute with attributes
+					// TODO: Value size @ attribute with attributes
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 					valueSize = int(DecodeUnsignedLongAsLength(data[10:14]))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
@@ -223,13 +223,13 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 
 		if valueType.Kind() == reflect.Slice {
 			if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-				// TODO: Encode attribute with attributes
+				// TODO: Decode length @ attribute with attributes
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
-				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * C.sizeof_CK_MECHANISM_TYPE
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
-				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * 8
+				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4]) * C.sizeof_CK_ULONG
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
 				attribute.ulValueLen = DecodeUnsignedLongAsLength(remaining[0:4])
 			}
@@ -260,14 +260,14 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 		if hasValue != 0x00 {
 			if valueType.Kind() == reflect.Slice {
 				if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-					// TODO: Encode attribute with attributes
+					// TODO: Decode value @ attribute with attributes
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 					value := remaining[4 : 4+attribute.ulValueLen]
 					attribute.pValue = C.CK_VOID_PTR(arrayToPointer(value))
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
 					arrayBuffer := bytes.NewBuffer(remaining[4 : 4+attribute.ulValueLen])
 
-					mechanismTypeArray := make([]C.CK_MECHANISM_TYPE, attribute.ulValueLen/8)
+					mechanismTypeArray := make([]C.CK_MECHANISM_TYPE, attribute.ulValueLen/C.sizeof_CK_MECHANISM_TYPE)
 					for i := 0; i < len(mechanismTypeArray); i++ {
 						mechanismTypeArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
@@ -276,7 +276,7 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 				} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
 					arrayBuffer := bytes.NewBuffer(remaining[4 : 4+attribute.ulValueLen])
 
-					ulongArray := make([]C.CK_ULONG, attribute.ulValueLen/8)
+					ulongArray := make([]C.CK_ULONG, attribute.ulValueLen/C.sizeof_CK_ULONG)
 					for i := 0; i < len(ulongArray); i++ {
 						ulongArray[i] = DecodeUnsignedLong(arrayBuffer.Next(8))
 					}
@@ -439,13 +439,13 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 
 	if hasLength && valueType.Kind() == reflect.Slice {
 		if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-			// TODO: Encode attribute with attributes
+			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen / C.sizeof_CK_ATTRIBUTE)))
 		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen)))
 		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
-			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen / 8)))
+			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen / C.sizeof_CK_MECHANISM_TYPE)))
 		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_ULONG)) {
-			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen / 8)))
+			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen / C.sizeof_CK_ULONG)))
 		} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_UTF8CHAR)) {
 			buffer.Write(EncodeUnsignedLongAsLength(C.CK_ULONG(attribute.ulValueLen)))
 		}
@@ -454,7 +454,7 @@ func EncodeAttribute(attribute C.CK_ATTRIBUTE, forceValueNil bool) []byte {
 	if hasValue {
 		if valueType.Kind() == reflect.Slice {
 			if valueType.Elem() == reflect.TypeOf(*new(C.CK_ATTRIBUTE)) {
-				// TODO: Encode attribute with attributes
+				// TODO: Encode value @ attribute with attributes
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_BYTE)) {
 				buffer.Write(EncodeBytePointer(C.CK_BYTE_PTR(attribute.pValue), attribute.ulValueLen)[4:])
 			} else if valueType.Elem() == reflect.TypeOf(*new(C.CK_MECHANISM_TYPE)) {
