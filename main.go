@@ -1818,6 +1818,9 @@ func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR)
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetSessionInfo(hSession=%+v, pInfo=%+v)\n", hSession, pInfo)
 	}
+	if pInfo == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
