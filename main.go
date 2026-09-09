@@ -1380,6 +1380,9 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, pMechanism, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
+	if pMechanism == nil || pTemplate == nil || phKey == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
