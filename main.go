@@ -1674,6 +1674,9 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetMechanismInfo(slotID=%+v, _type=%+v, pInfo=%+v)\n", slotID, _type, pInfo)
 	}
+	if pInfo == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(slotID))
