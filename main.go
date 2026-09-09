@@ -1831,6 +1831,9 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetSlotInfo(slotID=%+v, pInfo=%+v)\n", slotID, pInfo)
 	}
+	if pInfo == nil {
+		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(slotID))
