@@ -1419,6 +1419,9 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", hSession, pMechanism, pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)), ulPublicKeyAttributeCount, pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)), ulPrivateKeyAttributeCount)
 	}
+	if pMechanism == nil || pPublicKeyTemplate == nil || pPrivateKeyTemplate == nil || phPrivateKey == nil || phPublicKey == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
