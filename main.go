@@ -1296,7 +1296,7 @@ func C_Finalize(pReserved C.CK_VOID_PTR) C.CK_RV { // Since v2.0
 		fmt.Printf("Function called: C_Finalize(pReserved=%+v)\n", pReserved)
 	}
 	if pReserved != nil {
-		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+		return C.CKR_ARGUMENTS_BAD
 	}
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Finalize, nil)
@@ -1582,7 +1582,7 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 		fmt.Printf("Function called: C_GetInfo(pInfo=%+v)\n", pInfo)
 	}
 	if pInfo == nil {
-		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+		return C.CKR_ARGUMENTS_BAD
 	}
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInfo, nil)
@@ -1700,6 +1700,9 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_PTR, pulCount C.CK_ULONG_PTR /*pusCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetMechanismList(slotID=%+v, pMechanismList=%+v, pulCount=%+v)\n", slotID, pMechanismList, dereferenceUnsignedLong(pulCount))
+	}
+	if pulCount == nil {
+		return C.CKR_ARGUMENTS_BAD
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1839,7 +1842,7 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 		fmt.Printf("Function called: C_GetSlotInfo(slotID=%+v, pInfo=%+v)\n", slotID, pInfo)
 	}
 	if pInfo == nil {
-		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+		return C.CKR_ARGUMENTS_BAD
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1868,7 +1871,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 		fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pSlotList=%+v, pulCount=%+v)\n", tokenPresent, pSlotList, dereferenceUnsignedLong(pulCount))
 	}
 	if pulCount == nil {
-		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+		return C.CKR_ARGUMENTS_BAD
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1913,7 +1916,7 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 		fmt.Printf("Function called: C_GetTokenInfo(slotID=%+v, pInfo=%+v)\n", slotID, pInfo)
 	}
 	if pInfo == nil {
-		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+		return C.CKR_ARGUMENTS_BAD
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1946,7 +1949,7 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 		initializeArgumentsPointer := C.CK_C_INITIALIZE_ARGS_PTR(pInitArgs)
 		initializeArguments := pointerToArray(initializeArgumentsPointer, 1)[0]
 		if initializeArguments.pReserved != nil {
-			return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+			return C.CKR_ARGUMENTS_BAD
 		}
 		fmt.Printf("PKCS#11 library initiated with: %+v\n", initializeArguments)
 	} else {
