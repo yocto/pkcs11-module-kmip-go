@@ -1923,6 +1923,9 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 	if pInitArgs != nil {
 		initializeArgumentsPointer := C.CK_C_INITIALIZE_ARGS_PTR(pInitArgs)
 		initializeArguments := pointerToArray(initializeArgumentsPointer, 1)[0]
+		if initializeArguments.pReserved != nil {
+			return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+		}
 		fmt.Printf("PKCS#11 library initiated with: %+v\n", initializeArguments)
 	} else {
 		fmt.Println("PKCS#11 library initiated without arguments")
