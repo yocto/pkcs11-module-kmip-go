@@ -1261,6 +1261,9 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_EncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
 	}
+	if pPart == nil || pulEncryptedPartLen == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
