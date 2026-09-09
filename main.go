@@ -1574,6 +1574,9 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetInfo(pInfo=%+v)\n", pInfo)
 	}
+	if pInfo == nil {
+		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+	}
 
 	_, outputParameters, returnCode := processKMIP(nil, PKCS_11FunctionC_GetInfo, nil)
 
