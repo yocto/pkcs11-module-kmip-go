@@ -583,7 +583,7 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 //export C_DecryptInit
 func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_DecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -799,7 +799,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 //export C_DeriveKey
 func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hBaseKey C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DeriveKey(hSession=%+v, pMechanism=%+v, hBaseKey=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, *pMechanism, hBaseKey, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
+		fmt.Printf("Function called: C_DeriveKey(hSession=%+v, pMechanism=%+v, hBaseKey=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, pMechanism, hBaseKey, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -980,7 +980,7 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 //export C_DigestInit
 func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestInit(hSession=%+v, pMechanism=%+v)\n", hSession, *pMechanism)
+		fmt.Printf("Function called: C_DigestInit(hSession=%+v, pMechanism=%+v)\n", hSession, pMechanism)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1113,7 +1113,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 //export C_EncryptInit
 func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_EncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1371,7 +1371,7 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 //export C_GenerateKey
 func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, *pMechanism, pointerToArray(pTemplate, uint(ulCount)), ulCount)
+		fmt.Printf("Function called: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, pMechanism, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1407,7 +1407,7 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_GenerateKeyPair
 func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, pPublicKeyTemplate C.CK_ATTRIBUTE_PTR, ulPublicKeyAttributeCount C.CK_ULONG /*usPublicKeyAttributeCount C.CK_USHORT (v1.0)*/, pPrivateKeyTemplate C.CK_ATTRIBUTE_PTR, ulPrivateKeyAttributeCount C.CK_ULONG /*usPrivateKeyAttributeCount C.CK_USHORT (v1.0)*/, phPrivateKey C.CK_OBJECT_HANDLE_PTR, phPublicKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", hSession, *pMechanism, pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)), ulPublicKeyAttributeCount, pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)), ulPrivateKeyAttributeCount)
+		fmt.Printf("Function called: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", hSession, pMechanism, pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)), ulPublicKeyAttributeCount, pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)), ulPrivateKeyAttributeCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2066,7 +2066,7 @@ func C_MessageDecryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageDecryptInit
 func C_MessageDecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageDecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_MessageDecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2098,7 +2098,7 @@ func C_MessageEncryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageEncryptInit
 func C_MessageEncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageEncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_MessageEncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2130,7 +2130,7 @@ func C_MessageSignFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageSignInit
 func C_MessageSignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageSignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_MessageSignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2162,7 +2162,7 @@ func C_MessageVerifyFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageVerifyInit
 func C_MessageVerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageVerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_MessageVerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2433,7 +2433,7 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 //export C_SignInit
 func C_SignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_SignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2603,7 +2603,7 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 //export C_SignRecoverInit
 func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_SignRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2636,7 +2636,7 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 //export C_UnwrapKey
 func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hUnwrappingKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, ulWrappedKeyLen C.CK_ULONG /*usWrappedKeyLen C.CK_USHORT (v1.0)*/, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, pWrappedKey=%+v, ulWrappedKeyLen=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, *pMechanism, hUnwrappingKey, pointerToArray(pWrappedKey, uint(ulWrappedKeyLen)), ulWrappedKeyLen, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
+		fmt.Printf("Function called: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, pWrappedKey=%+v, ulWrappedKeyLen=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, pMechanism, hUnwrappingKey, pointerToArray(pWrappedKey, uint(ulWrappedKeyLen)), ulWrappedKeyLen, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2708,7 +2708,7 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 //export C_VerifyInit
 func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_VerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2826,7 +2826,7 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 //export C_VerifyRecoverInit
 func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, *pMechanism, hKey)
+		fmt.Printf("Function called: C_VerifyRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2870,7 +2870,7 @@ func C_WaitForSlotEvent(flags C.CK_FLAGS, pSlot C.CK_SLOT_ID_PTR, pReserved C.CK
 //export C_WrapKey
 func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWrappingKey C.CK_OBJECT_HANDLE, hKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, pulWrappedKeyLen C.CK_ULONG_PTR /*pusWrappedKeyLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_WrapKey(hSession=%+v, pMechanism=%+v, hWrappingKey=%+v, hKey=%+v, pWrappedKey=%+v, pulWrappedKeyLen=%+v)\n", hSession, *pMechanism, hWrappingKey, hKey, pWrappedKey, *pulWrappedKeyLen)
+		fmt.Printf("Function called: C_WrapKey(hSession=%+v, pMechanism=%+v, hWrappingKey=%+v, hKey=%+v, pWrappedKey=%+v, pulWrappedKeyLen=%+v)\n", hSession, pMechanism, hWrappingKey, hKey, pWrappedKey, *pulWrappedKeyLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
