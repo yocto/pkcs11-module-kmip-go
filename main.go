@@ -1860,6 +1860,9 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pSlotList=%+v, pulCount=%+v)\n", tokenPresent, pSlotList, *pulCount)
 	}
+	if pulCount == nil {
+		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeByte(tokenPresent))
