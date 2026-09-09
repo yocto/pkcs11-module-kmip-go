@@ -1288,6 +1288,9 @@ func C_Finalize(pReserved C.CK_VOID_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_Finalize(pReserved=%+v)\n", pReserved)
 	}
+	if pReserved != nil {
+		return C.CK_RV(C.CKR_ARGUMENTS_BAD)
+	}
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Finalize, nil)
 
