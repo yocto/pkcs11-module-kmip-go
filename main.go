@@ -1782,6 +1782,9 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_GetOperationState(hSession=%+v, pOperationState=%+v, pulOperationStateLen=%+v)\n", hSession, pOperationState, dereferenceUnsignedLong(pulOperationStateLen))
 	}
+	if pulOperationStateLen == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
