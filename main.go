@@ -2194,6 +2194,9 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 	if getDebugMode() >= 1 {
 		fmt.Printf("Function called: C_OpenSession(slotID=%+v, flags=%+v, pApplication=%+v, Notify=%+v, phSession=%+v)\n", slotID, flags, pApplication, Notify, phSession)
 	}
+	if phSession == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
 
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(slotID))
