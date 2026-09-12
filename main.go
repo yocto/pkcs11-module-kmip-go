@@ -207,7 +207,7 @@ var functionList30 = C.CK_FUNCTION_LIST_3_0{
 	C_MessageVerifyFinal:  (C.CK_C_MessageVerifyFinal)(C.C_MessageVerifyFinal),
 }
 
-var client *kmipclient.Client
+var kmipClient *kmipclient.Client
 
 func main() {}
 
@@ -224,8 +224,8 @@ func getKMIPServer() string {
 }
 
 func getKMIPClient() (*kmipclient.Client, error) {
-	if client != nil {
-		return client, nil
+	if kmipClient != nil {
+		return kmipClient, nil
 	}
 
 	kmip_server := getKMIPServer()
@@ -245,7 +245,7 @@ func getKMIPClient() (*kmipclient.Client, error) {
 		middlewares = append(middlewares, kmipclient.DebugMiddleware(os.Stdout, nil))
 	}
 
-	client, err = kmipclient.Dial(
+	kmipClient, err = kmipclient.Dial(
 		kmip_server,
 		kmipclient.WithTlsConfig(&tls.Config{
 			InsecureSkipVerify: true,
@@ -253,11 +253,11 @@ func getKMIPClient() (*kmipclient.Client, error) {
 		kmipclient.WithMiddlewares(middlewares...),
 	)
 
-	if client == nil && err == nil {
+	if kmipClient == nil && err == nil {
 		err = errors.New("Client failed to connect earlier.")
 	}
 
-	return client, err
+	return kmipClient, err
 }
 
 func createKMIPRequest(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters []byte) *kmip.UnknownPayload {
@@ -292,6 +292,7 @@ func processKMIP(pkcs1Interface any, pkcs11Function any, pkcs11InputParameters [
 
 	response, err := client.Request(context.Background(), request)
 	if err != nil {
+		kmipClient = nil
 		fmt.Println("Failed processing KMIP payload:", err)
 		return nil, nil, C.CKR_FUNCTION_FAILED
 	}
