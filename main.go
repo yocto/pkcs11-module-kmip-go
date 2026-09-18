@@ -17,11 +17,6 @@ import "github.com/ovh/kmip-go"
 import "github.com/ovh/kmip-go/kmipclient"
 import "github.com/ovh/kmip-go/ttlv"
 
-var cryptokiVersion = C.CK_VERSION{
-	major: 3,
-	minor: 1,
-}
-
 const profileVersion C.CK_BYTE = 0x01
 
 var defaultInterface string = "PKCS 11"
