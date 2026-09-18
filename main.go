@@ -35,7 +35,10 @@ var interfaces = []C.CK_INTERFACE{
 }
 
 var functionList = C.CK_FUNCTION_LIST{
-	version: cryptokiVersion,
+	version: C.CK_VERSION{
+		major: 2,
+		minor: 40,
+	},
 	// Version 2.0 and later
 	C_Initialize:          (C.CK_C_Initialize)(C.C_Initialize),
 	C_Finalize:            (C.CK_C_Finalize)(C.C_Finalize),
