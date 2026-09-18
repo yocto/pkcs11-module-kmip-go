@@ -1560,6 +1560,11 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 	if outputParameters != nil {
 		outBuffer := bytes.NewBuffer(outputParameters.([]byte))
 
+		if outBuffer.Len() != int(ulRandomLen) {
+			fmt.Println("Expected a specific amount of random bytes")
+			return C.CKR_FUNCTION_FAILED
+		}
+
 		pointerAsSliceDestination := pointerToArray(pRandomData, uint(ulRandomLen))
 		for i := 0; i < len(pointerAsSliceDestination); i++ {
 			pointerAsSliceDestination[i] = C.CK_BYTE(outBuffer.Next(1)[0])
