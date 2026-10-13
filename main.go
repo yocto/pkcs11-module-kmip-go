@@ -498,7 +498,7 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		dataLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulDataLen < dataLen {
+		if pData != nil && *pulDataLen < dataLen {
 			*pulDataLen = dataLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -544,7 +544,7 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		partLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulPartLen < partLen {
+		if pPart != nil && *pulPartLen < partLen {
 			*pulPartLen = partLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -589,7 +589,7 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		lastPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulLastPartLen < lastPartLen {
+		if pLastPart != nil && *pulLastPartLen < lastPartLen {
 			*pulLastPartLen = lastPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -659,7 +659,7 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		plaintextLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulPlaintextLen < plaintextLen {
+		if pPlaintext != nil && *pulPlaintextLen < plaintextLen {
 			*pulPlaintextLen = plaintextLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -728,7 +728,7 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		plaintextPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulPlaintextPartLen < plaintextPartLen {
+		if pPlaintextPart != nil && *pulPlaintextPartLen < plaintextPartLen {
 			*pulPlaintextPartLen = plaintextPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -774,7 +774,7 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		partLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulPartLen < partLen {
+		if pPart != nil && *pulPartLen < partLen {
 			*pulPartLen = partLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -820,7 +820,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		partLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulPartLen < partLen {
+		if pPart != nil && *pulPartLen < partLen {
 			*pulPartLen = partLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -922,7 +922,7 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		digestLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulDigestLen < digestLen {
+		if pDigest != nil && *pulDigestLen < digestLen {
 			*pulDigestLen = digestLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -968,7 +968,7 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		encryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulEncryptedPartLen < encryptedPartLen {
+		if pEncryptedPart != nil && *pulEncryptedPartLen < encryptedPartLen {
 			*pulEncryptedPartLen = encryptedPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1013,7 +1013,7 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		digestLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulDigestLen < digestLen {
+		if pDigest != nil && *pulDigestLen < digestLen {
 			*pulDigestLen = digestLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1110,7 +1110,7 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		encryptedDataLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulEncryptedDataLen < encryptedDataLen {
+		if pEncryptedData != nil && *pulEncryptedDataLen < encryptedDataLen {
 			*pulEncryptedDataLen = encryptedDataLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1155,7 +1155,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		lastEncryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulLastEncryptedPartLen < lastEncryptedPartLen {
+		if pLastEncryptedPart != nil && *pulLastEncryptedPartLen < lastEncryptedPartLen {
 			*pulLastEncryptedPartLen = lastEncryptedPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1225,7 +1225,7 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		ciphertextLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulCiphertextLen < ciphertextLen {
+		if pCiphertext != nil && *pulCiphertextLen < ciphertextLen {
 			*pulCiphertextLen = ciphertextLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1294,7 +1294,7 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		ciphertextPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulCiphertextPartLen < ciphertextPartLen {
+		if pCiphertextPart != nil && *pulCiphertextPartLen < ciphertextPartLen {
 			*pulCiphertextPartLen = ciphertextPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1340,7 +1340,7 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		encryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulEncryptedPartLen < encryptedPartLen {
+		if pEncryptedPart != nil && *pulEncryptedPartLen < encryptedPartLen {
 			*pulEncryptedPartLen = encryptedPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1739,7 +1739,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 	}
 
 	count := C.CK_ULONG(uint(len(interfaces)))
-	if *pulCount < count {
+	if pInterfaceList != nil && *pulCount < count {
 		*pulCount = count
 		return C.CKR_BUFFER_TOO_SMALL
 	}
@@ -1811,7 +1811,7 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		count := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulCount < count {
+		if pMechanismList != nil && *pulCount < count {
 			*pulCount = count
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1886,7 +1886,7 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		operationStateLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulOperationStateLen < operationStateLen {
+		if pOperationState != nil && *pulOperationStateLen < operationStateLen {
 			*pulOperationStateLen = operationStateLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -1989,7 +1989,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		count := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulCount < count {
+		if pSlotList != nil && *pulCount < count {
 			*pulCount = count
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2452,7 +2452,7 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulSignatureLen < signatureLen {
+		if pSignature != nil && *pulSignatureLen < signatureLen {
 			*pulSignatureLen = signatureLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2498,7 +2498,7 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		encryptedPartLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulEncryptedPartLen < encryptedPartLen {
+		if pEncryptedPart != nil && *pulEncryptedPartLen < encryptedPartLen {
 			*pulEncryptedPartLen = encryptedPartLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2543,7 +2543,7 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulSignatureLen < signatureLen {
+		if pSignature != nil && *pulSignatureLen < signatureLen {
 			*pulSignatureLen = signatureLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2612,7 +2612,7 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulSignatureLen < signatureLen {
+		if pSignature != nil && *pulSignatureLen < signatureLen {
 			*pulSignatureLen = signatureLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2679,7 +2679,7 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulSignatureLen < signatureLen {
+		if pSignature != nil && *pulSignatureLen < signatureLen {
 			*pulSignatureLen = signatureLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2725,7 +2725,7 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		signatureLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulSignatureLen < signatureLen {
+		if pSignature != nil && *pulSignatureLen < signatureLen {
 			*pulSignatureLen = signatureLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -2960,7 +2960,7 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		dataLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulDataLen < dataLen {
+		if pData != nil && *pulDataLen < dataLen {
 			*pulDataLen = dataLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
@@ -3055,7 +3055,7 @@ func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWra
 		hasValue := DecodeByte(outBuffer.Next(1))
 
 		wrappedKeyLen := DecodeUnsignedLongAsLength(outBuffer.Next(4))
-		if *pulWrappedKeyLen < wrappedKeyLen {
+		if pWrappedKey != nil && *pulWrappedKeyLen < wrappedKeyLen {
 			*pulWrappedKeyLen = wrappedKeyLen
 			return C.CKR_BUFFER_TOO_SMALL
 		}
