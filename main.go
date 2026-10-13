@@ -19,11 +19,9 @@ import "github.com/ovh/kmip-go/ttlv"
 
 const profileVersion C.CK_BYTE = 0x01
 
-var defaultInterface string = "PKCS 11"
-
 var interfaces = []C.CK_INTERFACE{
 	C.CK_INTERFACE{
-		pInterfaceName: (*C.CK_CHAR)(arrayToPointer([]byte("PKCS 11"))),
+		pInterfaceName: (*C.CK_CHAR)(getNativePointer(C.CString("PKCS 11"))),
 		pFunctionList:  (C.CK_VOID_PTR)(&functionList30),
 		flags:          0x0,
 	},
