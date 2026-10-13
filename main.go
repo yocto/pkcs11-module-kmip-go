@@ -1583,6 +1583,9 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, true)
 		if attr == nil {
+			if getDebugMode() >= 1 {
+				fmt.Printf("Failed to encode attribute: %+v\n", attribute)
+			}
 			return C.CKR_ATTRIBUTE_TYPE_INVALID
 		}
 		inBuffer.Write(attr)
