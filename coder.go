@@ -904,6 +904,9 @@ func GetAttributeValueType(attributeType C.CK_ATTRIBUTE_TYPE, valueLength C.CK_U
 	if attributeType == C.CKA_HSS_KEYS_REMAINING {
 		return reflect.TypeOf(*new(C.CK_ULONG))
 	}
+	if attributeType == C.CKA_PARAMETER_SET {
+		return reflect.TypeOf(*new(C.CK_XMSS_PARAMETER_SET_TYPE))
+	}
 	return nil
 }
 

@@ -1589,6 +1589,7 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 				fmt.Printf("Failed to encode attribute: %+v\n", attribute)
 			}
 			attribute.ulValueLen = C.CK_UNAVAILABLE_INFORMATION
+			continue
 		}
 		inBuffer.Write(attr)
 	}
