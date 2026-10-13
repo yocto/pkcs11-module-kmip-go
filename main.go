@@ -1580,15 +1580,20 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeUnsignedLong(hObject))
 	inBuffer.Write(EncodeUnsignedLongAsLength(ulCount)) // Moved up
+	hasInvalidAttribute := false
 	for _, attribute := range pointerToArray(pTemplate, uint(ulCount)) {
 		attr := EncodeAttribute(attribute, true)
 		if attr == nil {
+			hasInvalidAttribute = true
 			if getDebugMode() >= 1 {
 				fmt.Printf("Failed to encode attribute: %+v\n", attribute)
 			}
-			return C.CKR_ATTRIBUTE_TYPE_INVALID
+			attribute.ulValueLen = C.CK_UNAVAILABLE_INFORMATION
 		}
 		inBuffer.Write(attr)
+	}
+	if hasInvalidAttribute {
+		return C.CKR_ATTRIBUTE_TYPE_INVALID
 	}
 	// (See: Moved up)
 	inputParameters := inBuffer.Bytes()
