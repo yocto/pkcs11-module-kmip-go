@@ -239,7 +239,7 @@ func getKMIPClient() (*kmipclient.Client, error) {
 
 	middlewares := []kmipclient.Middleware{
 		kmipclient.CorrelationValueMiddleware(uuid.NewString),
-		kmipclient.TimeoutMiddleware(500 * time.Millisecond),
+		kmipclient.TimeoutMiddleware(3000 * time.Millisecond),
 	}
 
 	if getDebugMode() >= 2 {
@@ -2054,9 +2054,6 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 		if initializeArguments.pReserved != nil {
 			return C.CKR_ARGUMENTS_BAD
 		}
-		fmt.Printf("PKCS#11 library initiated with: %+v\n", initializeArguments)
-	} else {
-		fmt.Println("PKCS#11 library initiated without arguments")
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2064,6 +2061,16 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters)
+
+	if getDebugMode() >= 1 {
+		if pInitArgs != nil {
+			initializeArgumentsPointer := C.CK_C_INITIALIZE_ARGS_PTR(pInitArgs)
+			initializeArguments := pointerToArray(initializeArgumentsPointer, 1)[0]
+			fmt.Printf("PKCS#11 library initialized with arguments: %+v\n", initializeArguments)
+		} else {
+			fmt.Println("PKCS#11 library initialized without arguments")
+		}
+	}
 
 	return C.CK_RV(returnCode)
 }
