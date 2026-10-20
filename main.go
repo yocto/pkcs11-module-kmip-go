@@ -1538,6 +1538,10 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 		fmt.Printf("Function called: C_GenerateRandom(hSession=%+v, pRandomData=%+v, ulRandomLen=%+v)\n", hSession, pRandomData, ulRandomLen)
 	}
 
+	if pRandomData == nil {
+		return C.CKR_ARGUMENTS_BAD
+	}
+
 	inBuffer := new(bytes.Buffer)
 	inBuffer.Write(EncodeUnsignedLong(hSession))
 	inBuffer.Write(EncodeBytePointer(pRandomData, ulRandomLen)) // TODO: Or just only sending length?
