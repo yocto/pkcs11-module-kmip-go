@@ -320,6 +320,8 @@ func DecodeAttribute(data []byte) C.CK_ATTRIBUTE {
 				}
 			}
 		}
+	} else {
+		attribute.ulValueLen = C.CK_UNAVAILABLE_INFORMATION
 	}
 
 	return attribute
