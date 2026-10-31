@@ -17,197 +17,6 @@ import "github.com/ovh/kmip-go"
 import "github.com/ovh/kmip-go/kmipclient"
 import "github.com/ovh/kmip-go/ttlv"
 
-const profileVersion C.CK_BYTE = 0x01
-
-var interfaces = []C.CK_INTERFACE{
-	C.CK_INTERFACE{
-		pInterfaceName: (*C.CK_CHAR)(getNativePointer(C.CString("PKCS 11"))),
-		pFunctionList:  (C.CK_VOID_PTR)(&functionList30),
-		flags:          0x0,
-	},
-}
-
-var functionList = C.CK_FUNCTION_LIST{
-	// Version of function list
-	version: C.CK_VERSION{
-		major: 2,
-		minor: 40,
-	},
-	// Version 2.0 and later
-	C_Initialize:          (C.CK_C_Initialize)(C.C_Initialize),
-	C_Finalize:            (C.CK_C_Finalize)(C.C_Finalize),
-	C_GetInfo:             (C.CK_C_GetInfo)(C.C_GetInfo),
-	C_GetFunctionList:     (C.CK_C_GetFunctionList)(C.C_GetFunctionList),
-	C_GetSlotList:         (C.CK_C_GetSlotList)(C.C_GetSlotList),
-	C_GetSlotInfo:         (C.CK_C_GetSlotInfo)(C.C_GetSlotInfo),
-	C_GetTokenInfo:        (C.CK_C_GetTokenInfo)(C.C_GetTokenInfo),
-	C_GetMechanismList:    (C.CK_C_GetMechanismList)(C.C_GetMechanismList),
-	C_GetMechanismInfo:    (C.CK_C_GetMechanismInfo)(C.C_GetMechanismInfo),
-	C_InitToken:           (C.CK_C_InitToken)(C.C_InitToken),
-	C_InitPIN:             (C.CK_C_InitPIN)(C.C_InitPIN),
-	C_SetPIN:              (C.CK_C_SetPIN)(C.C_SetPIN),
-	C_OpenSession:         (C.CK_C_OpenSession)(C.C_OpenSession),
-	C_CloseSession:        (C.CK_C_CloseSession)(C.C_CloseSession),
-	C_CloseAllSessions:    (C.CK_C_CloseAllSessions)(C.C_CloseAllSessions),
-	C_GetSessionInfo:      (C.CK_C_GetSessionInfo)(C.C_GetSessionInfo),
-	C_GetOperationState:   (C.CK_C_GetOperationState)(C.C_GetOperationState),
-	C_SetOperationState:   (C.CK_C_SetOperationState)(C.C_SetOperationState),
-	C_Login:               (C.CK_C_Login)(C.C_Login),
-	C_Logout:              (C.CK_C_Logout)(C.C_Logout),
-	C_CreateObject:        (C.CK_C_CreateObject)(C.C_CreateObject),
-	C_CopyObject:          (C.CK_C_CopyObject)(C.C_CopyObject),
-	C_DestroyObject:       (C.CK_C_DestroyObject)(C.C_DestroyObject),
-	C_GetObjectSize:       (C.CK_C_GetObjectSize)(C.C_GetObjectSize),
-	C_GetAttributeValue:   (C.CK_C_GetAttributeValue)(C.C_GetAttributeValue),
-	C_SetAttributeValue:   (C.CK_C_SetAttributeValue)(C.C_SetAttributeValue),
-	C_FindObjectsInit:     (C.CK_C_FindObjectsInit)(C.C_FindObjectsInit),
-	C_FindObjects:         (C.CK_C_FindObjects)(C.C_FindObjects),
-	C_FindObjectsFinal:    (C.CK_C_FindObjectsFinal)(C.C_FindObjectsFinal),
-	C_EncryptInit:         (C.CK_C_EncryptInit)(C.C_EncryptInit),
-	C_Encrypt:             (C.CK_C_Encrypt)(C.C_Encrypt),
-	C_EncryptUpdate:       (C.CK_C_EncryptUpdate)(C.C_EncryptUpdate),
-	C_EncryptFinal:        (C.CK_C_EncryptFinal)(C.C_EncryptFinal),
-	C_DecryptInit:         (C.CK_C_DecryptInit)(C.C_DecryptInit),
-	C_Decrypt:             (C.CK_C_Decrypt)(C.C_Decrypt),
-	C_DecryptUpdate:       (C.CK_C_DecryptUpdate)(C.C_DecryptUpdate),
-	C_DecryptFinal:        (C.CK_C_DecryptFinal)(C.C_DecryptFinal),
-	C_DigestInit:          (C.CK_C_DigestInit)(C.C_DigestInit),
-	C_Digest:              (C.CK_C_Digest)(C.C_Digest),
-	C_DigestUpdate:        (C.CK_C_DigestUpdate)(C.C_DigestUpdate),
-	C_DigestKey:           (C.CK_C_DigestKey)(C.C_DigestKey),
-	C_DigestFinal:         (C.CK_C_DigestFinal)(C.C_DigestFinal),
-	C_SignInit:            (C.CK_C_SignInit)(C.C_SignInit),
-	C_Sign:                (C.CK_C_Sign)(C.C_Sign),
-	C_SignUpdate:          (C.CK_C_SignUpdate)(C.C_SignUpdate),
-	C_SignFinal:           (C.CK_C_SignFinal)(C.C_SignFinal),
-	C_SignRecoverInit:     (C.CK_C_SignRecoverInit)(C.C_SignRecoverInit),
-	C_SignRecover:         (C.CK_C_SignRecover)(C.C_SignRecover),
-	C_VerifyInit:          (C.CK_C_VerifyInit)(C.C_VerifyInit),
-	C_Verify:              (C.CK_C_Verify)(C.C_Verify),
-	C_VerifyUpdate:        (C.CK_C_VerifyUpdate)(C.C_VerifyUpdate),
-	C_VerifyFinal:         (C.CK_C_VerifyFinal)(C.C_VerifyFinal),
-	C_VerifyRecoverInit:   (C.CK_C_VerifyRecoverInit)(C.C_VerifyRecoverInit),
-	C_VerifyRecover:       (C.CK_C_VerifyRecover)(C.C_VerifyRecover),
-	C_DigestEncryptUpdate: (C.CK_C_DigestEncryptUpdate)(C.C_DigestEncryptUpdate),
-	C_DecryptDigestUpdate: (C.CK_C_DecryptDigestUpdate)(C.C_DecryptDigestUpdate),
-	C_SignEncryptUpdate:   (C.CK_C_SignEncryptUpdate)(C.C_SignEncryptUpdate),
-	C_DecryptVerifyUpdate: (C.CK_C_DecryptVerifyUpdate)(C.C_DecryptVerifyUpdate),
-	C_GenerateKey:         (C.CK_C_GenerateKey)(C.C_GenerateKey),
-	C_GenerateKeyPair:     (C.CK_C_GenerateKeyPair)(C.C_GenerateKeyPair),
-	C_WrapKey:             (C.CK_C_WrapKey)(C.C_WrapKey),
-	C_UnwrapKey:           (C.CK_C_UnwrapKey)(C.C_UnwrapKey),
-	C_DeriveKey:           (C.CK_C_DeriveKey)(C.C_DeriveKey),
-	C_SeedRandom:          (C.CK_C_SeedRandom)(C.C_SeedRandom),
-	C_GenerateRandom:      (C.CK_C_GenerateRandom)(C.C_GenerateRandom),
-	C_GetFunctionStatus:   (C.CK_C_GetFunctionStatus)(C.C_GetFunctionStatus),
-	C_CancelFunction:      (C.CK_C_CancelFunction)(C.C_CancelFunction),
-	// Version 2.1 and later
-	C_WaitForSlotEvent: (C.CK_C_WaitForSlotEvent)(C.C_WaitForSlotEvent),
-}
-
-var functionList30 = C.CK_FUNCTION_LIST_3_0{
-	// Version of function list
-	version: C.CK_VERSION{
-		major: 3,
-		minor: 0,
-	},
-	// Version 2.0 and later
-	C_Initialize:          (C.CK_C_Initialize)(C.C_Initialize),
-	C_Finalize:            (C.CK_C_Finalize)(C.C_Finalize),
-	C_GetInfo:             (C.CK_C_GetInfo)(C.C_GetInfo),
-	C_GetFunctionList:     (C.CK_C_GetFunctionList)(C.C_GetFunctionList),
-	C_GetSlotList:         (C.CK_C_GetSlotList)(C.C_GetSlotList),
-	C_GetSlotInfo:         (C.CK_C_GetSlotInfo)(C.C_GetSlotInfo),
-	C_GetTokenInfo:        (C.CK_C_GetTokenInfo)(C.C_GetTokenInfo),
-	C_GetMechanismList:    (C.CK_C_GetMechanismList)(C.C_GetMechanismList),
-	C_GetMechanismInfo:    (C.CK_C_GetMechanismInfo)(C.C_GetMechanismInfo),
-	C_InitToken:           (C.CK_C_InitToken)(C.C_InitToken),
-	C_InitPIN:             (C.CK_C_InitPIN)(C.C_InitPIN),
-	C_SetPIN:              (C.CK_C_SetPIN)(C.C_SetPIN),
-	C_OpenSession:         (C.CK_C_OpenSession)(C.C_OpenSession),
-	C_CloseSession:        (C.CK_C_CloseSession)(C.C_CloseSession),
-	C_CloseAllSessions:    (C.CK_C_CloseAllSessions)(C.C_CloseAllSessions),
-	C_GetSessionInfo:      (C.CK_C_GetSessionInfo)(C.C_GetSessionInfo),
-	C_GetOperationState:   (C.CK_C_GetOperationState)(C.C_GetOperationState),
-	C_SetOperationState:   (C.CK_C_SetOperationState)(C.C_SetOperationState),
-	C_Login:               (C.CK_C_Login)(C.C_Login),
-	C_Logout:              (C.CK_C_Logout)(C.C_Logout),
-	C_CreateObject:        (C.CK_C_CreateObject)(C.C_CreateObject),
-	C_CopyObject:          (C.CK_C_CopyObject)(C.C_CopyObject),
-	C_DestroyObject:       (C.CK_C_DestroyObject)(C.C_DestroyObject),
-	C_GetObjectSize:       (C.CK_C_GetObjectSize)(C.C_GetObjectSize),
-	C_GetAttributeValue:   (C.CK_C_GetAttributeValue)(C.C_GetAttributeValue),
-	C_SetAttributeValue:   (C.CK_C_SetAttributeValue)(C.C_SetAttributeValue),
-	C_FindObjectsInit:     (C.CK_C_FindObjectsInit)(C.C_FindObjectsInit),
-	C_FindObjects:         (C.CK_C_FindObjects)(C.C_FindObjects),
-	C_FindObjectsFinal:    (C.CK_C_FindObjectsFinal)(C.C_FindObjectsFinal),
-	C_EncryptInit:         (C.CK_C_EncryptInit)(C.C_EncryptInit),
-	C_Encrypt:             (C.CK_C_Encrypt)(C.C_Encrypt),
-	C_EncryptUpdate:       (C.CK_C_EncryptUpdate)(C.C_EncryptUpdate),
-	C_EncryptFinal:        (C.CK_C_EncryptFinal)(C.C_EncryptFinal),
-	C_DecryptInit:         (C.CK_C_DecryptInit)(C.C_DecryptInit),
-	C_Decrypt:             (C.CK_C_Decrypt)(C.C_Decrypt),
-	C_DecryptUpdate:       (C.CK_C_DecryptUpdate)(C.C_DecryptUpdate),
-	C_DecryptFinal:        (C.CK_C_DecryptFinal)(C.C_DecryptFinal),
-	C_DigestInit:          (C.CK_C_DigestInit)(C.C_DigestInit),
-	C_Digest:              (C.CK_C_Digest)(C.C_Digest),
-	C_DigestUpdate:        (C.CK_C_DigestUpdate)(C.C_DigestUpdate),
-	C_DigestKey:           (C.CK_C_DigestKey)(C.C_DigestKey),
-	C_DigestFinal:         (C.CK_C_DigestFinal)(C.C_DigestFinal),
-	C_SignInit:            (C.CK_C_SignInit)(C.C_SignInit),
-	C_Sign:                (C.CK_C_Sign)(C.C_Sign),
-	C_SignUpdate:          (C.CK_C_SignUpdate)(C.C_SignUpdate),
-	C_SignFinal:           (C.CK_C_SignFinal)(C.C_SignFinal),
-	C_SignRecoverInit:     (C.CK_C_SignRecoverInit)(C.C_SignRecoverInit),
-	C_SignRecover:         (C.CK_C_SignRecover)(C.C_SignRecover),
-	C_VerifyInit:          (C.CK_C_VerifyInit)(C.C_VerifyInit),
-	C_Verify:              (C.CK_C_Verify)(C.C_Verify),
-	C_VerifyUpdate:        (C.CK_C_VerifyUpdate)(C.C_VerifyUpdate),
-	C_VerifyFinal:         (C.CK_C_VerifyFinal)(C.C_VerifyFinal),
-	C_VerifyRecoverInit:   (C.CK_C_VerifyRecoverInit)(C.C_VerifyRecoverInit),
-	C_VerifyRecover:       (C.CK_C_VerifyRecover)(C.C_VerifyRecover),
-	C_DigestEncryptUpdate: (C.CK_C_DigestEncryptUpdate)(C.C_DigestEncryptUpdate),
-	C_DecryptDigestUpdate: (C.CK_C_DecryptDigestUpdate)(C.C_DecryptDigestUpdate),
-	C_SignEncryptUpdate:   (C.CK_C_SignEncryptUpdate)(C.C_SignEncryptUpdate),
-	C_DecryptVerifyUpdate: (C.CK_C_DecryptVerifyUpdate)(C.C_DecryptVerifyUpdate),
-	C_GenerateKey:         (C.CK_C_GenerateKey)(C.C_GenerateKey),
-	C_GenerateKeyPair:     (C.CK_C_GenerateKeyPair)(C.C_GenerateKeyPair),
-	C_WrapKey:             (C.CK_C_WrapKey)(C.C_WrapKey),
-	C_UnwrapKey:           (C.CK_C_UnwrapKey)(C.C_UnwrapKey),
-	C_DeriveKey:           (C.CK_C_DeriveKey)(C.C_DeriveKey),
-	C_SeedRandom:          (C.CK_C_SeedRandom)(C.C_SeedRandom),
-	C_GenerateRandom:      (C.CK_C_GenerateRandom)(C.C_GenerateRandom),
-	C_GetFunctionStatus:   (C.CK_C_GetFunctionStatus)(C.C_GetFunctionStatus),
-	C_CancelFunction:      (C.CK_C_CancelFunction)(C.C_CancelFunction),
-	// Version 2.1 and later
-	C_WaitForSlotEvent: (C.CK_C_WaitForSlotEvent)(C.C_WaitForSlotEvent),
-	// Version 3.0 and later
-	C_GetInterfaceList:    (C.CK_C_GetInterfaceList)(C.C_GetInterfaceList),
-	C_GetInterface:        (C.CK_C_GetInterface)(C.C_GetInterface),
-	C_LoginUser:           (C.CK_C_LoginUser)(C.C_LoginUser),
-	C_SessionCancel:       (C.CK_C_SessionCancel)(C.C_SessionCancel),
-	C_MessageEncryptInit:  (C.CK_C_MessageEncryptInit)(C.C_MessageEncryptInit),
-	C_EncryptMessage:      (C.CK_C_EncryptMessage)(C.C_EncryptMessage),
-	C_EncryptMessageBegin: (C.CK_C_EncryptMessageBegin)(C.C_EncryptMessageBegin),
-	C_EncryptMessageNext:  (C.CK_C_EncryptMessageNext)(C.C_EncryptMessageNext),
-	C_MessageEncryptFinal: (C.CK_C_MessageEncryptFinal)(C.C_MessageEncryptFinal),
-	C_MessageDecryptInit:  (C.CK_C_MessageDecryptInit)(C.C_MessageDecryptInit),
-	C_DecryptMessage:      (C.CK_C_DecryptMessage)(C.C_DecryptMessage),
-	C_DecryptMessageBegin: (C.CK_C_DecryptMessageBegin)(C.C_DecryptMessageBegin),
-	C_DecryptMessageNext:  (C.CK_C_DecryptMessageNext)(C.C_DecryptMessageNext),
-	C_MessageDecryptFinal: (C.CK_C_MessageDecryptFinal)(C.C_MessageDecryptFinal),
-	C_MessageSignInit:     (C.CK_C_MessageSignInit)(C.C_MessageSignInit),
-	C_SignMessage:         (C.CK_C_SignMessage)(C.C_SignMessage),
-	C_SignMessageBegin:    (C.CK_C_SignMessageBegin)(C.C_SignMessageBegin),
-	C_SignMessageNext:     (C.CK_C_SignMessageNext)(C.C_SignMessageNext),
-	C_MessageSignFinal:    (C.CK_C_MessageSignFinal)(C.C_MessageSignFinal),
-	C_MessageVerifyInit:   (C.CK_C_MessageVerifyInit)(C.C_MessageVerifyInit),
-	C_VerifyMessage:       (C.CK_C_VerifyMessage)(C.C_VerifyMessage),
-	C_VerifyMessageBegin:  (C.CK_C_VerifyMessageBegin)(C.C_VerifyMessageBegin),
-	C_VerifyMessageNext:   (C.CK_C_VerifyMessageNext)(C.C_VerifyMessageNext),
-	C_MessageVerifyFinal:  (C.CK_C_MessageVerifyFinal)(C.C_MessageVerifyFinal),
-}
-
 var kmipClient *kmipclient.Client
 
 func main() {}
@@ -1651,7 +1460,7 @@ func C_GetFunctionList(ppFunctionList C.CK_FUNCTION_LIST_PTR_PTR) C.CK_RV { // S
 		return C.CKR_ARGUMENTS_BAD
 	}
 
-	*ppFunctionList = &functionList
+	*ppFunctionList = &FUNCTION_LIST
 
 	return C.CKR_OK
 }
@@ -1704,7 +1513,7 @@ func C_GetInterface(pInterfaceName C.CK_UTF8CHAR_PTR, pVersion C.CK_VERSION_PTR,
 
 	var matchingInterface C.CK_INTERFACE_PTR
 
-	for _, interfaceItem := range interfaces {
+	for _, interfaceItem := range INTERFACES {
 		var interfaceNameMatches bool = false
 		var versionMatches bool = false
 		var flagMatches bool = false
@@ -1749,7 +1558,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 		return C.CKR_ARGUMENTS_BAD
 	}
 
-	count := C.CK_ULONG(uint(len(interfaces)))
+	count := C.CK_ULONG(uint(len(INTERFACES)))
 	if pInterfaceList != nil && *pulCount < count {
 		*pulCount = count
 		return C.CKR_BUFFER_TOO_SMALL
@@ -1758,7 +1567,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 
 	if pInterfaceList != nil {
 		pointerAsSliceDestination := pointerToArray(pInterfaceList, uint(*pulCount))
-		copy(pointerAsSliceDestination, interfaces)
+		copy(pointerAsSliceDestination, INTERFACES)
 	}
 
 	return C.CKR_OK
@@ -2061,7 +1870,7 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 	}
 
 	inBuffer := new(bytes.Buffer)
-	inBuffer.Write(EncodeByte(profileVersion))
+	inBuffer.Write(EncodeByte(PROFILE_VERSION))
 	inputParameters := inBuffer.Bytes()
 
 	_, _, returnCode := processKMIP(nil, PKCS_11FunctionC_Initialize, inputParameters)
