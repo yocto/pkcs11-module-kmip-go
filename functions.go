@@ -6,11 +6,12 @@ import "bytes"
 import "C"
 import "encoding/binary"
 import "fmt"
+import "os"
 
 //export C_CancelFunction
 func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CancelFunction(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_CancelFunction(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -25,7 +26,7 @@ func C_CancelFunction(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 //export C_CloseAllSessions
 func C_CloseAllSessions(slotID C.CK_SLOT_ID) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CloseAllSessions(slotID=%+v)\n", slotID)
+		fmt.Printf("Function called @ %d: C_CloseAllSessions(slotID=%+v)\n", os.Getpid(), slotID)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -40,7 +41,7 @@ func C_CloseAllSessions(slotID C.CK_SLOT_ID) C.CK_RV { // Since v1.0
 //export C_CloseSession
 func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CloseSession(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_CloseSession(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -55,7 +56,7 @@ func C_CloseSession(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 //export C_CopyObject
 func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phNewObject C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CopyObject(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v, phNewObject=%+v)\n", hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount, phNewObject)
+		fmt.Printf("Function called @ %d: C_CopyObject(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v, phNewObject=%+v)\n", os.Getpid(), hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount, phNewObject)
 	}
 	if pTemplate == nil || phNewObject == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -94,7 +95,7 @@ func C_CopyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTem
 //export C_CreateObject
 func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phObject C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_CreateObject(hSession=%+v, pTemplate=%+v, ulCount=%+v, phObject=%+v)\n", hSession, pointerToArray(pTemplate, uint(ulCount)), ulCount, phObject)
+		fmt.Printf("Function called @ %d: C_CreateObject(hSession=%+v, pTemplate=%+v, ulCount=%+v, phObject=%+v)\n", os.Getpid(), hSession, pointerToArray(pTemplate, uint(ulCount)), ulCount, phObject)
 	}
 	if pTemplate == nil || phObject == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -132,7 +133,7 @@ func C_CreateObject(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, 
 //export C_Decrypt
 func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEncryptedDataLen C.CK_ULONG /*usEncryptedDataLen C.CK_USHORT (v1.0)*/, pData C.CK_BYTE_PTR, pulDataLen C.CK_ULONG_PTR /*pusDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Decrypt(hSession=%+v, pEncryptedData=%+v, ulEncryptedDataLen=%+v, pData=%+v, pulDataLen=%+v)\n", hSession, pointerToArray(pEncryptedData, uint(ulEncryptedDataLen)), ulEncryptedDataLen, pData, dereferenceUnsignedLong(pulDataLen))
+		fmt.Printf("Function called @ %d: C_Decrypt(hSession=%+v, pEncryptedData=%+v, ulEncryptedDataLen=%+v, pData=%+v, pulDataLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pEncryptedData, uint(ulEncryptedDataLen)), ulEncryptedDataLen, pData, dereferenceUnsignedLong(pulDataLen))
 	}
 	if pEncryptedData == nil || pulDataLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -178,7 +179,7 @@ func C_Decrypt(hSession C.CK_SESSION_HANDLE, pEncryptedData C.CK_BYTE_PTR, ulEnc
 //export C_DecryptDigestUpdate
 func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptDigestUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, dereferenceUnsignedLong(pulPartLen))
+		fmt.Printf("Function called @ %d: C_DecryptDigestUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, dereferenceUnsignedLong(pulPartLen))
 	}
 	if pEncryptedPart == nil || pulPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -224,7 +225,7 @@ func C_DecryptDigestUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 //export C_DecryptFinal
 func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLastPartLen C.CK_ULONG_PTR /*usLastPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptFinal(hSession=%+v, pLastPart=%+v, pulLastPartLen=%+v)\n", hSession, pLastPart, dereferenceUnsignedLong(pulLastPartLen))
+		fmt.Printf("Function called @ %d: C_DecryptFinal(hSession=%+v, pLastPart=%+v, pulLastPartLen=%+v)\n", os.Getpid(), hSession, pLastPart, dereferenceUnsignedLong(pulLastPartLen))
 	}
 	if pulLastPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -269,7 +270,7 @@ func C_DecryptFinal(hSession C.CK_SESSION_HANDLE, pLastPart C.CK_BYTE_PTR, pulLa
 //export C_DecryptInit
 func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_DecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -289,7 +290,7 @@ func C_DecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_DecryptMessage
 func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG, pCiphertext C.CK_BYTE_PTR, ulCiphertextLen C.CK_ULONG, pPlaintext C.CK_BYTE_PTR, pulPlaintextLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pCiphertext=%+v, ulCiphertextLen=%+v, pPlaintext=%+v, pulPlaintextLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen, pointerToArray(pCiphertext, uint(ulCiphertextLen)), ulCiphertextLen, pPlaintext, dereferenceUnsignedLong(pulPlaintextLen))
+		fmt.Printf("Function called @ %d: C_DecryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pCiphertext=%+v, ulCiphertextLen=%+v, pPlaintext=%+v, pulPlaintextLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen, pointerToArray(pCiphertext, uint(ulCiphertextLen)), ulCiphertextLen, pPlaintext, dereferenceUnsignedLong(pulPlaintextLen))
 	}
 	if pCiphertext == nil || pulPlaintextLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -339,7 +340,7 @@ func C_DecryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 //export C_DecryptMessageBegin
 func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen)
+		fmt.Printf("Function called @ %d: C_DecryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -358,7 +359,7 @@ func C_DecryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 //export C_DecryptMessageNext
 func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pCiphertextPart C.CK_BYTE_PTR, ulCiphertextPartLen C.CK_ULONG, pPlaintextPart C.CK_BYTE_PTR, pulPlaintextPartLen C.CK_ULONG_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pCiphertextPart=%+v, ulCiphertextPartLen=%+v, pPlaintextPart=%+v, pulPlaintextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pCiphertextPart, uint(ulCiphertextPartLen)), ulCiphertextPartLen, pPlaintextPart, dereferenceUnsignedLong(pulPlaintextPartLen), flags)
+		fmt.Printf("Function called @ %d: C_DecryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pCiphertextPart=%+v, ulCiphertextPartLen=%+v, pPlaintextPart=%+v, pulPlaintextPartLen=%+v, flags=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pCiphertextPart, uint(ulCiphertextPartLen)), ulCiphertextPartLen, pPlaintextPart, dereferenceUnsignedLong(pulPlaintextPartLen), flags)
 	}
 	if pCiphertextPart == nil || pulPlaintextPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -408,7 +409,7 @@ func C_DecryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 //export C_DecryptUpdate
 func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG /*usEncryptedPartLen C.CK_USHORT (v1.0)*/, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR /*pusPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, dereferenceUnsignedLong(pulPartLen))
+		fmt.Printf("Function called @ %d: C_DecryptUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, dereferenceUnsignedLong(pulPartLen))
 	}
 	if pEncryptedPart == nil || pulPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -454,7 +455,7 @@ func C_DecryptUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR,
 //export C_DecryptVerifyUpdate
 func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYTE_PTR, ulEncryptedPartLen C.CK_ULONG, pPart C.CK_BYTE_PTR, pulPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DecryptVerifyUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, dereferenceUnsignedLong(pulPartLen))
+		fmt.Printf("Function called @ %d: C_DecryptVerifyUpdate(hSession=%+v, pEncryptedPart=%+v, ulEncryptedPartLen=%+v, pPart=%+v, pulPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pEncryptedPart, uint(ulEncryptedPartLen)), ulEncryptedPartLen, pPart, dereferenceUnsignedLong(pulPartLen))
 	}
 	if pEncryptedPart == nil || pulPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -500,7 +501,7 @@ func C_DecryptVerifyUpdate(hSession C.CK_SESSION_HANDLE, pEncryptedPart C.CK_BYT
 //export C_DeriveKey
 func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hBaseKey C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DeriveKey(hSession=%+v, pMechanism=%+v, hBaseKey=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, pMechanism, hBaseKey, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
+		fmt.Printf("Function called @ %d: C_DeriveKey(hSession=%+v, pMechanism=%+v, hBaseKey=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", os.Getpid(), hSession, pMechanism, hBaseKey, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
 	}
 	if pMechanism == nil || pTemplate == nil || phKey == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -540,7 +541,7 @@ func C_DeriveKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hB
 //export C_DestroyObject
 func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DestroyObject(hSession=%+v, hObject=%+v)\n", hSession, hObject)
+		fmt.Printf("Function called @ %d: C_DestroyObject(hSession=%+v, hObject=%+v)\n", os.Getpid(), hSession, hObject)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -556,7 +557,7 @@ func C_DestroyObject(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE) C
 //export C_Digest
 func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pDigest C.CK_BYTE_PTR, pulDigestLen C.CK_ULONG_PTR /*pusDigestLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Digest(hSession=%+v, pData=%+v, ulDataLen=%+v, pDigest=%+v, pulDigestLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pDigest, dereferenceUnsignedLong(pulDigestLen))
+		fmt.Printf("Function called @ %d: C_Digest(hSession=%+v, pData=%+v, ulDataLen=%+v, pDigest=%+v, pulDigestLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pDigest, dereferenceUnsignedLong(pulDigestLen))
 	}
 	if pData == nil || pulDigestLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -602,7 +603,7 @@ func C_Digest(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 //export C_DigestEncryptUpdate
 func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
+		fmt.Printf("Function called @ %d: C_DigestEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
 	}
 	if pPart == nil || pulEncryptedPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -648,7 +649,7 @@ func C_DigestEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ul
 //export C_DigestFinal
 func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDigestLen C.CK_ULONG_PTR /*pusDigestLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestFinal(hSession=%+v, pDigest=%+v, pulDigestLen=%+v)\n", hSession, pDigest, dereferenceUnsignedLong(pulDigestLen))
+		fmt.Printf("Function called @ %d: C_DigestFinal(hSession=%+v, pDigest=%+v, pulDigestLen=%+v)\n", os.Getpid(), hSession, pDigest, dereferenceUnsignedLong(pulDigestLen))
 	}
 	if pulDigestLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -693,7 +694,7 @@ func C_DigestFinal(hSession C.CK_SESSION_HANDLE, pDigest C.CK_BYTE_PTR, pulDiges
 //export C_DigestInit
 func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestInit(hSession=%+v, pMechanism=%+v)\n", hSession, pMechanism)
+		fmt.Printf("Function called @ %d: C_DigestInit(hSession=%+v, pMechanism=%+v)\n", os.Getpid(), hSession, pMechanism)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -712,7 +713,7 @@ func C_DigestInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR) C
 //export C_DigestKey
 func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestKey(hSession=%+v, hKey=%+v)\n", hSession, hKey)
+		fmt.Printf("Function called @ %d: C_DigestKey(hSession=%+v, hKey=%+v)\n", os.Getpid(), hSession, hKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -728,7 +729,7 @@ func C_DigestKey(hSession C.CK_SESSION_HANDLE, hKey C.CK_OBJECT_HANDLE) C.CK_RV 
 //export C_DigestUpdate
 func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_DigestUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
+		fmt.Printf("Function called @ %d: C_DigestUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -744,7 +745,7 @@ func C_DigestUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 //export C_Encrypt
 func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pEncryptedData C.CK_BYTE_PTR, pulEncryptedDataLen C.CK_ULONG_PTR /*pusEncryptedDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Encrypt(hSession=%+v, pData=%+v, ulDataLen=%+v, pEncryptedData=%+v, pulEncryptedDataLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pEncryptedData, dereferenceUnsignedLong(pulEncryptedDataLen))
+		fmt.Printf("Function called @ %d: C_Encrypt(hSession=%+v, pData=%+v, ulDataLen=%+v, pEncryptedData=%+v, pulEncryptedDataLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pEncryptedData, dereferenceUnsignedLong(pulEncryptedDataLen))
 	}
 	if pData == nil || pulEncryptedDataLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -790,7 +791,7 @@ func C_Encrypt(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK
 //export C_EncryptFinal
 func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_PTR, pulLastEncryptedPartLen C.CK_ULONG_PTR /*pusEncryptedPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptFinal(hSession=%+v, pLastEncryptedPart=%+v, pulLastEncryptedPartLen=%+v)\n", hSession, pLastEncryptedPart, dereferenceUnsignedLong(pulLastEncryptedPartLen))
+		fmt.Printf("Function called @ %d: C_EncryptFinal(hSession=%+v, pLastEncryptedPart=%+v, pulLastEncryptedPartLen=%+v)\n", os.Getpid(), hSession, pLastEncryptedPart, dereferenceUnsignedLong(pulLastEncryptedPartLen))
 	}
 	if pulLastEncryptedPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -835,7 +836,7 @@ func C_EncryptFinal(hSession C.CK_SESSION_HANDLE, pLastEncryptedPart C.CK_BYTE_P
 //export C_EncryptInit
 func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_EncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -855,7 +856,7 @@ func C_EncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_EncryptMessage
 func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG, pPlaintext C.CK_BYTE_PTR, ulPlaintextLen C.CK_ULONG, pCiphertext C.CK_BYTE_PTR, pulCiphertextLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pPlaintext=%+v, ulPlaintextLen=%+v, pCiphertext=%+v, pulCiphertextLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen, pointerToArray(pPlaintext, uint(ulPlaintextLen)), ulPlaintextLen, pCiphertext, dereferenceUnsignedLong(pulCiphertextLen))
+		fmt.Printf("Function called @ %d: C_EncryptMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v, pPlaintext=%+v, ulPlaintextLen=%+v, pCiphertext=%+v, pulCiphertextLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen, pointerToArray(pPlaintext, uint(ulPlaintextLen)), ulPlaintextLen, pCiphertext, dereferenceUnsignedLong(pulCiphertextLen))
 	}
 	if pPlaintext == nil || pulCiphertextLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -905,7 +906,7 @@ func C_EncryptMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ul
 //export C_EncryptMessageBegin
 func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pAssociatedData C.CK_BYTE_PTR, ulAssociatedDataLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen)
+		fmt.Printf("Function called @ %d: C_EncryptMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pAssociatedData=%+v, ulAssociatedDataLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pAssociatedData, uint(ulAssociatedDataLen)), ulAssociatedDataLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -924,7 +925,7 @@ func C_EncryptMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PT
 //export C_EncryptMessageNext
 func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pPlaintextPart C.CK_BYTE_PTR, ulPlaintextPartLen C.CK_ULONG, pCiphertextPart C.CK_BYTE_PTR, pulCiphertextPartLen C.CK_ULONG_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pPlaintextPart=%+v, ulPlaintextPartLen=%+v, pCiphertextPart=%+v, pulCiphertextPartLen=%+v, flags=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pPlaintextPart, uint(ulPlaintextPartLen)), ulPlaintextPartLen, pointerToArray(pCiphertextPart, uint(*pulCiphertextPartLen)), dereferenceUnsignedLong(pulCiphertextPartLen), flags)
+		fmt.Printf("Function called @ %d: C_EncryptMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pPlaintextPart=%+v, ulPlaintextPartLen=%+v, pCiphertextPart=%+v, pulCiphertextPartLen=%+v, flags=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pPlaintextPart, uint(ulPlaintextPartLen)), ulPlaintextPartLen, pointerToArray(pCiphertextPart, uint(*pulCiphertextPartLen)), dereferenceUnsignedLong(pulCiphertextPartLen), flags)
 	}
 	if pPlaintextPart == nil || pulCiphertextPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -974,7 +975,7 @@ func C_EncryptMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 //export C_EncryptUpdate
 func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR /*pusEncryptedPartLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_EncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
+		fmt.Printf("Function called @ %d: C_EncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
 	}
 	if pPart == nil || pulEncryptedPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1020,7 +1021,7 @@ func C_EncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLe
 //export C_Finalize
 func C_Finalize(pReserved C.CK_VOID_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Finalize(pReserved=%+v)\n", pReserved)
+		fmt.Printf("Function called @ %d: C_Finalize(pReserved=%+v)\n", os.Getpid(), pReserved)
 	}
 	if pReserved != nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1034,7 +1035,7 @@ func C_Finalize(pReserved C.CK_VOID_PTR) C.CK_RV { // Since v2.0
 //export C_FindObjects
 func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR, ulMaxObjectCount C.CK_ULONG /*usMaxObjectCount C.CK_USHORT (v1.0)*/, pulObjectCount C.CK_ULONG_PTR /*pusObjectCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_FindObjects(hSession=%+v, phObject=%+v, ulMaxObjectCount=%+v, pulObjectCount=%+v)\n", hSession, phObject, ulMaxObjectCount, dereferenceUnsignedLong(pulObjectCount))
+		fmt.Printf("Function called @ %d: C_FindObjects(hSession=%+v, phObject=%+v, ulMaxObjectCount=%+v, pulObjectCount=%+v)\n", os.Getpid(), hSession, phObject, ulMaxObjectCount, dereferenceUnsignedLong(pulObjectCount))
 	}
 	if phObject == nil || pulObjectCount == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1069,7 +1070,7 @@ func C_FindObjects(hSession C.CK_SESSION_HANDLE, phObject C.CK_OBJECT_HANDLE_PTR
 //export C_FindObjectsFinal
 func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_FindObjectsFinal(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_FindObjectsFinal(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1084,7 +1085,7 @@ func C_FindObjectsFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v2.0
 //export C_FindObjectsInit
 func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_FindObjectsInit(hSession=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, pointerToArray(pTemplate, uint(ulCount)), ulCount)
+		fmt.Printf("Function called @ %d: C_FindObjectsInit(hSession=%+v, pTemplate=%+v, ulCount=%+v)\n", os.Getpid(), hSession, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1108,7 +1109,7 @@ func C_FindObjectsInit(hSession C.CK_SESSION_HANDLE, pTemplate C.CK_ATTRIBUTE_PT
 //export C_GenerateKey
 func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, pMechanism, pointerToArray(pTemplate, uint(ulCount)), ulCount)
+		fmt.Printf("Function called @ %d: C_GenerateKey(hSession=%+v, pMechanism=%+v, pTemplate=%+v, ulCount=%+v)\n", os.Getpid(), hSession, pMechanism, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 	if pMechanism == nil || pTemplate == nil || phKey == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1147,7 +1148,7 @@ func C_GenerateKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, 
 //export C_GenerateKeyPair
 func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, pPublicKeyTemplate C.CK_ATTRIBUTE_PTR, ulPublicKeyAttributeCount C.CK_ULONG /*usPublicKeyAttributeCount C.CK_USHORT (v1.0)*/, pPrivateKeyTemplate C.CK_ATTRIBUTE_PTR, ulPrivateKeyAttributeCount C.CK_ULONG /*usPrivateKeyAttributeCount C.CK_USHORT (v1.0)*/, phPublicKey C.CK_OBJECT_HANDLE_PTR, phPrivateKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", hSession, pMechanism, pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)), ulPublicKeyAttributeCount, pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)), ulPrivateKeyAttributeCount)
+		fmt.Printf("Function called @ %d: C_GenerateKeyPair(hSession=%+v, pMechanism=%+v, pPublicKeyTemplate=%+v, ulPublicKeyAttributeCount=%+v, pPrivateKeyTemplate=%+v, ulPrivateKeyAttributeCount=%+v)\n", os.Getpid(), hSession, pMechanism, pointerToArray(pPublicKeyTemplate, uint(ulPublicKeyAttributeCount)), ulPublicKeyAttributeCount, pointerToArray(pPrivateKeyTemplate, uint(ulPrivateKeyAttributeCount)), ulPrivateKeyAttributeCount)
 	}
 	if pMechanism == nil || pPublicKeyTemplate == nil || pPrivateKeyTemplate == nil || phPrivateKey == nil || phPublicKey == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1197,7 +1198,7 @@ func C_GenerateKeyPair(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 //export C_GenerateRandom
 func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, ulRandomLen C.CK_ULONG /*usRandomLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GenerateRandom(hSession=%+v, pRandomData=%+v, ulRandomLen=%+v)\n", hSession, pRandomData, ulRandomLen)
+		fmt.Printf("Function called @ %d: C_GenerateRandom(hSession=%+v, pRandomData=%+v, ulRandomLen=%+v)\n", os.Getpid(), hSession, pRandomData, ulRandomLen)
 	}
 
 	if pRandomData == nil {
@@ -1236,7 +1237,7 @@ func C_GenerateRandom(hSession C.CK_SESSION_HANDLE, pRandomData C.CK_BYTE_PTR, u
 //export C_GetAttributeValue
 func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount)
+		fmt.Printf("Function called @ %d: C_GetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", os.Getpid(), hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 	if pTemplate == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1305,7 +1306,7 @@ func C_GetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 //export C_GetFunctionList
 func C_GetFunctionList(ppFunctionList C.CK_FUNCTION_LIST_PTR_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetFunctionList(ppFunctionList=%+v)\n", ppFunctionList)
+		fmt.Printf("Function called @ %d: C_GetFunctionList(ppFunctionList=%+v)\n", os.Getpid(), ppFunctionList)
 	}
 
 	if ppFunctionList == nil {
@@ -1321,7 +1322,7 @@ func C_GetFunctionList(ppFunctionList C.CK_FUNCTION_LIST_PTR_PTR) C.CK_RV { // S
 //export C_GetFunctionStatus
 func C_GetFunctionStatus(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetFunctionStatus(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_GetFunctionStatus(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1336,7 +1337,7 @@ func C_GetFunctionStatus(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 //export C_GetInfo
 func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetInfo(pInfo=%+v)\n", pInfo)
+		fmt.Printf("Function called @ %d: C_GetInfo(pInfo=%+v)\n", os.Getpid(), pInfo)
 	}
 	if pInfo == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1361,7 +1362,7 @@ func C_GetInfo(pInfo C.CK_INFO_PTR) C.CK_RV { // Since v1.0
 //export C_GetInterface
 func C_GetInterface(pInterfaceName C.CK_UTF8CHAR_PTR, pVersion C.CK_VERSION_PTR, ppInterface C.CK_INTERFACE_PTR_PTR, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetInterface(pInterfaceName=%+v, pVersion=%+v, ppInterface=%+v, flags=%+v)\n", pInterfaceName, pVersion, ppInterface, flags)
+		fmt.Printf("Function called @ %d: C_GetInterface(pInterfaceName=%+v, pVersion=%+v, ppInterface=%+v, flags=%+v)\n", os.Getpid(), pInterfaceName, pVersion, ppInterface, flags)
 	}
 
 	var matchingInterface C.CK_INTERFACE_PTR
@@ -1404,7 +1405,7 @@ func C_GetInterface(pInterfaceName C.CK_UTF8CHAR_PTR, pVersion C.CK_VERSION_PTR,
 //export C_GetInterfaceList
 func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetInterfaceList(pInterfaceList=%+v, pulCount=%+v)\n", pInterfaceList, pulCount)
+		fmt.Printf("Function called @ %d: C_GetInterfaceList(pInterfaceList=%+v, pulCount=%+v)\n", os.Getpid(), pInterfaceList, pulCount)
 	}
 
 	if pulCount == nil {
@@ -1429,7 +1430,7 @@ func C_GetInterfaceList(pInterfaceList C.CK_INTERFACE_PTR, pulCount C.CK_ULONG_P
 //export C_GetMechanismInfo
 func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.CK_MECHANISM_INFO_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetMechanismInfo(slotID=%+v, _type=%+v, pInfo=%+v)\n", slotID, _type, pInfo)
+		fmt.Printf("Function called @ %d: C_GetMechanismInfo(slotID=%+v, _type=%+v, pInfo=%+v)\n", os.Getpid(), slotID, _type, pInfo)
 	}
 	if pInfo == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1459,7 +1460,7 @@ func C_GetMechanismInfo(slotID C.CK_SLOT_ID, _type C.CK_MECHANISM_TYPE, pInfo C.
 //export C_GetMechanismList
 func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_PTR, pulCount C.CK_ULONG_PTR /*pusCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetMechanismList(slotID=%+v, pMechanismList=%+v, pulCount=%+v)\n", slotID, pMechanismList, dereferenceUnsignedLong(pulCount))
+		fmt.Printf("Function called @ %d: C_GetMechanismList(slotID=%+v, pMechanismList=%+v, pulCount=%+v)\n", os.Getpid(), slotID, pMechanismList, dereferenceUnsignedLong(pulCount))
 	}
 	if pulCount == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1504,7 +1505,7 @@ func C_GetMechanismList(slotID C.CK_SLOT_ID, pMechanismList C.CK_MECHANISM_TYPE_
 //export C_GetObjectSize
 func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pulSize C.CK_ULONG_PTR /*pusSize C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetObjectSize(hSession=%+v, hObject=%+v, pulSize=%+v)\n", hSession, hObject, dereferenceUnsignedLong(pulSize))
+		fmt.Printf("Function called @ %d: C_GetObjectSize(hSession=%+v, hObject=%+v, pulSize=%+v)\n", os.Getpid(), hSession, hObject, dereferenceUnsignedLong(pulSize))
 	}
 	if pulSize == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1534,7 +1535,7 @@ func C_GetObjectSize(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, p
 //export C_GetOperationState
 func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE_PTR, pulOperationStateLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetOperationState(hSession=%+v, pOperationState=%+v, pulOperationStateLen=%+v)\n", hSession, pOperationState, dereferenceUnsignedLong(pulOperationStateLen))
+		fmt.Printf("Function called @ %d: C_GetOperationState(hSession=%+v, pOperationState=%+v, pulOperationStateLen=%+v)\n", os.Getpid(), hSession, pOperationState, dereferenceUnsignedLong(pulOperationStateLen))
 	}
 	if pulOperationStateLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1579,7 +1580,7 @@ func C_GetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 //export C_GetSessionInfo
 func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetSessionInfo(hSession=%+v, pInfo=%+v)\n", hSession, pInfo)
+		fmt.Printf("Function called @ %d: C_GetSessionInfo(hSession=%+v, pInfo=%+v)\n", os.Getpid(), hSession, pInfo)
 	}
 	if pInfo == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1608,7 +1609,7 @@ func C_GetSessionInfo(hSession C.CK_SESSION_HANDLE, pInfo C.CK_SESSION_INFO_PTR)
 //export C_GetSlotInfo
 func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetSlotInfo(slotID=%+v, pInfo=%+v)\n", slotID, pInfo)
+		fmt.Printf("Function called @ %d: C_GetSlotInfo(slotID=%+v, pInfo=%+v)\n", os.Getpid(), slotID, pInfo)
 	}
 	if pInfo == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1637,7 +1638,7 @@ func C_GetSlotInfo(slotID C.CK_SLOT_ID, pInfo C.CK_SLOT_INFO_PTR) C.CK_RV { // S
 //export C_GetSlotList
 func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount C.CK_ULONG_PTR /*pusCount C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetSlotList(tokenPresent=%+v, pSlotList=%+v, pulCount=%+v)\n", tokenPresent, pSlotList, dereferenceUnsignedLong(pulCount))
+		fmt.Printf("Function called @ %d: C_GetSlotList(tokenPresent=%+v, pSlotList=%+v, pulCount=%+v)\n", os.Getpid(), tokenPresent, pSlotList, dereferenceUnsignedLong(pulCount))
 	}
 	if pulCount == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1682,7 +1683,7 @@ func C_GetSlotList(tokenPresent C.CK_BBOOL, pSlotList C.CK_SLOT_ID_PTR, pulCount
 //export C_GetTokenInfo
 func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_GetTokenInfo(slotID=%+v, pInfo=%+v)\n", slotID, pInfo)
+		fmt.Printf("Function called @ %d: C_GetTokenInfo(slotID=%+v, pInfo=%+v)\n", os.Getpid(), slotID, pInfo)
 	}
 	if pInfo == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1711,7 +1712,7 @@ func C_GetTokenInfo(slotID C.CK_SLOT_ID, pInfo C.CK_TOKEN_INFO_PTR) C.CK_RV { //
 //export C_Initialize
 func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Initialize(pInitArgs=%+v)\n", pInitArgs)
+		fmt.Printf("Function called @ %d: C_Initialize(pInitArgs=%+v)\n", os.Getpid(), pInitArgs)
 	}
 
 	if pInitArgs != nil {
@@ -1732,9 +1733,9 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 		if pInitArgs != nil {
 			initializeArgumentsPointer := C.CK_C_INITIALIZE_ARGS_PTR(pInitArgs)
 			initializeArguments := pointerToArray(initializeArgumentsPointer, 1)[0]
-			fmt.Printf("PKCS#11 library initialized with arguments: %+v\n", initializeArguments)
+			fmt.Printf("PKCS#11 library initialized with arguments @ %d: %+v\n", os.Getpid(), initializeArguments)
 		} else {
-			fmt.Println("PKCS#11 library initialized without arguments")
+			fmt.Printf("PKCS#11 library initialized without arguments @ %d\n", os.Getpid())
 		}
 	}
 
@@ -1744,7 +1745,7 @@ func C_Initialize(pInitArgs C.CK_VOID_PTR /*pReserved C.CK_VOID_PTR (v1.0,v2.0)*
 //export C_InitPIN
 func C_InitPIN(hSession C.CK_SESSION_HANDLE, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PTR (v1.0,v2.0,v2.01,v2.10)*/, ulPinLen C.CK_ULONG /*usPinLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_InitPIN(hSession=%+v, pPin=%+v, ulPinLen=%+v)\n", hSession, pPin, ulPinLen)
+		fmt.Printf("Function called @ %d: C_InitPIN(hSession=%+v, pPin=%+v, ulPinLen=%+v)\n", os.Getpid(), hSession, pPin, ulPinLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1762,7 +1763,7 @@ func C_InitPIN(hSession C.CK_SESSION_HANDLE, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_
 //export C_InitToken
 func C_InitToken(slotID C.CK_SLOT_ID, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PTR (v1.0,v2.0,v2.01,v2.10)*/, ulPinLen C.CK_ULONG /*usPinLen C.CK_USHORT (v1.0)*/, pLabel C.CK_UTF8CHAR_PTR /*pLabel C.CK_CHAR_PTR (v1.0,v2.0,v2.01,v2.10)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_InitToken(slotID=%+v, pPin=%+v, ulPinLen=%+v, pLabel=%+v)\n", slotID, pPin, ulPinLen, pLabel)
+		fmt.Printf("Function called @ %d: C_InitToken(slotID=%+v, pPin=%+v, ulPinLen=%+v, pLabel=%+v)\n", os.Getpid(), slotID, pPin, ulPinLen, pLabel)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1781,7 +1782,7 @@ func C_InitToken(slotID C.CK_SLOT_ID, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PT
 //export C_Login
 func C_Login(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.CK_UTF8CHAR_PTR /*pPin C.CK_CHAR_PTR (v1.0,v2.0,v2.01,v2.10)*/, ulPinLen C.CK_ULONG /*usPinLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Login(hSession=%+v, userType=%+v, pPin=%+v, ulPinLen=%+v)\n", hSession, userType, pPin, ulPinLen)
+		fmt.Printf("Function called @ %d: C_Login(hSession=%+v, userType=%+v, pPin=%+v, ulPinLen=%+v)\n", os.Getpid(), hSession, userType, pPin, ulPinLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1800,7 +1801,7 @@ func C_Login(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.CK_UT
 //export C_LoginUser
 func C_LoginUser(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.CK_UTF8CHAR_PTR, ulPinLen C.CK_ULONG, pUsername C.CK_UTF8CHAR_PTR, ulUsernameLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_LoginUser(hSession=%+v, userType=%+v, pPin=%+v, ulPinLen=%+v, pUsername=%+v, ulUsernameLen=%+v)\n", hSession, userType, pPin, ulPinLen, pUsername, ulUsernameLen)
+		fmt.Printf("Function called @ %d: C_LoginUser(hSession=%+v, userType=%+v, pPin=%+v, ulPinLen=%+v, pUsername=%+v, ulUsernameLen=%+v)\n", os.Getpid(), hSession, userType, pPin, ulPinLen, pUsername, ulUsernameLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1822,7 +1823,7 @@ func C_LoginUser(hSession C.CK_SESSION_HANDLE, userType C.CK_USER_TYPE, pPin C.C
 //export C_Logout
 func C_Logout(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Logout(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_Logout(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1837,7 +1838,7 @@ func C_Logout(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v1.0
 //export C_MessageDecryptFinal
 func C_MessageDecryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageDecryptFinal(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_MessageDecryptFinal(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1852,7 +1853,7 @@ func C_MessageDecryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageDecryptInit
 func C_MessageDecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageDecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_MessageDecryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1872,7 +1873,7 @@ func C_MessageDecryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 //export C_MessageEncryptFinal
 func C_MessageEncryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageEncryptFinal(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_MessageEncryptFinal(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1887,7 +1888,7 @@ func C_MessageEncryptFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageEncryptInit
 func C_MessageEncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageEncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_MessageEncryptInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1907,7 +1908,7 @@ func C_MessageEncryptInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANIS
 //export C_MessageSignFinal
 func C_MessageSignFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageSignFinal(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_MessageSignFinal(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1922,7 +1923,7 @@ func C_MessageSignFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageSignInit
 func C_MessageSignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageSignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_MessageSignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1942,7 +1943,7 @@ func C_MessageSignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 //export C_MessageVerifyFinal
 func C_MessageVerifyFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageVerifyFinal(hSession=%+v)\n", hSession)
+		fmt.Printf("Function called @ %d: C_MessageVerifyFinal(hSession=%+v)\n", os.Getpid(), hSession)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -1957,7 +1958,7 @@ func C_MessageVerifyFinal(hSession C.CK_SESSION_HANDLE) C.CK_RV { // Since v3.0
 //export C_MessageVerifyInit
 func C_MessageVerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_MessageVerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_MessageVerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -1977,7 +1978,7 @@ func C_MessageVerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 //export C_OpenSession
 func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID_PTR, Notify C.CK_NOTIFY /*CK_RV (*Notify)(CK_SESSION_HANDLE hSession, C.CK_NOTIFICATION event, C.CK_VOID_PTR pApplication) (v1.0)*/, phSession C.CK_SESSION_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_OpenSession(slotID=%+v, flags=%+v, pApplication=%+v, Notify=%+v, phSession=%+v)\n", slotID, flags, pApplication, Notify, phSession)
+		fmt.Printf("Function called @ %d: C_OpenSession(slotID=%+v, flags=%+v, pApplication=%+v, Notify=%+v, phSession=%+v)\n", os.Getpid(), slotID, flags, pApplication, Notify, phSession)
 	}
 	if phSession == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2010,7 +2011,7 @@ func C_OpenSession(slotID C.CK_SLOT_ID, flags C.CK_FLAGS, pApplication C.CK_VOID
 //export C_SeedRandom
 func C_SeedRandom(hSession C.CK_SESSION_HANDLE, pSeed C.CK_BYTE_PTR, ulSeedLen C.CK_ULONG /*usSeedLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SeedRandom(hSession=%+v, pSeed=%+v, ulSeedLen=%+v)\n", hSession, pSeed, ulSeedLen)
+		fmt.Printf("Function called @ %d: C_SeedRandom(hSession=%+v, pSeed=%+v, ulSeedLen=%+v)\n", os.Getpid(), hSession, pSeed, ulSeedLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2026,7 +2027,7 @@ func C_SeedRandom(hSession C.CK_SESSION_HANDLE, pSeed C.CK_BYTE_PTR, ulSeedLen C
 //export C_SessionCancel
 func C_SessionCancel(hSession C.CK_SESSION_HANDLE, flags C.CK_FLAGS) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SessionCancel(hSession=%+v, flags=%+v)\n", hSession, flags)
+		fmt.Printf("Function called @ %d: C_SessionCancel(hSession=%+v, flags=%+v)\n", os.Getpid(), hSession, flags)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2042,7 +2043,7 @@ func C_SessionCancel(hSession C.CK_SESSION_HANDLE, flags C.CK_FLAGS) C.CK_RV { /
 //export C_SetAttributeValue
 func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDLE, pTemplate C.CK_ATTRIBUTE_PTR, ulCount C.CK_ULONG /*usCount C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount)
+		fmt.Printf("Function called @ %d: C_SetAttributeValue(hSession=%+v, hObject=%+v, pTemplate=%+v, ulCount=%+v)\n", os.Getpid(), hSession, hObject, pointerToArray(pTemplate, uint(ulCount)), ulCount)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2067,7 +2068,7 @@ func C_SetAttributeValue(hSession C.CK_SESSION_HANDLE, hObject C.CK_OBJECT_HANDL
 //export C_SetOperationState
 func C_SetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE_PTR, ulOperationStateLen C.CK_ULONG, hEncryptionKey C.CK_OBJECT_HANDLE, hAuthenticationKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SetOperationState(hSession=%+v, pOperationState=%+v, ulOperationStateLen=%+v, hEncryptionKey=%+v, hAuthenticationKey=%+v)\n", hSession, pOperationState, ulOperationStateLen, hEncryptionKey, hAuthenticationKey)
+		fmt.Printf("Function called @ %d: C_SetOperationState(hSession=%+v, pOperationState=%+v, ulOperationStateLen=%+v, hEncryptionKey=%+v, hAuthenticationKey=%+v)\n", os.Getpid(), hSession, pOperationState, ulOperationStateLen, hEncryptionKey, hAuthenticationKey)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2085,7 +2086,7 @@ func C_SetOperationState(hSession C.CK_SESSION_HANDLE, pOperationState C.CK_BYTE
 //export C_SetPIN
 func C_SetPIN(hSession C.CK_SESSION_HANDLE, pOldPin C.CK_UTF8CHAR_PTR /*pOldPin C.CK_CHAR_PTR (v1.0,v2.0,v2.01,v2.10)*/, ulOldLen C.CK_ULONG /*usOldLen C.CK_USHORT (v1.0)*/, pNewPin C.CK_UTF8CHAR_PTR /*pNewPin C.CK_CHAR_PTR (v1.0,v2.0,v2.01,v2.10)*/, ulNewLen C.CK_ULONG /*usNewLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SetPIN(hSession=%+v, pOldPin=%+v, ulOldLen=%+v, pNewPin=%+v, ulNewLen=%+v)\n", hSession, pOldPin, ulOldLen, pNewPin, ulNewLen)
+		fmt.Printf("Function called @ %d: C_SetPIN(hSession=%+v, pOldPin=%+v, ulOldLen=%+v, pNewPin=%+v, ulNewLen=%+v)\n", os.Getpid(), hSession, pOldPin, ulOldLen, pNewPin, ulNewLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2106,7 +2107,7 @@ func C_SetPIN(hSession C.CK_SESSION_HANDLE, pOldPin C.CK_UTF8CHAR_PTR /*pOldPin 
 //export C_Sign
 func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR /*pusSignatureLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Sign(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
+		fmt.Printf("Function called @ %d: C_Sign(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
 	}
 	if pData == nil || pulSignatureLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2152,7 +2153,7 @@ func C_Sign(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_UL
 //export C_SignEncryptUpdate
 func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG, pEncryptedPart C.CK_BYTE_PTR, pulEncryptedPartLen C.CK_ULONG_PTR) C.CK_RV { // Since v2.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
+		fmt.Printf("Function called @ %d: C_SignEncryptUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v, pEncryptedPart=%+v, pulEncryptedPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen, pEncryptedPart, dereferenceUnsignedLong(pulEncryptedPartLen))
 	}
 	if pPart == nil || pulEncryptedPartLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2198,7 +2199,7 @@ func C_SignEncryptUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPa
 //export C_SignFinal
 func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR /*pusSignatureLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignFinal(hSession=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pSignature, dereferenceUnsignedLong(pulSignatureLen))
+		fmt.Printf("Function called @ %d: C_SignFinal(hSession=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", os.Getpid(), hSession, pSignature, dereferenceUnsignedLong(pulSignatureLen))
 	}
 	if pulSignatureLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2243,7 +2244,7 @@ func C_SignFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, pulSign
 //export C_SignInit
 func C_SignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_SignInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2263,7 +2264,7 @@ func C_SignInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKe
 //export C_SignMessage
 func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
+		fmt.Printf("Function called @ %d: C_SignMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
 	}
 	if pData == nil || pulSignatureLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2312,7 +2313,7 @@ func C_SignMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulPar
 //export C_SignMessageBegin
 func C_SignMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v)\n", hSession, pParameter, ulParameterLen)
+		fmt.Printf("Function called @ %d: C_SignMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2330,7 +2331,7 @@ func C_SignMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, 
 //export C_SignMessageNext
 func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pDataPart C.CK_BYTE_PTR, ulDataPartLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pDataPart, uint(ulDataPartLen)), ulDataPartLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
+		fmt.Printf("Function called @ %d: C_SignMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pDataPart, uint(ulDataPartLen)), ulDataPartLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
 	}
 	if pDataPart == nil || pulSignatureLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2379,7 +2380,7 @@ func C_SignMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, u
 //export C_SignRecover
 func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, pulSignatureLen C.CK_ULONG_PTR /*pusSignatureLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignRecover(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
+		fmt.Printf("Function called @ %d: C_SignRecover(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, pulSignatureLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pSignature, dereferenceUnsignedLong(pulSignatureLen))
 	}
 	if pData == nil || pulSignatureLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2425,7 +2426,7 @@ func C_SignRecover(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen 
 //export C_SignRecoverInit
 func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_SignRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2445,7 +2446,7 @@ func C_SignRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_P
 //export C_SignUpdate
 func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_SignUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
+		fmt.Printf("Function called @ %d: C_SignUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2461,7 +2462,7 @@ func C_SignUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C
 //export C_UnwrapKey
 func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hUnwrappingKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, ulWrappedKeyLen C.CK_ULONG /*usWrappedKeyLen C.CK_USHORT (v1.0)*/, pTemplate C.CK_ATTRIBUTE_PTR, ulAttributeCount C.CK_ULONG /*usAttributeCount C.CK_USHORT (v1.0)*/, phKey C.CK_OBJECT_HANDLE_PTR) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, pWrappedKey=%+v, ulWrappedKeyLen=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", hSession, pMechanism, hUnwrappingKey, pointerToArray(pWrappedKey, uint(ulWrappedKeyLen)), ulWrappedKeyLen, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
+		fmt.Printf("Function called @ %d: C_UnwrapKey(hSession=%+v, pMechanism=%+v, hUnwrappingKey=%+v, pWrappedKey=%+v, ulWrappedKeyLen=%+v, pTemplate=%+v, ulAttributeCount=%+v)\n", os.Getpid(), hSession, pMechanism, hUnwrappingKey, pointerToArray(pWrappedKey, uint(ulWrappedKeyLen)), ulWrappedKeyLen, pointerToArray(pTemplate, uint(ulAttributeCount)), ulAttributeCount)
 	}
 	if pMechanism == nil || pWrappedKey == nil || pTemplate == nil || phKey == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2502,7 +2503,7 @@ func C_UnwrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hU
 //export C_Verify
 func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG /*usDataLen C.CK_USHORT (v1.0)*/, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_Verify(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
+		fmt.Printf("Function called @ %d: C_Verify(hSession=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2519,7 +2520,7 @@ func C_Verify(hSession C.CK_SESSION_HANDLE, pData C.CK_BYTE_PTR, ulDataLen C.CK_
 //export C_VerifyFinal
 func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyFinal(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pSignature, ulSignatureLen)
+		fmt.Printf("Function called @ %d: C_VerifyFinal(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", os.Getpid(), hSession, pSignature, ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2536,7 +2537,7 @@ func C_VerifyFinal(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSig
 //export C_VerifyInit
 func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_VerifyInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2556,7 +2557,7 @@ func C_VerifyInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, h
 //export C_VerifyMessage
 func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pData C.CK_BYTE_PTR, ulDataLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
+		fmt.Printf("Function called @ %d: C_VerifyMessage(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pData=%+v, ulDataLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pData, uint(ulDataLen)), ulDataLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2576,7 +2577,7 @@ func C_VerifyMessage(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulP
 //export C_VerifyMessageBegin
 func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v)\n", hSession, pParameter, ulParameterLen)
+		fmt.Printf("Function called @ %d: C_VerifyMessageBegin(hSession=%+v, pParameter=%+v, ulParameterLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2594,7 +2595,7 @@ func C_VerifyMessageBegin(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR
 //export C_VerifyMessageNext
 func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR, ulParameterLen C.CK_ULONG, pDataPart C.CK_BYTE_PTR, ulDataPartLen C.CK_ULONG, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG) C.CK_RV { // Since v3.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", hSession, pParameter, ulParameterLen, pointerToArray(pDataPart, uint(ulDataPartLen)), ulDataPartLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
+		fmt.Printf("Function called @ %d: C_VerifyMessageNext(hSession=%+v, pParameter=%+v, ulParameterLen=%+v, pDataPart=%+v, ulDataPartLen=%+v, pSignature=%+v, ulSignatureLen=%+v)\n", os.Getpid(), hSession, pParameter, ulParameterLen, pointerToArray(pDataPart, uint(ulDataPartLen)), ulDataPartLen, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2614,7 +2615,7 @@ func C_VerifyMessageNext(hSession C.CK_SESSION_HANDLE, pParameter C.CK_VOID_PTR,
 //export C_VerifyRecover
 func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulSignatureLen C.CK_ULONG /*usSignatureLen C.CK_USHORT (v1.0)*/, pData C.CK_BYTE_PTR, pulDataLen C.CK_ULONG_PTR /*pusDataLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyRecover(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v, pData=%+v, pulDataLen=%+v)\n", hSession, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen, pData, dereferenceUnsignedLong(pulDataLen))
+		fmt.Printf("Function called @ %d: C_VerifyRecover(hSession=%+v, pSignature=%+v, ulSignatureLen=%+v, pData=%+v, pulDataLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pSignature, uint(ulSignatureLen)), ulSignatureLen, pData, dereferenceUnsignedLong(pulDataLen))
 	}
 	if pulDataLen == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2660,7 +2661,7 @@ func C_VerifyRecover(hSession C.CK_SESSION_HANDLE, pSignature C.CK_BYTE_PTR, ulS
 //export C_VerifyRecoverInit
 func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hKey C.CK_OBJECT_HANDLE) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", hSession, pMechanism, hKey)
+		fmt.Printf("Function called @ %d: C_VerifyRecoverInit(hSession=%+v, pMechanism=%+v, hKey=%+v)\n", os.Getpid(), hSession, pMechanism, hKey)
 	}
 	if pMechanism == nil {
 		return C.CKR_ARGUMENTS_BAD
@@ -2680,7 +2681,7 @@ func C_VerifyRecoverInit(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM
 //export C_VerifyUpdate
 func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen C.CK_ULONG /*usPartLen C.CK_USHORT (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_VerifyUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
+		fmt.Printf("Function called @ %d: C_VerifyUpdate(hSession=%+v, pPart=%+v, ulPartLen=%+v)\n", os.Getpid(), hSession, pointerToArray(pPart, uint(ulPartLen)), ulPartLen)
 	}
 
 	inBuffer := new(bytes.Buffer)
@@ -2698,7 +2699,7 @@ func C_VerifyUpdate(hSession C.CK_SESSION_HANDLE, pPart C.CK_BYTE_PTR, ulPartLen
 //export C_WaitForSlotEvent
 func C_WaitForSlotEvent(flags C.CK_FLAGS, pSlot C.CK_SLOT_ID_PTR, pReserved C.CK_VOID_PTR) C.CK_RV { // Since v2.01
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_WaitForSlotEvent(flags=%+v, pSlot=%+v, pReserved=%+v)\n", flags, pSlot, pReserved)
+		fmt.Printf("Function called @ %d: C_WaitForSlotEvent(flags=%+v, pSlot=%+v, pReserved=%+v)\n", os.Getpid(), flags, pSlot, pReserved)
 	}
 
 	return C.CKR_FUNCTION_NOT_SUPPORTED
@@ -2707,7 +2708,7 @@ func C_WaitForSlotEvent(flags C.CK_FLAGS, pSlot C.CK_SLOT_ID_PTR, pReserved C.CK
 //export C_WrapKey
 func C_WrapKey(hSession C.CK_SESSION_HANDLE, pMechanism C.CK_MECHANISM_PTR, hWrappingKey C.CK_OBJECT_HANDLE, hKey C.CK_OBJECT_HANDLE, pWrappedKey C.CK_BYTE_PTR, pulWrappedKeyLen C.CK_ULONG_PTR /*pusWrappedKeyLen C.CK_USHORT_PTR (v1.0)*/) C.CK_RV { // Since v1.0
 	if getDebugMode() >= 1 {
-		fmt.Printf("Function called: C_WrapKey(hSession=%+v, pMechanism=%+v, hWrappingKey=%+v, hKey=%+v, pWrappedKey=%+v, pulWrappedKeyLen=%+v)\n", hSession, pMechanism, hWrappingKey, hKey, pWrappedKey, dereferenceUnsignedLong(pulWrappedKeyLen))
+		fmt.Printf("Function called @ %d: C_WrapKey(hSession=%+v, pMechanism=%+v, hWrappingKey=%+v, hKey=%+v, pWrappedKey=%+v, pulWrappedKeyLen=%+v)\n", os.Getpid(), hSession, pMechanism, hWrappingKey, hKey, pWrappedKey, dereferenceUnsignedLong(pulWrappedKeyLen))
 	}
 	if pMechanism == nil || pulWrappedKeyLen == nil {
 		return C.CKR_ARGUMENTS_BAD
